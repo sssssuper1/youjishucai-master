@@ -73,10 +73,13 @@ export default class Register1 extends Component {
         this.setState({isInput:false,codeText: '获取验证码'})
       }
     },1000)
-    
+  }
+  componentWillMount() {
+    this.getCode();
   }
   render() {
-    const{codeText,isInput} = this.state
+    const { codeText, isInput } = this.state;
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="注册"></Header1>
@@ -125,7 +128,7 @@ export default class Register1 extends Component {
           />
         </View>
         <View style={styles.fonter}>
-          <Fonter name="提交"></Fonter>
+          <Fonter name="提交" onPress={() => {navigate('Home')}}></Fonter>
         </View>
       </View>
     );

@@ -67,7 +67,8 @@ export default class UserAddress extends Component {
       )
     };
   render() {
-    const {userAddresses} = this.state
+    const { userAddresses } = this.state;
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>
         <Header1 navigation={this.props.navigation} name="选择收货地址"></Header1>
@@ -76,7 +77,7 @@ export default class UserAddress extends Component {
           contentContainerStyle={styles.addressInfoWrap}
           renderItem={this._renderItem}
         />
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity style={styles.btn} onPress={() => {navigate('EditAddress')}}>
           <Text style={styles.btnText}>编辑收货地址</Text>
         </TouchableOpacity>
       </View>

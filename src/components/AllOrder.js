@@ -50,7 +50,12 @@ export default class PayFun extends Component {
           order:'17325090932',
           state:'待付款',
           goods:[{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }]
-        }]
+      },
+      {
+        order:'17325090931',
+        state:'已付款',
+        goods:[{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }]
+      }]
     }
   }
   changeState(num){

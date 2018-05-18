@@ -47,11 +47,14 @@ function scrrollHeight(uiElementHeight) {
 export default class NewPassword extends Component {
   constructor(props) {
     super(props);
+    const { params } = this.props.navigation.state;
+
     this.state={
       modelVistibal:true,
       name: '',
       isInput: false,
       codeText: '获取验证码',
+      phoneNumber: params.phoneNumber,
     }
     
   }
@@ -73,12 +76,16 @@ export default class NewPassword extends Component {
     },1000)
     
   }
+  componentWillMount() {
+    this.getCode();
+  }
   render() {
-    const{codeText,isInput} = this.state
+    const { codeText, isInput } = this.state;
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="修改密码"></Header1>
-        <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.jpg')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>18934354623z</Text></View>
+        <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.jpg')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>{this.state.phoneNumber}</Text></View>
         <View style={styles.PickerWrap}>  
           <TextInput
             underlineColorAndroid={'transparent'}
@@ -113,7 +120,7 @@ export default class NewPassword extends Component {
           />
         </View>
         <View style={styles.fonter}>
-          <Fonter name="提交"></Fonter>
+          <Fonter name="提交" onPress={() => {navigate('Home')}}></Fonter>
         </View>
       </View>
     );

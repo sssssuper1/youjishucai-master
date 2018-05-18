@@ -33,6 +33,7 @@ import GoodsDetail from './src/components/GoodsDetail';
 import MyOrder from './src/components/MyOrder';
 import AllOrder from './src/components/AllOrder';
 import UserAddress from './src/components/UserAddress';
+import EditAddress from './src/components/EditAddress';
 import VipRegister from './src/components/VipRegister';
 import TabNavigator from 'react-native-tab-navigator';
 import { StackNavigator } from 'react-navigation';
@@ -238,6 +239,16 @@ class UserAddressScreen extends Component {
     );
   }
 }
+class EditAddressScreen extends Component { 
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <EditAddress navigation={this.props.navigation} />
+    );
+  }
+}
 class CartScreen extends Component { 
   static navigationOptions = {
     header:null
@@ -280,14 +291,14 @@ class PayToVipScreen extends Component {
 }
 
 const RootNavigator = StackNavigator({
-  // 登录
-  SignIn: {
-    screen: SignInScreen,
-  }, 
   // 主页
   Home: {
     screen: HomeScreen,
   },
+  // 登录
+  SignIn: {
+    screen: SignInScreen,
+  }, 
   // 购物车
   Cart: {
     screen: CartScreen,
@@ -363,6 +374,10 @@ const RootNavigator = StackNavigator({
   // 收货地址
   UserAddress: {
     screen: UserAddressScreen,
+  },
+  // 编辑收货地址
+  EditAddress: {
+    screen: EditAddressScreen,
   },
   SearchGoods: {
     screen: SearchGoodsScreen,

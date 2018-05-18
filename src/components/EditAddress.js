@@ -43,7 +43,7 @@ function scrrollHeight(uiElementHeight) {
 }
 
 
-export default class VipRegister extends Component {
+export default class EditAddress extends Component {
   constructor(props) {
     super(props);
     //左边菜单
@@ -117,14 +117,14 @@ export default class VipRegister extends Component {
       return area
   }
   render() {
-    const { navigate } = this.props.navigation;
+    const { goBack } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
-        <Header1 navigation={this.props.navigation} name="vip会员注册"></Header1>
+        <Header1 navigation={this.props.navigation} name="编辑收货地址"></Header1>
         <ScrollView>
           <View style={styles.user}>
             <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>姓名：</Text>
+              <Text style={styles.PickerTitle}>收货人：</Text>
               <TextInput
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
@@ -134,7 +134,7 @@ export default class VipRegister extends Component {
               /> 
             </View>
             <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>身份证：</Text>
+              <Text style={styles.PickerTitle}>手机号码：</Text>
               <TextInput
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
@@ -143,8 +143,6 @@ export default class VipRegister extends Component {
                 value={this.state.ID}
               /> 
             </View>
-          </View>
-          <View style={styles.pickers}>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>所在省：</Text>
               <Picker
@@ -193,10 +191,9 @@ export default class VipRegister extends Component {
             </View>
           </View>  
         </ScrollView>
-
-          <TouchableOpacity style={styles.save} onPress={() => { navigate('PayToVip') }}>
-             <Text style={styles.saveText}>保存</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.save} onPress={() => { goBack() }}>
+            <Text style={styles.saveText}>保存</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -217,9 +214,6 @@ const styles = StyleSheet.create({
     color: '#020202'
   },
   user:{
-    marginTop: pxToDp(14),
-  },
-  pickers:{
     marginTop: pxToDp(14),
     marginBottom: pxToDp(100)
   },
