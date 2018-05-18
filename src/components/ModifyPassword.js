@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
@@ -42,8 +42,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class ModifyPassword extends Component<Props> {
+
+export default class ModifyPassword extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -54,11 +54,10 @@ export default class ModifyPassword extends Component<Props> {
   render() {
     return (
       <View style={styles.contenier}>
-        <Header1 name="修改密码"></Header1>
+        <Header1 navigation={this.props.navigation} name="修改密码"></Header1>
         <View style={styles.margin}>
           <View style={styles.passwordWrap}>
             <TextInput
-              style={styles.name}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({name:text})}
               secureTextEntry={true}
@@ -68,7 +67,6 @@ export default class ModifyPassword extends Component<Props> {
           </View> 
           <View style={styles.passwordWrap}>
             <TextInput
-              style={styles.name}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({name:text})}
               secureTextEntry={true}
@@ -78,7 +76,6 @@ export default class ModifyPassword extends Component<Props> {
           </View> 
           <View style={styles.passwordWrap}>
             <TextInput
-              style={styles.name}
               underlineColorAndroid={'transparent'}
               secureTextEntry={true}
               onChangeText={(text) => this.setState({name:text})}

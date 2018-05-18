@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
@@ -41,8 +41,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class Person extends Component<Props> {
+
+export default class Person extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -51,11 +51,12 @@ export default class Person extends Component<Props> {
   }
   
   render() {
+      const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>
-        <Header1 name="个人信息"></Header1>
+        <Header1 navigation={this.props.navigation} name="个人信息"></Header1>
         <View style={styles.margin}>
-          <TouchableOpacity style={styles.set}>
+          <TouchableOpacity style={styles.set} onPress={() => {navigate('Name')}}>
             <Text style={styles.text}>昵称</Text><Text style={styles.warn}>张三丰</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
           <TouchableOpacity style={styles.set}>

@@ -40,8 +40,8 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class Vip extends Component<Props> {
+
+export default class Vip extends Component {
   constructor(props) {
     super(props);
     //左边菜单
@@ -54,6 +54,7 @@ export default class Vip extends Component<Props> {
     this.state={isVip:false}
   }
   render() {
+    const { navigate } = this.props.navigation;
     const {isVip} = this.state
     return (
       <View style={styles.contenier}>  
@@ -124,7 +125,7 @@ export default class Vip extends Component<Props> {
                   <View><Text style={styles.vipFunItemText}>xxxx</Text></View>
                 </View>
               </View>
-              <TouchableOpacity style={styles.openVipBtn}>
+            <TouchableOpacity style={styles.openVipBtn} onPress={() => {navigate('VipRegister')}}>
                 <Text style={styles.openVipBtnText}>开通VIP会员</Text>
               </TouchableOpacity>        
             </View>
@@ -286,6 +287,8 @@ const styles = StyleSheet.create({
   },
   vipFuns:{
     flexDirection: 'row',
+    paddingTop: pxToDp(40),
+    paddingBottom: pxToDp(40),
     paddingLeft: pxToDp(8),
     paddingRight: pxToDp(8)
   },

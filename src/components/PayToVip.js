@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
@@ -41,8 +41,8 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class PayToVip extends Component<Props> {
+
+export default class PayToVip extends Component {
   constructor(props) {
     super(props);
     //左边菜单
@@ -81,7 +81,7 @@ export default class PayToVip extends Component<Props> {
     const{codeText,isInput} = this.state
     return (
       <View style={styles.contenier}>  
-        <Header1 name="vip会员购买付费"></Header1>
+        <Header1 navigation={this.props.navigation} name="vip会员购买付费"></Header1>
           <View style={styles.user}>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>手机号：</Text>

@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
@@ -41,8 +41,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class Set extends Component<Props> {
+
+export default class Set extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -51,21 +51,22 @@ export default class Set extends Component<Props> {
   }
   
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>
-        <Header1 name="设置"></Header1>
+        <Header1 navigation={this.props.navigation} name="设置"></Header1>
         <View style={styles.margin}>
-          <TouchableOpacity style={styles.set}>
+          <TouchableOpacity style={styles.set} onPress={() => {navigate('Person')}}>
             <Image style={styles.Img} source={require('../images/person.png')}></Image><Text style={styles.text}>个人信息</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.set}>
+          <TouchableOpacity style={styles.set} onPress={() => {navigate('AccountSecurity')}}>
             <Image style={styles.Img} source={require('../images/save.png')}></Image><Text style={styles.text}>账户安全</Text><Text style={styles.warn}>更换手机号/改密码</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
         </View> 
         <TouchableOpacity style={[styles.set,styles.margin]}>
           <Image style={styles.Img} source={require('../images/about.png')}></Image><Text style={styles.text}>关于我们</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
         </TouchableOpacity> 
-        <TouchableOpacity style={styles.save}>
+        <TouchableOpacity style={styles.save} onPress={() => {navigate('SignIn')}}>
           <Text style={styles.saveText}>退出当前账户</Text>
         </TouchableOpacity>
       </View>

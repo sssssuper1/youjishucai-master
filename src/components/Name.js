@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import PopupDialog from 'react-native-popup-dialog';
@@ -42,8 +42,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class Person extends Component<Props> {
+
+export default class Person extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -58,7 +58,7 @@ export default class Person extends Component<Props> {
   render() {
     return (
       <View style={styles.contenier} >
-        <Header1 name="修改昵称"></Header1>
+        <Header1 navigation={this.props.navigation} name="修改昵称" ></Header1>
         <View style={styles.margin}>
           <TextInput
             style={styles.name}

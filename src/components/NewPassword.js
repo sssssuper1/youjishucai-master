@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
@@ -43,8 +43,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class NewPassword extends Component<Props> {
+
+export default class NewPassword extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -77,7 +77,7 @@ export default class NewPassword extends Component<Props> {
     const{codeText,isInput} = this.state
     return (
       <View style={styles.contenier} >
-        <Header1 name="修改密码"></Header1>
+        <Header1 navigation={this.props.navigation} name="修改密码"></Header1>
         <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.jpg')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>18934354623z</Text></View>
         <View style={styles.PickerWrap}>  
           <TextInput

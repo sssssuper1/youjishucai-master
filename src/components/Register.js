@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
@@ -43,33 +43,47 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class Register extends Component<Props> {
+
+export default class Register extends Component {
   constructor(props) {
     super(props);
+    
+    const { params } = this.props.navigation.state;
+    let name = '';
+    let link = '';
+    if (params.linkType == 1) {
+      name = '注册';
+      link = 'Register1';
+    } else if (params.linkType == 2) {
+      name = '忘记密码';
+      link = 'NewPassword';
+    }
+
     this.state={
       modelVistibal:true,
-      name: ''
+      name: name,
+      link: link
     }
-    
   }
+  
   show(){
     this.refs.toast.show('hello world!');
   }
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier} >
-        <Header1 name="注册"></Header1>
+        <Header1 navigation={this.props.navigation} name={this.state.name}></Header1>
           <TextInput
             maxLength={11}
             style={styles.phoneNumber}
             underlineColorAndroid={'transparent'}
-            onChangeText={(text) =>this.phoneInput(text) }
+            onChangeText={(text) => this.setState({phone:text}) }
             placeholder={'请输入手机号'}
             placeholderTextColor={'#a6a6a6'}
           />
           <View style={styles.fonter}>
-           <Fonter name="发送验证码"></Fonter>
+            <Fonter name="发送验证码" onPress={() => {navigate(this.state.link,{phoneNumber: this.state.phone})}}></Fonter>
           </View>
       </View>
     );

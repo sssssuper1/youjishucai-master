@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
@@ -43,17 +43,19 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class Register1 extends Component<Props> {
+
+export default class Register1 extends Component {
   constructor(props) {
     super(props);
+    const { params } = this.props.navigation.state;
+
     this.state={
       modelVistibal:true,
       name: '',
+      phoneNumber: params.phoneNumber,
       isInput: false,
       codeText: '获取验证码',
     }
-    
   }
   show(){
     this.refs.toast.show('hello world!');
@@ -77,8 +79,8 @@ export default class Register1 extends Component<Props> {
     const{codeText,isInput} = this.state
     return (
       <View style={styles.contenier} >
-        <Header1 name="注册"></Header1>
-        <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.jpg')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>18934354623z</Text></View>
+        <Header1 navigation={this.props.navigation} name="注册"></Header1>
+        <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.jpg')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>{this.state.phoneNumber}</Text></View>
         <View style={styles.PickerWrap}>  
           <TextInput
             underlineColorAndroid={'transparent'}

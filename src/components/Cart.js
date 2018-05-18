@@ -40,37 +40,83 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class Cart extends Component<Props> {
+
+export default class Cart extends Component {
   constructor(props) {
     super(props);
     
     this.state = {
       dataSource: [{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }],
       isEdit: false,
-      checkAll: false
+      checkAll: false,
+      sumNum: 0,
+      totalPrice: 0,
+      reducePrice: 0
     };
   }
+
+  // 总价计算
+  changeTotal() {
+    let sumNum = 0;
+    let totalPrice = 0;
+    let totalOriginalPrice = 0;
+    let reducePrice = 0;
+
+    this.state.dataSource.forEach((data) => {
+      if (data.isSelect) {
+        totalPrice = totalPrice + data.presentPrice * data.num;
+        totalOriginalPrice = totalOriginalPrice + data.originalPrice * data.num;
+        sumNum = sumNum + data.num;
+      }
+    });
+
+    reducePrice = totalOriginalPrice - totalPrice;
+
+    this.setState({
+      sumNum: sumNum,
+      totalPrice: parseFloat(totalPrice.toFixed(2)),
+      reducePrice: parseFloat(reducePrice.toFixed(2))
+    });
+  }
+  // 减少件数
   reduceGoodsNum(index) { 
     if (this.state.dataSource[index].num===1) { 
       return
     }
     this.state.dataSource[index].num--
-    var newData = JSON.parse(JSON.stringify(this.state.dataSource));
-    this.setState({ dataSource: newData })
+    let newData = JSON.parse(JSON.stringify(this.state.dataSource));
+    this.setState({ dataSource: newData });
+    this.changeTotal();
   }
+  // 增加件数
   addGoodsNum(index) { 
     this.state.dataSource[index].num++
-    var newData = JSON.parse(JSON.stringify(this.state.dataSource));
-    this.setState({ dataSource: newData })
+    let newData = JSON.parse(JSON.stringify(this.state.dataSource));
+    this.setState({ dataSource: newData });
+    this.changeTotal();
+  }
+  // 删除所选
+  deleteSelected() {
+    let newData = this.state.dataSource;
+
+    for (let i = 0; i < newData.length; i++) {
+      if (newData[i].isSelect) {
+        newData.splice(i, 1);
+        i--;
+      }
+    }
+
+    this.setState({ dataSource: newData });
+    this.changeTotal();
   }
   isSelectFu(index) { 
     this.state.dataSource[index].isSelect = !this.state.dataSource[index].isSelect
-    var newData = JSON.parse(JSON.stringify(this.state.dataSource));
+    let newData = JSON.parse(JSON.stringify(this.state.dataSource));
     let isSelect=this.state.dataSource.every((item) => { 
         return item.isSelect===true
     })
-    this.setState({ dataSource: newData,checkAll:isSelect })
+    this.setState({ dataSource: newData, checkAll: isSelect });
+    this.changeTotal();
   }
   editFn() { 
     this.setState({ isEdit: true })
@@ -78,13 +124,15 @@ export default class Cart extends Component<Props> {
   finish() { 
     this.setState({ isEdit: false })
   }
+  // 全选
   checkAll() { 
     this.state.checkAll=!this.state.checkAll
     for (let i = 0; i < this.state.dataSource.length;i++) { 
       this.state.dataSource[i].isSelect = this.state.checkAll; 
     }
-    var newData = JSON.parse(JSON.stringify(this.state.dataSource));
-    this.setState({dataSource: newData,checkAll:this.state.checkAll })
+    let newData = JSON.parse(JSON.stringify(this.state.dataSource));
+    this.setState({ dataSource: newData, checkAll: this.state.checkAll });
+    this.changeTotal();
   }
   //list渲染
   _renderRow1(item, index) {
@@ -118,31 +166,54 @@ export default class Cart extends Component<Props> {
       </View>  
     );
   }
+
+  componentWillMount() {
+    this.changeTotal();
+  }
+
   render() {
+    const { navigate, goBack } = this.props.navigation;
+    let view;
+    if (this.state.dataSource.length > 0) {
+      view =
+        <FlatList 
+          contentContainerStyle={styles.goods1}
+          data={this.state.dataSource}
+          renderItem={({ item, index }) =>this._renderRow1(item, index)}
+        />;
+    } else {
+      view =
+        <View style={styles.state}>
+          <View style={styles.stateImgWrap}>
+            <Image style={styles.stateImg} source={require('../images/payFail.png')}></Image>
+          </View>
+          <View style={styles.stateShow}><Text style={styles.stateShowText}>购物车竟然是空的</Text></View>
+          <TouchableOpacity style={styles.stateButton}>
+            <Text>立即选购</Text>
+          </TouchableOpacity>
+        </View>;
+    }
+
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.header} source={require('../images/headerBackground.png')} resizeMode='cover'>
-          <TouchableOpacity style={styles.headerGoBack}>
+          <TouchableOpacity style={styles.headerGoBack} onPress={() => {goBack()}}>
             <Image style={styles.headerGoBackImg} source={require('../images/leftDir.png')}></Image>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>购物车</Text>
           <TouchableOpacity onPress={() => { 
             this.editFn()
-          }} style={this.state.isEdit?styles.hidden:styles.headerEdit}>
+          }} style={!this.state.isEdit&&this.state.dataSource.length>0?styles.headerEdit:styles.hidden}>
             <Text  style={styles.headerEditText}>编辑</Text>
           </TouchableOpacity> 
           <TouchableOpacity onPress={() => { 
             this.finish()
-          }} style={!this.state.isEdit?styles.hidden:styles.headerEdit}>
+          }} style={this.state.isEdit&&this.state.dataSource.length>0?styles.headerEdit:styles.hidden}>
             <Text  style={styles.headerEditText}>完成</Text>
           </TouchableOpacity>  
         </ImageBackground>
-        <FlatList 
-          contentContainerStyle={styles.goods1}
-          data={this.state.dataSource}
-          renderItem={({ item, index }) =>this._renderRow1(item, index)}
-        />
-        <View style={styles.result}>
+        {view}
+        <View style={this.state.dataSource.length>0?styles.result:styles.hidden}>
           <TouchableOpacity style={styles.allchecked} onPress={() => { 
             this.checkAll()
           }}>
@@ -150,16 +221,24 @@ export default class Cart extends Component<Props> {
             <Text>全选</Text>
           </TouchableOpacity>
           <View style={this.state.isEdit?styles.hidden:styles.totalPrice}>
-            <View style={styles.total}><Text style={styles.totalText}>合计（不含运费）：</Text><Text style={styles.totalNum}>￥0.00</Text></View> 
-            <View style={styles.reducePrice}><Text style={styles.reducePriceText}>已优惠：</Text><Text style={styles.reducePriceNum}>￥0.00</Text></View> 
+            <View style={styles.total}><Text style={styles.totalText}>合计（不含运费）：</Text><Text style={styles.totalNum}>￥{this.state.totalPrice}</Text></View> 
+            <View style={styles.reducePrice}><Text style={styles.reducePriceText}>已优惠：</Text><Text style={styles.reducePriceNum}>￥{this.state.reducePrice}</Text></View> 
           </View>
-          <TouchableOpacity style={this.state.isEdit?styles.hidden:styles.goPay}>
-            <Text style={styles.goPayText}>去结算</Text>  
+          <TouchableOpacity style={!this.state.isEdit && this.state.sumNum > 0 ? styles.goPay : styles.hidden}
+            onPress={() => {navigate('Order')}}>
+            <Text style={styles.goPayText}>去结算({this.state.sumNum})</Text>  
           </TouchableOpacity>
-          <TouchableOpacity style={!this.state.isEdit?styles.hidden:styles.delete}>
-            <Text style={styles.deleteText}>删除(1)</Text>  
-          </TouchableOpacity> 
-        </View>  
+          <View style={!this.state.isEdit && this.state.sumNum<=0?styles.payDisable:styles.hidden}>
+            <Text style={styles.goPayText}>去结算</Text>
+          </View>  
+          <TouchableOpacity style={this.state.isEdit && this.state.sumNum > 0 ? styles.delete : styles.hidden}
+            onPress={() => {this.deleteSelected()}}>
+            <Text style={styles.deleteText}>删除({this.state.sumNum})</Text>
+          </TouchableOpacity>
+          <View style={this.state.isEdit&&this.state.sumNum<=0?styles.deleteDisable:styles.hidden}>
+            <Text style={styles.deleteText}>删除</Text>
+          </View> 
+        </View>
       </View>
     );
   }
@@ -203,6 +282,32 @@ const styles = StyleSheet.create({
   headerEditText: {
     fontSize: pxToDp(32),
     color: 'white',
+  },
+  state: {
+    width: '100%',
+    height: pxToDp(537),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  stateImgWrap: {
+
+  },
+  stateImg: {
+    width: pxToDp(253),
+    height: pxToDp(270)
+  },
+  stateShow: {
+    marginTop:pxToDp(50),
+  },
+  stateButton: {
+    marginTop: pxToDp(40),
+    width: pxToDp(200),
+    paddingTop: pxToDp(8),
+    paddingBottom: pxToDp(8),
+    borderWidth: pxToDp(1),
+    borderColor: '#a9a9a9',
+    borderRadius: pxToDp(10),
+    alignItems: 'center'
   },
   list: {
     flexDirection: 'row',
@@ -362,6 +467,13 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fe0036'
+  },
+  payDisable: {
+    width: pxToDp(220),
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#d0d0d0'
   },
   goPayText: {
@@ -376,6 +488,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fe0036'
+  },
+  deleteDisable: {
+    position: 'absolute',
+    right: 0,
+    width: pxToDp(220),
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#d0d0d0'
   },
   deleteText: {
     fontSize: pxToDp(32),

@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import PopupDialog from 'react-native-popup-dialog';
@@ -42,8 +42,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class ServiceCenter extends Component<Props> {
+
+export default class ServiceCenter extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -58,7 +58,7 @@ export default class ServiceCenter extends Component<Props> {
   render() {
     return (
       <View style={styles.contenier} >
-        <Header1 name="客服中心"></Header1>
+        <Header1 navigation={this.props.navigation} name="客服中心"></Header1>
         <View style={styles.margin}>
           <View style={styles.Item}><Image style={styles.itemImg}  source={require('../images/serverPhone.png')}></Image><Text style={styles.title}>客服电话</Text><Text style={styles.phone}>0518-88888888</Text></View>
           <View style={styles.Item}><Image style={styles.itemImg}  source={require('../images/serverTime.png')}></Image><Text style={styles.title}>工作时间</Text><View><View><Text>9:00~17:30(周一至周五）</Text></View><View><Text>*除国家法定节假日</Text></View></View></View>

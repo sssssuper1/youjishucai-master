@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
@@ -50,8 +50,8 @@ const renderPagination = (index, total, context) => {
     </View>
   )
 }
-type Props = {};
-export default class GoodsDetail extends Component<Props> {
+
+export default class GoodsDetail extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -62,7 +62,7 @@ export default class GoodsDetail extends Component<Props> {
   render() {
     return (
       <View style={styles.contenier}>
-        <Header1 name="商品详情"></Header1>
+        <Header1 navigation={this.props.navigation} name="商品详情"></Header1>
         <View style={styles.wrapperWrap}>
         <Swiper style={styles.wrapper}  renderPagination={renderPagination}  autoplay={true} >
           <View style={styles.slide}>

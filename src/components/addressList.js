@@ -39,8 +39,8 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class Community extends Component<Props> {
+
+export default class Community extends Component {
   constructor(props) {
     super(props);
     //左边菜单

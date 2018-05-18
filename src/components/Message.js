@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import PopupDialog from 'react-native-popup-dialog';
@@ -42,8 +42,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class Message extends Component<Props> {
+
+export default class Message extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -55,32 +55,32 @@ export default class Message extends Component<Props> {
   show(){
     this.refs.toast.show('hello world!');
   }
-  _render(item){
+  _render(item) {
+    const { navigate } = this.props.navigation;
     return(
       <View style={styles.list}>
-          <View style={styles.date}><View style={styles.dateContent}><Text style={styles.dateContentText}>4月20</Text></View></View>
-          <TouchableOpacity style={styles.btn}>
-            <View style={styles.message}>
-              <View style={styles.messageImgWrap}><Image style={styles.messageImg} source={require('../images/message.jpg')}></Image></View>
-              <View style={styles.messageContent}>
-                <View style={styles.title}><Text style={styles.titleContent}>物流通知</Text></View>
-                <View ><Text style={styles.p}>五一节到了快迪欧飞机火车就看见我，大胃
-发我我的娃胃王的发我我的娃五一节到了</Text></View>
-              </View> 
-            </View>
-            <View style={styles.seeDetail}>
-              <View style={styles.goSeeDetail}><Text style={styles.goSeeDetailTitle}>查看详情</Text><Image style={styles.goSeeDetailDir} source={require('../images/rightDir.png')}></Image></View>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <View style={styles.date}><View style={styles.dateContent}><Text style={styles.dateContentText}>4月20</Text></View></View>
+        <TouchableOpacity style={styles.btn} onPress={() => {navigate('MessageDetail')}}>
+          <View style={styles.message}>
+            <View style={styles.messageImgWrap}><Image style={styles.messageImg} source={require('../images/message.jpg')}></Image></View>
+            <View style={styles.messageContent}>
+              <View style={styles.title}><Text style={styles.titleContent}>物流通知</Text></View>
+              <View ><Text style={styles.p}>五一节到了快迪欧飞机火车就看见我，大胃发我我的娃胃王的发我我的娃五一节到了</Text></View>
+            </View> 
+          </View>
+          <View style={styles.seeDetail}>
+            <View style={styles.goSeeDetail}><Text style={styles.goSeeDetailTitle}>查看详情</Text><Image style={styles.goSeeDetailDir} source={require('../images/rightDir.png')}></Image></View>
+          </View>
+        </TouchableOpacity>
+      </View>
     )
   }
   render() {
     return (
       <View style={styles.contenier} >
-        <Header1 name="系统消息"></Header1>
+        <Header1 navigation={this.props.navigation} name="系统消息"></Header1>
         <FlatList
-          data={[{key: 'a'}, {key: 'b'}]}
+          data={[{key: 'a'}, {key: 'b'}, {key: 'c'}]}
           renderItem={({item}) => this._render(item)}
         />          
       </View>

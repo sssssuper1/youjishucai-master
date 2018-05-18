@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
@@ -43,8 +43,8 @@ function scrrollHeight(uiElementHeight) {
   alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-type Props = {};
-export default class SignIn extends Component<Props> {
+
+export default class SignIn extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -75,12 +75,13 @@ export default class SignIn extends Component<Props> {
     this.setState({disabled:disabled,password:text}) 
   }
   render() {
+    const { navigate } = this.props.navigation;
     return (
-      <View style={styles.contenier} >
-        <Header1 name="登录"></Header1>
+      <View style={styles.contenier}>
+        <Header1 navigation={this.props.navigation} name="登录"></Header1>
         <View style={styles.content}>
-          <View style={styles.Item}><
-            Text>账户</Text>
+          <View style={styles.Item}>
+            <Text>账户</Text>
             <TextInput
               maxLength={11}
               style={styles.account}
@@ -90,8 +91,8 @@ export default class SignIn extends Component<Props> {
               placeholderTextColor={'#a6a6a6'}
             />
           </View>
-          <View style={styles.Item}><
-            Text>密码</Text>
+          <View style={styles.Item}>
+            <Text>密码</Text>
             <TextInput
               maxLength={11}
               style={styles.account}
@@ -101,13 +102,21 @@ export default class SignIn extends Component<Props> {
               placeholder={'请输入登录密码'}
               placeholderTextColor={'#a6a6a6'}
             />
-            <TouchableOpacity onPress={()=>{
-              this.isHidden()
-            }} style={styles.btnPasswrd}><Image style={this.state.isHidden?styles.hidenPassword:styles.opacity} source={require('../images/hiddenPassword.png')}></Image><Image style={this.state.isHidden?styles.opacity:styles.showPassword}  source={require('../images/showPassword.png')}></Image></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.isHidden()}} style={styles.btnPasswrd}>
+              <Image style={this.state.isHidden ? styles.hidenPassword : styles.opacity} source={require('../images/hiddenPassword.png')}></Image>
+              <Image style={this.state.isHidden ? styles.opacity : styles.showPassword} source={require('../images/showPassword.png')}></Image>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity disabled={this.state.disabled}  style={this.state.disabled?styles.signIn:styles.signIn1}><Text style={{color:"white"}}>登录</Text></TouchableOpacity>
-          <View style={styles.otherBtn}><TouchableOpacity style={[styles.btn,styles.register]}><Text style={styles.registerText}>快速注册</Text></TouchableOpacity><TouchableOpacity style={[styles.btn,styles.forgotPassword]}><Text>忘记密码?</Text></TouchableOpacity></View> 
-          </View>   
+          <TouchableOpacity onPress={() => {navigate('Home')}} disabled={this.state.disabled} style={this.state.disabled?styles.signIn:styles.signIn1}><Text style={{color:"white"}}>登录</Text></TouchableOpacity>
+          <View style={styles.otherBtn}>
+            <TouchableOpacity style={[styles.btn, styles.register]} onPress={() => {navigate('Register',{linkType: 1})}}>
+              <Text style={styles.registerText}>快速注册</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.btn, styles.forgotPassword]} onPress={() => {navigate('Register',{linkType: 2})}}>
+              <Text>忘记密码?</Text>
+            </TouchableOpacity>
+          </View> 
+        </View>
       </View>
     );
   }

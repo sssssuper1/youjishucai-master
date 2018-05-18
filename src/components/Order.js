@@ -40,8 +40,8 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class Order extends Component<Props> {
+
+export default class Order extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -71,54 +71,54 @@ export default class Order extends Component<Props> {
     );
   }
   render() {
+    const { navigate, goBack } = this.props.navigation;
     return (
       <View style={styles.contenier}> 
         <View style={styles.header} >
-          <TouchableOpacity style={styles.headerGoBack}>
+          <TouchableOpacity style={styles.headerGoBack} onPress={() => {goBack()}}>
             <Image style={styles.headerGoBackImg} source={require('../images/orderDir.png')}></Image>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>确认订单</Text>
         </View>
         <ScrollView> 
-        <TouchableOpacity style={styles.address}>
-          <View style={styles.addressWrap}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}></Image></View>
-          <View style={styles.userInfo}>
-            <View style={styles.user}><Text style={styles.userName}>张三丰</Text><Text style={styles.userPhone}>1802013458967</Text></View>
-            <View style={styles.userAddress}><Text style={styles.userAddressText}>江苏省南京市鼓楼区  中央门街道389号凤凰国际大
-            厦11楼01</Text></View>
+          <TouchableOpacity style={styles.address} onPress={() => {navigate('UserAddress')}}>
+            <View style={styles.addressWrap}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}></Image></View>
+            <View style={styles.userInfo}>
+              <View style={styles.user}><Text style={styles.userName}>张三丰</Text><Text style={styles.userPhone}>1802013458967</Text></View>
+              <View style={styles.userAddress}><Text style={styles.userAddressText}>江苏省南京市鼓楼区  中央门街道389号凤凰国际大厦11楼01</Text></View>
+            </View>
+            <View style={styles.dir}>
+              <Image style={styles.dirImg} source={require('../images/rightDir.png')}></Image>
+            </View>  
+          </TouchableOpacity>
+          <ImageBackground style={styles.addressBackground} source={require('../images/addressBackground.jpg')}>
+          </ImageBackground>
+          <FlatList 
+            contentContainerStyle={styles.goods1}  
+            data={this.state.dataSource}
+            renderItem={({ item, index }) =>this._renderRow1(item, index)}
+          />
+          <View style={styles.remarks}>
+            <Text style={styles.remarksText}>备注：</Text>
+            <TextInput
+              returnKeyType={"search"}
+              underlineColorAndroid={'transparent'}
+              style={styles.remarksInput}
+              placeholder={'选填，本次交易说明'}
+              onChangeText={(text) => this.setState({text})}
+              value={this.state.text}
+            />  
           </View>
-          <View style={styles.dir}>
-            <Image style={styles.dirImg} source={require('../images/rightDir.png')}></Image>
-          </View>  
-        </TouchableOpacity>
-        <ImageBackground style={styles.addressBackground} source={require('../images/addressBackground.jpg')}>
-        </ImageBackground>
-        <FlatList 
-          contentContainerStyle={styles.goods1}  
-          data={this.state.dataSource}
-          renderItem={({ item, index }) =>this._renderRow1(item, index)}
-        />
-        <View style={styles.remarks}>
-          <Text style={styles.remarksText}>备注：</Text>
-          <TextInput
-            returnKeyType={"search"}
-            underlineColorAndroid={'transparent'}
-            style={styles.remarksInput}
-            placeholder={'选填，本次交易说明'}
-            onChangeText={(text) => this.setState({text})}
-            value={this.state.text}
-          />  
-        </View>
-        <View style={styles.paymentMethod}>
-          <TouchableOpacity style={styles.payment}><Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image><Text>微信支付</Text><Image style={styles.isSelect} source={this.state.payNum===0?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
-          <TouchableOpacity style={styles.payment}><Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image><Text>支付宝</Text><Image style={styles.isSelect} source={this.state.payNum===1?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
-        </View>
-        <View style={styles.goods}>
-          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共三件</Text></View>
-          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥148.00</Text></View>
-          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥148.00</Text></View>
-          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥148.00</Text></View>
-        </View>
+          <View style={styles.paymentMethod}>
+            <TouchableOpacity style={styles.payment}><Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image><Text>微信支付</Text><Image style={styles.isSelect} source={this.state.payNum===0?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
+            <TouchableOpacity style={styles.payment}><Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image><Text>支付宝</Text><Image style={styles.isSelect} source={this.state.payNum===1?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
+          </View>
+          <View style={styles.goods}>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共三件</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥148.00</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥148.00</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥148.00</Text></View>
+          </View>
         </ScrollView>  
         <View style={styles.result}>    
           <Text style={styles.resultTitle}>实付金额：</Text><Text style={styles.resultPrice}>¥148.00</Text><TouchableOpacity style={styles.payBtn}><Text style={styles.payBtnText}>去结算</Text></TouchableOpacity>  
@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   remarksText: {
+    marginLeft: pxToDp(26),
     fontSize: pxToDp(28),
     color: '#2b2b2b'
   },

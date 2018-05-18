@@ -40,8 +40,8 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class My extends Component<Props> {
+
+export default class My extends Component {
   constructor(props) {
     super(props);
     //左边菜单
@@ -53,6 +53,7 @@ export default class My extends Component<Props> {
     });
   }
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.header} source={require('../images/myBackground.png')} resizeMode='cover'>
@@ -63,12 +64,12 @@ export default class My extends Component<Props> {
           <View>
             <Text style={styles.name}>张三丰</Text>
           </View>
-          <TouchableOpacity style={styles.set}>
+          <TouchableOpacity style={styles.set} onPress={() => {navigate('Set')}}>
             <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
           </TouchableOpacity>  
         </ImageBackground>
         <View style={styles.cartInfo}>
-          <TouchableOpacity style={styles.cartBtn}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}}>
             <View style={[styles.cartImg,styles.cart1Img]}>
               <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
             </View>
@@ -76,7 +77,7 @@ export default class My extends Component<Props> {
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>购物车</Text>
             </View>
-          </TouchableOpacity> 
+          </TouchableOpacity>
           <TouchableOpacity style={styles.cartBtn}>
             <View style={[styles.cartImg,styles.cart2Img]}>
               <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
@@ -106,24 +107,24 @@ export default class My extends Component<Props> {
           </TouchableOpacity>
         </View>
         <View style={styles.detail}>
-          <TouchableOpacity style={styles.detailBtn}>
+          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('AllOrder')}}>
             <Image style={styles.detailBtnImg} source={require('../images/order.png')}></Image>
             <Text style={styles.detailBtnText}>全部订单</Text> 
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.detailBtn}>
+          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('UserAddress')}}>
             <Image style={styles.detailBtnImg}  source={require('../images/getAddress.png')}></Image>
             <Text style={styles.detailBtnText}>收货地址</Text> 
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.detailBtn}>
+          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('ServiceCenter')}}>
             <Image style={styles.detailBtnImg}  source={require('../images/phone.png')}></Image>
             <Text style={styles.detailBtnText}>客服中心</Text> 
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
         </View>
         <View style={styles.message}>
-          <TouchableOpacity style={styles.detailBtn}>
+          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('Message')}}>
             <Image style={styles.detailBtnImg}  source={require('../images/message.png')}></Image>
             <Text style={styles.detailBtnText}>系统信息</Text>
             <View style={styles.detailBtnNew}><Text style={styles.detailBtnNewText}>NEW</Text></View>

@@ -39,8 +39,7 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class Header extends Component<Props> {
+export default class Header1 extends Component {
   constructor(props) {
     super(props);
     //左边菜单
@@ -55,11 +54,15 @@ export default class Header extends Component<Props> {
     }  
   }
     render() {
-        const { name}=this.state
+      const { name } = this.state;
+      const { goBack } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <View style={styles.header}>
-          <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image><Text style={styles.headerText}>{name}</Text>  
+          <TouchableOpacity style={styles.headerGoBack} onPress={() => {goBack()}}>
+            <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
+          </TouchableOpacity>
+          <Text style={styles.headerText}>{name}</Text>  
         </View>
       </View>
     );
@@ -74,9 +77,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white'
   },
-  headerImg:{
+  headerGoBack: {
     position: 'absolute',
     left: pxToDp(34),
+    width: pxToDp(50),
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  headerImg:{
     width: pxToDp(24),
     height: pxToDp(40)
   },

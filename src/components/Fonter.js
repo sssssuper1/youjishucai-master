@@ -38,8 +38,8 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class Fonter extends Component<Props> {
+
+export default class Fonter extends Component {
   constructor(props) {
     super(props);
     //左边菜单
@@ -56,7 +56,7 @@ export default class Fonter extends Component<Props> {
     render() {
         const { name}=this.state
     return (
-      <TouchableOpacity  style={styles.btn}><Text style={styles.btnText}>{name}</Text></TouchableOpacity>
+      <TouchableOpacity onPress={this.props.onPress} style={styles.btn}><Text style={styles.btnText}>{name}</Text></TouchableOpacity>
     );
   }
 }

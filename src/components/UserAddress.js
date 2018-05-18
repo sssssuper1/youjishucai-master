@@ -9,7 +9,7 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1'
+import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
@@ -41,12 +41,12 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class UserAddress extends Component<Props> {
+
+export default class UserAddress extends Component {
   constructor(props) {
     super(props);
     this.state={
-      userAddresses:[{key: 'a'}, {key: 'b'}],
+      userAddresses:[{key: 'a'}],
     }
   }
   _renderItem = ({item}) => {
@@ -70,7 +70,7 @@ export default class UserAddress extends Component<Props> {
     const {userAddresses} = this.state
     return (
       <View style={styles.contenier}>
-        <Header1 name="选择收货地址"></Header1>
+        <Header1 navigation={this.props.navigation} name="选择收货地址"></Header1>
         <FlatList
           data={userAddresses}
           contentContainerStyle={styles.addressInfoWrap}

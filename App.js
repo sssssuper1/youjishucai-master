@@ -18,6 +18,7 @@ import Name from './src/components/Name';
 import Index from './src/components/Index';
 import AccountSecurity from './src/components/AccountSecurity';
 import ModifyPassword from './src/components/ModifyPassword';
+import ModifyPhoneNum from './src/components/ModifyPhoneNum';
 import MessageDetail from './src/components/MessageDetail';
 import ServiceCenter from './src/components/ServiceCenter';
 import Register from './src/components/Register';
@@ -36,8 +37,8 @@ import VipRegister from './src/components/VipRegister';
 import TabNavigator from 'react-native-tab-navigator';
 import { StackNavigator } from 'react-navigation';
 import store from './src/store/index'
-type Props = {};
-class NewPasswordScreen extends Component<Props> { 
+
+class NewPasswordScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -47,7 +48,7 @@ class NewPasswordScreen extends Component<Props> {
     );
   }
 }
-class Register1Screen extends Component<Props> { 
+class Register1Screen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -57,7 +58,7 @@ class Register1Screen extends Component<Props> {
     );
   }
 }
-class RegisterScreen extends Component<Props> { 
+class RegisterScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -67,7 +68,7 @@ class RegisterScreen extends Component<Props> {
     );
   }
 }
-class SignInScreen extends Component<Props> { 
+class SignInScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -77,7 +78,7 @@ class SignInScreen extends Component<Props> {
     );
   }
 }
-class ServiceCenterScreen extends Component<Props> { 
+class ServiceCenterScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -87,7 +88,7 @@ class ServiceCenterScreen extends Component<Props> {
     );
   }
 }
-class MessageDetailScreen extends Component<Props> { 
+class MessageDetailScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -97,7 +98,7 @@ class MessageDetailScreen extends Component<Props> {
     );
   }
 }
-class HomeScreen extends Component<Props> { 
+class HomeScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -107,7 +108,7 @@ class HomeScreen extends Component<Props> {
     );
   }
 }
-class MessageScreen extends Component<Props> { 
+class MessageScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -117,7 +118,7 @@ class MessageScreen extends Component<Props> {
     );
   }
 }
-class ModifyPasswordScreen extends Component<Props> { 
+class ModifyPasswordScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -127,7 +128,17 @@ class ModifyPasswordScreen extends Component<Props> {
     );
   }
 }
-class AccountSecurityScreen extends Component<Props> { 
+class ModifyPhoneNumScreen extends Component {
+  static navigationOptions = {
+    header: null
+  };
+  render() {
+    return (
+      <ModifyPhoneNum navigation={this.props.navigation} />
+    )
+  }
+}
+class AccountSecurityScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -137,7 +148,7 @@ class AccountSecurityScreen extends Component<Props> {
     );
   }
 }
-class NameScreen extends Component<Props> { 
+class NameScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -147,7 +158,7 @@ class NameScreen extends Component<Props> {
     );
   }
 }
-class SetScreen extends Component<Props> { 
+class SetScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -157,7 +168,7 @@ class SetScreen extends Component<Props> {
     );
   }
 }
-class PersonScreen extends Component<Props> { 
+class PersonScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -167,7 +178,7 @@ class PersonScreen extends Component<Props> {
     );
   }
 }
-class AllOrderScreen extends Component<Props> { 
+class AllOrderScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -177,7 +188,7 @@ class AllOrderScreen extends Component<Props> {
     );
   }
 }
-class GoodsDetailScreen extends Component<Props> { 
+class GoodsDetailScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -187,7 +198,7 @@ class GoodsDetailScreen extends Component<Props> {
     );
   }
 }
-class MyOrderScreen extends Component<Props> { 
+class MyOrderScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -197,7 +208,7 @@ class MyOrderScreen extends Component<Props> {
     );
   }
 }
-class PayFunScreen extends Component<Props> { 
+class PayFunScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -207,7 +218,7 @@ class PayFunScreen extends Component<Props> {
     );
   }
 }
-class SearchGoodsScreen extends Component<Props> { 
+class SearchGoodsScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -217,7 +228,7 @@ class SearchGoodsScreen extends Component<Props> {
     );
   }
 }
-class UserAddressScreen extends Component<Props> { 
+class UserAddressScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -227,7 +238,7 @@ class UserAddressScreen extends Component<Props> {
     );
   }
 }
-class CartScreen extends Component<Props> { 
+class CartScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -237,7 +248,7 @@ class CartScreen extends Component<Props> {
     );
   }
 }
-class OrderScreen extends Component<Props> { 
+class OrderScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -247,7 +258,7 @@ class OrderScreen extends Component<Props> {
     );
   }
 }
-class VipRegisterScreen extends Component<Props> { 
+class VipRegisterScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -257,7 +268,7 @@ class VipRegisterScreen extends Component<Props> {
     );
   }
 }
-class PayToVipScreen extends Component<Props> { 
+class PayToVipScreen extends Component { 
   static navigationOptions = {
     header:null
   };
@@ -267,76 +278,105 @@ class PayToVipScreen extends Component<Props> {
     );
   }
 }
+
 const RootNavigator = StackNavigator({
+  // 登录
+  SignIn: {
+    screen: SignInScreen,
+  }, 
+  // 主页
+  Home: {
+    screen: HomeScreen,
+  },
+  // 购物车
+  Cart: {
+    screen: CartScreen,
+  },
+  // vip会员注册
+  VipRegister: {
+    screen: VipRegisterScreen,
+  },
+  // 
   NewPassword: {
     screen: NewPasswordScreen,
   },
+  // 注册
   Register1: {
     screen: Register1Screen,
   },
+  // 注册/忘记密码 输入手机号
   Register: {
     screen: RegisterScreen,
   },
-  SignIn: {
-    screen: SignInScreen,
-  },
+  // 客服中心
   ServiceCenter: {
     screen: ServiceCenterScreen,
   },
+  // 系统消息详情页
   MessageDetail: {
     screen: MessageDetailScreen,
   },
+  // 系统消息
   Message: {
     screen: MessageScreen,
   },
+  // 修改密码
   ModifyPassword: {
     screen: ModifyPasswordScreen,
   },
+  // 修改手机
+  ModifyPhoneNum: {
+    screen: ModifyPhoneNumScreen,
+  },
+  // 账号安全
   AccountSecurity: {
     screen: AccountSecurityScreen,
   },
+  // 修改昵称
   Name: {
     screen: NameScreen,
   },
+  // 个人信息
   Person: {
     screen: PersonScreen,
   },
+  // 设置
   Set: {
     screen: SetScreen,
   },
+  // 商品详情
   GoodsDetail: {
     screen: GoodsDetailScreen,
   },
+  // 全部订单
   AllOrder: {
     screen: AllOrderScreen,
   },
+  // 支付失败
   PayFun: {
     screen: PayFunScreen,
   },
+  // 订单详情
   MyOrder: {
     screen: MyOrderScreen,
   },
+  // 收货地址
   UserAddress: {
     screen: UserAddressScreen,
   },
   SearchGoods: {
     screen: SearchGoodsScreen,
   },
+  // vip购买付费
   PayToVip: {
     screen: PayToVipScreen,
   },
-  VipRegister: {
-    screen: VipRegisterScreen,
-  },
+  // 确认订单
   Order: {
     screen: OrderScreen,
   },
-  Cart: {
-    screen: CartScreen,
-  },
-  Home: {
-    screen: HomeScreen,
-  },
+  
+  
 });
 export default class App extends React.Component {
   render() {

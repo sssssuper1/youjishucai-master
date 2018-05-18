@@ -37,12 +37,12 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-type Props = {};
-export default class Home extends Component<Props> {
+
+export default class Home extends Component {
   constructor(props) {
     super(props);
     //左边菜单
-    var type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    let type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     //右边菜单  
     let type2 = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
@@ -140,7 +140,7 @@ export default class Home extends Component<Props> {
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
-        store.dispatch({ type: types.reduceShopingNum.REDUCENUM})
+        store.dispatch({ type: types.addShopingNum.ADDNUM})
         this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
           this.animate();
           // this.showAlert();
@@ -230,11 +230,12 @@ export default class Home extends Component<Props> {
   }
   //二级菜单的list渲染
   _renderRow2(rowData, sectionID, rowID) {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.rowGoods}>
-        <View >
-          <Image style={styles.rowGoodsImg} source={require('../images/banner1.jpg')}/>
-        </View>
+        <TouchableOpacity onPress={() => {navigate('GoodsDetail')}}>
+          <Image style={styles.rowGoodsImg} source={require('../images/goods.jpg')}/>
+        </TouchableOpacity>
         <View ><Text style={styles.rowGoodsName}>{rowData.name}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{rowData.money}</Text><Text style={styles.rowGoodsCompany}>/{rowData.company}</Text></View>
@@ -244,11 +245,12 @@ export default class Home extends Component<Props> {
     );
   }
   render() {
+    const { navigate } = this.props.navigation;
     const { showAlert, message, isBullet, bulletMessage } = this.state;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.header} source={require('../images/headerBackground.png')} resizeMode='cover'>
-          <TouchableOpacity style={styles.customerServiceBtn} onPress={() => {alert(111) }}>
+          <TouchableOpacity style={styles.customerServiceBtn} onPress={() => {navigate('ServiceCenter')}}>
             <Image style={styles.customerServiceImg} source={require("../images/customerService.png")}></Image>
           </TouchableOpacity>
           <View style={styles.headerSearchWrap}>
@@ -262,7 +264,7 @@ export default class Home extends Component<Props> {
               placeholderTextColor={'#a6a6a6'}
             />
           </View>
-          <TouchableOpacity style={styles.cartBtn}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}} >
             <Image style={styles.cartImg} source={require("../images/cart.png")}></Image>
             <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.cartNum}</Text></View>
           </TouchableOpacity>  
