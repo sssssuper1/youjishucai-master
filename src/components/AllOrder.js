@@ -34,48 +34,75 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class PayFun extends Component {
   constructor(props) {
     super(props);
+    const { params } = this.props.navigation.state;
+    let now = 0;
+
+    if (params.state != undefined) {
+      now = params.state;
+    }
+
+    this.states = ['全部','待付款','代发货','待收货','已收货'];
+    this.data = [{
+      order:'17325090932',
+      state:'待付款',
+      goods:[{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }]
+    },
+    {
+      order:'17325090931',
+      state:'待收货',
+      goods:[{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }]
+    }];
+
     this.state={
-      state:0,
-      dataSource:[{
-          order:'17325090932',
-          state:'待付款',
-          goods:[{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }]
-      },
-      {
-        order:'17325090931',
-        state:'已付款',
-        goods:[{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }]
-      }]
+      state: now,
+      dataSource: []
     }
   }
   changeState(num){
     this.setState({
-        state:num,
+      state:num,
+    });
+
+    this.changeListData(num);
+  }
+  changeListData(num){
+    if (num === 0) {
+      this.setState({
+        dataSource: this.data
       })
+    } else {
+      let data = [];
+      this.data.forEach((item) => {
+        if (item.state == this.states[num]) {
+          data.push(item);
+        }
+      });
+      this.setState({
+        dataSource: data
+      })
+    }
+  }
+  componentWillMount() {
+    this.changeListData(this.state.state);
   }
   //list渲染
   _renderRow(item, index) {
-    //   alert(item.goods)
-    return (
-      <View>
-        <View style={styles.order}><Text style={styles.orderText}>订单号</Text><Text style={styles.orderNum}>{item.order}</Text><Text style={item.state==='待付款'?styles.state:styles.hidden}>{item.state}</Text><Text style={item.state==='交易失败'?styles.state:styles.hidden}>{item.state}</Text><Text style={item.state==='已付款'?styles.state:styles.hidden}>{item.state}</Text></View>
-        <FlatList 
-        contentContainerStyle={styles.goods1}
-        data={item.goods}
-        renderItem={({ item, index}) =>this._renderRow1(item, index)}
-        />
-      </View> 
-    );
+    if (this.state.state === 0 || this.states[this.state.state] == item.state) {
+      return (
+        <View>
+          <View style={styles.order}><Text style={styles.orderText}>订单号</Text><Text style={styles.orderNum}>{item.order}</Text><Text style={item.state==='待付款'?styles.state:styles.hidden}>{item.state}</Text><Text style={item.state==='交易失败'?styles.state:styles.hidden}>{item.state}</Text><Text style={item.state==='已付款'?styles.state:styles.hidden}>{item.state}</Text></View>
+          <FlatList 
+          contentContainerStyle={styles.goods1}
+          data={item.goods}
+          renderItem={({ item, index}) =>this._renderRow1(item, index)}
+          />
+        </View> 
+      );
+    }
   }
   //list渲染
   _renderRow1(item, index) {
@@ -107,38 +134,25 @@ export default class PayFun extends Component {
         <View style={styles.stateBtns}>
           <TouchableOpacity onPress={()=>{
             this.changeState(0)
-          }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>全部</Text></TouchableOpacity>
+          }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[0]}</Text></TouchableOpacity>
           <TouchableOpacity onPress={()=>{
             this.changeState(1)
-          }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>待付款</Text></TouchableOpacity>
+          }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[1]}</Text></TouchableOpacity>
           <TouchableOpacity onPress={()=>{
             this.changeState(2)
-          }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>代发货</Text></TouchableOpacity>
+          }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[2]}</Text></TouchableOpacity>
           <TouchableOpacity onPress={()=>{
             this.changeState(3)
-          }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>待收货</Text></TouchableOpacity>
+          }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[3]}</Text></TouchableOpacity>
           <TouchableOpacity onPress={()=>{
             this.changeState(4)
-          }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>已收货</Text></TouchableOpacity>
+          }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[4]}</Text></TouchableOpacity>
         </View>
-        {/* <FlatList 
-            contentContainerStyle={styles.goods1}
-            data={this.state.dataSource}
-            renderItem={({ item, index }) =>this._renderRow1(item, index)}
-        />    */}
         <FlatList 
             contentContainerStyle={styles.goods1}
             data={this.state.dataSource}
             renderItem={({ item, index }) =>this._renderRow(item, index)}
         />
-        {/* <View>
-          <View style={styles.order}><Text style={styles.orderText}>订单号</Text><Text style={styles.orderNum}>17325090932</Text><Text style={payState==='待付款'?styles.state:styles.hidden}>待付款</Text><Text style={payState==='交易失败'?styles.state:styles.hidden}>交易失败</Text><Text style={payState==='已付款'?styles.state:styles.hidden}>已付款</Text></View>
-          <FlatList 
-            contentContainerStyle={styles.goods1}
-            data={this.state.dataSource}
-            renderItem={({ item, index }) =>this._renderRow1(item, index)}
-          />
-        </View> */}
         </ScrollView>
       </View>
     );

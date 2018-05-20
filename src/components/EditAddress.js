@@ -37,33 +37,38 @@ import pxToDp from '../js/pxToDp';
 import citysWrap from '../json/citys.json'
 const deviceHeightDp = Dimensions.get('window').height;
 const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
-
 
 export default class EditAddress extends Component {
   constructor(props) {
     super(props);
-    //左边菜单
-    var type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //右边菜单  
-    let type2 = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
-    });
-    this.state={
-      provinces: this.provinces(citysWrap),
-      citys: this.citys(citysWrap,this.provinces(citysWrap)[0]),
-      area: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0]),
-      selectedProvinces: this.provinces(citysWrap)[0],
-      selectedCitys: this.citys(citysWrap,this.provinces(citysWrap)[0])[0],
-      selectedArea: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0])[0],
-      detailAddress:'',
-      name:'',
-      ID:''
+    const { params } = this.props.navigation.state;
+    
+    if (params.userAddress != undefined) {
+      this.state={
+        provinces: this.provinces(citysWrap),
+        citys: this.citys(citysWrap,params.userAddress.province),
+        area: this.area(citysWrap,params.userAddress.province,params.userAddress.city),
+        selectedProvinces: params.userAddress.province,
+        selectedCitys: params.userAddress.city,
+        selectedArea: params.userAddress.area,
+        detailAddress: params.userAddress.detailAddress,
+        name: params.userAddress.name,
+        phoneNumber: params.userAddress.phoneNumber
+      }
+    } else {
+      this.state={
+        provinces: this.provinces(citysWrap),
+        citys: this.citys(citysWrap,this.provinces(citysWrap)[0]),
+        area: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0]),
+        selectedProvinces: this.provinces(citysWrap)[0],
+        selectedCitys: this.citys(citysWrap,this.provinces(citysWrap)[0])[0],
+        selectedArea: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0])[0],
+        detailAddress:'',
+        name:'',
+        phoneNumber:''
+      }
     }
+    
   }
   provinces(citysWrap){
     if(!citysWrap){
@@ -117,7 +122,7 @@ export default class EditAddress extends Component {
       return area
   }
   render() {
-    const { goBack } = this.props.navigation;
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="编辑收货地址"></Header1>
@@ -138,9 +143,10 @@ export default class EditAddress extends Component {
               <TextInput
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
+                maxLength={11}
                 placeholder={''}
-                onChangeText={(text) => this.setState({ID:text})}
-                value={this.state.ID}
+                onChangeText={(text) => this.setState({phoneNumber:text})}
+                value={this.state.phoneNumber}
               /> 
             </View>
             <View style={styles.PickerWrap}>  
@@ -191,7 +197,7 @@ export default class EditAddress extends Component {
             </View>
           </View>  
         </ScrollView>
-        <TouchableOpacity style={styles.save} onPress={() => { goBack() }}>
+        <TouchableOpacity style={styles.save} onPress={() => { navigate('UserAddress') }}>
             <Text style={styles.saveText}>保存</Text>
         </TouchableOpacity>
       </View>

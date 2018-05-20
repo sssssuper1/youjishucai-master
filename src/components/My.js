@@ -33,13 +33,6 @@ import {
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
-
 
 export default class My extends Component {
   constructor(props) {
@@ -78,7 +71,7 @@ export default class My extends Component {
               <Text style={styles.cartName}>购物车</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cartBtn}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 1})}}>
             <View style={[styles.cartImg,styles.cart2Img]}>
               <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
             </View>
@@ -87,7 +80,7 @@ export default class My extends Component {
               <Text style={styles.cartName}>待付款</Text>
             </View>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 2})}}>
             <View style={[styles.cartImg,styles.cart3Img]}>
               <Image style={styles.cart3Img} source={require('../images/sendGoods.png')}></Image>
             </View>
@@ -96,7 +89,7 @@ export default class My extends Component {
               <Text style={styles.cartName}>待发货</Text>
             </View>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn}>
+          <TouchableOpacity style={styles.cartBtn}  onPress={() => {navigate('AllOrder', {state: 3})}}>
             <View style={[styles.cartImg,styles.cart4Img]}>
               <Image style={styles.cart4Img} source={require('../images/getGoods.png')}></Image>
             </View>

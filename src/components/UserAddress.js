@@ -46,7 +46,7 @@ export default class UserAddress extends Component {
   constructor(props) {
     super(props);
     this.state={
-      userAddresses:[{key: 'a'}],
+      userAddresses:[{name: '张三丰', phoneNumber: '18012345678', province: '江苏省', city: '南京市', area: '鼓楼区', detailAddress: '中央门街道389号凤凰国际大厦'}],
     }
   }
   _renderItem = ({item}) => {
@@ -55,12 +55,11 @@ export default class UserAddress extends Component {
           <View style={styles.Left}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}/></View>
           <View style={styles.user}>
             <View style={styles.userNameAndTel}>
-              <Text style={styles.userName}>张三丰</Text>
-              <Text style={styles.userTel}>1802013458967</Text>
+              <Text style={styles.userName}>{item.name}</Text>
+              <Text style={styles.userTel}>{item.phoneNumber}</Text>
             </View>
             <View style={styles.address}>
-              <Text style={styles.addressText}>江苏省南京市鼓楼区中央门街道389号凤凰国际大厦
-              11楼01</Text>
+              <Text style={styles.addressText}>{item.province}{item.city}{item.area}{item.detailAddress}</Text>
             </View>
           </View>
         </View>
@@ -77,7 +76,7 @@ export default class UserAddress extends Component {
           contentContainerStyle={styles.addressInfoWrap}
           renderItem={this._renderItem}
         />
-        <TouchableOpacity style={styles.btn} onPress={() => {navigate('EditAddress')}}>
+        <TouchableOpacity style={styles.btn} onPress={() => {navigate('EditAddress', {userAddress: this.state.userAddresses[0]})}}>
           <Text style={styles.btnText}>编辑收货地址</Text>
         </TouchableOpacity>
       </View>
