@@ -37,13 +37,28 @@ import pxToDp from '../js/pxToDp';
 export default class My extends Component {
   constructor(props) {
     super(props);
-    //左边菜单
-    var type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //右边菜单  
-    let type2 = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
-    });
+    this.loadData();
+    this.state = {
+      paymentDt: 0,
+      shipmentDt: 0,
+      goodsReceiptDt: 0
+    }
+  }
+
+  loadData() {
+    Fetch(global.url + '/API/user/getStateNum', 'get', '', (responseData) => {
+        if (responseData.success) {
+          this.setState({
+            paymentDt: responseData.data.paymentDt,
+            shipmentDt: responseData.data.shipmentDt,
+            goodsReceiptDt: responseData.data.goodsReceiptDt
+          })
+        }
+      },
+      (err) => {
+        alert(err);
+      }
+    );
   }
   render() {
     const { navigate } = this.props.navigation;
@@ -75,7 +90,7 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart2Img]}>
               <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
             </View>
-            <View style={styles.cart1NumWrap}><Text style={styles.cart1Num}>100</Text></View>
+            <View style={this.state.paymentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.state.paymentDt}</Text></View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待付款</Text>
             </View>
@@ -84,7 +99,7 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart3Img]}>
               <Image style={styles.cart3Img} source={require('../images/sendGoods.png')}></Image>
             </View>
-            <View style={styles.cart1NumWrap}><Text style={styles.cart1Num}>100</Text></View>
+            <View style={this.state.shipmentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.state.shipmentDt}</Text></View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待发货</Text>
             </View>
@@ -93,7 +108,7 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart4Img]}>
               <Image style={styles.cart4Img} source={require('../images/getGoods.png')}></Image>
             </View>
-            <View style={styles.cart1NumWrap}><Text style={styles.cart1Num}>100</Text></View>
+            <View style={this.state.goodsReceiptDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.state.goodsReceiptDt}</Text></View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待收货</Text>
             </View>
@@ -275,5 +290,8 @@ const styles = StyleSheet.create({
   detailBtnNewText: {
     fontSize: pxToDp(20),
     color: "white", 
+  },
+  hidden: {
+    display:'none'
   }
 });

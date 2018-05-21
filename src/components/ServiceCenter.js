@@ -50,7 +50,6 @@ export default class ServiceCenter extends Component {
       modelVistibal:true,
       name: ''
     }
-    
   }
   show(){
     this.refs.toast.show('hello world!');

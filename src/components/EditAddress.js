@@ -53,7 +53,9 @@ export default class EditAddress extends Component {
         selectedArea: params.userAddress.area,
         detailAddress: params.userAddress.detailAddress,
         name: params.userAddress.name,
-        phoneNumber: params.userAddress.phoneNumber
+        phoneNumber: params.userAddress.phoneNumber,
+        customerId: params.userAddress.customerId,
+        id: params.userAddress.id
       }
     } else {
       this.state={
@@ -121,8 +123,30 @@ export default class EditAddress extends Component {
       }
       return area
   }
-  render() {
+  submit() {
     const { navigate } = this.props.navigation;
+    
+    let params = {
+      consignee: this.state.name,
+      consigneePhone: this.state.phoneNumber,
+      area: this.state.selectedProvinces + ' ' + this.state.selectedCitys + ' ' + this.state.selectedArea,
+      detailedAddress: this.state.detailAddress,
+      customerId: this.state.customerId,
+      id: this.state.id,
+      isDefault: 1,
+      isDeleted: 0
+    }
+    
+    Fetch(global.url + '/API/user/updateAddress', 'post', params, (responseData) => {
+      if (responseData.success) {
+        navigate('UserAddress');
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+  render() {
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="编辑收货地址"></Header1>
@@ -197,7 +221,7 @@ export default class EditAddress extends Component {
             </View>
           </View>  
         </ScrollView>
-        <TouchableOpacity style={styles.save} onPress={() => { navigate('UserAddress') }}>
+        <TouchableOpacity style={styles.save} onPress={() => this.submit()}>
             <Text style={styles.saveText}>保存</Text>
         </TouchableOpacity>
       </View>

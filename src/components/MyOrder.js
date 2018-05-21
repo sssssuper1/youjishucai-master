@@ -45,27 +45,48 @@ function scrrollHeight(uiElementHeight) {
 export default class MyOrder extends Component {
   constructor(props) {
     super(props);
-    this.state={
-      userAddresses:[{key: 'a'}, {key: 'b'}],
+    const { params } = this.props.navigation.state;
+
+    this.orderId = params.orderId;
+
+    this.state = {
       state: 0,
-      dataSource: [{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }],
+      order: {
+        details: [],
+      }
     }
+
+    this.loadData();
+  }
+
+  loadData() {
+    Fetch(global.url + '/API/order/getOrderDetail?type=0&orderId=' + this.orderId, 'get', '', (responseData) => {
+      if (responseData.success) {
+        this.setState({
+          state: responseData.data.order.orderState,
+          order: responseData.data.order
+        });
+      }
+    },
+    (err) => {
+      alert(err);
+    });
   }
   //list渲染
   _renderRow1(item, index) {
     return (
       <View style={styles.list}>
         <View style={styles.good}>
-          <Image style={styles.goodImg} source={require('../images/kangyangzhongxin.png')}></Image>
+          <Image style={styles.goodImg} source={{uri: item.goodImg}}></Image>
         </View>
         <View style={styles.goodDetail}>
-          <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.name}</Text></View>
+          <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.goodName}</Text></View>
           <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.spec}</Text></View>
           <View style={styles.goodOriginalPriceWrap}><Text   style={styles.goodOriginalPrice}>￥{item.originalPrice}</Text></View>
           <View style={styles.goodPresentPriceWrap}>
-            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.presentPrice}</Text><Text style={styles.company}>/袋</Text>
+            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}>/袋</Text>
             <View style={styles.goodsNum}>
-              <Text style={styles.num}>X{item.num}</Text>
+              <Text style={styles.num}>X{item.count}</Text>
             </View>
           </View>
         </View>
@@ -73,13 +94,18 @@ export default class MyOrder extends Component {
     );
   }
   render() {
-    const {userAddresses,state} = this.state
+    const { navigate } = this.props.navigation;
+    const { state, order } = this.state;
     return (
       <View style={styles.contenier}>
         <Header1 navigation={this.props.navigation} name="我的订单"></Header1>
         <ScrollView>
           <View style={styles.orderResult}>
-            <View style={styles.orderNumWrap}><Text style={styles.orderNum}>订单号：</Text><Text style={styles.orderContent}>17989340533</Text><Text style={styles.result}>待付款</Text></View>
+            <View style={styles.order}>
+              <Text style={styles.orderText}>订单号:</Text>
+              <Text style={styles.orderNum}>{order.orderNum}</Text>
+              <Text style={styles.state}>{order.state}</Text>
+            </View>
             <View style={styles.schedule}>
               <View style={styles.scheduleName}>
                 <Text>下单</Text>
@@ -100,41 +126,39 @@ export default class MyOrder extends Component {
               <View style={styles.Left}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}/></View>
               <View style={styles.user}>
                 <View style={styles.userNameAndTel}>
-                  <Text style={styles.userName}>收货人：张三丰</Text>
-                  <Text style={styles.userTel}>1802013458967</Text>
+                  <Text style={styles.userName}>收货人：{order.receiver}</Text>
+                  <Text style={styles.userTel}>{order.receiverMobile}</Text>
                 </View>
                 <View style={styles.address}>
-                  <Text style={styles.addressText}>江苏省南京市鼓楼区中央门街道389号凤凰国际大厦
-                  11楼01
-                  </Text>
+                  <Text style={styles.addressText}>{order.receiverAddress}</Text>
                 </View>
               </View>
             </View>
             <View style={styles.addressInfo1}>
-              <View style={styles.Left}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}/></View>
+              <View style={styles.Left}><Image style={styles.addressImg} source={require('../images/Remarks.png')}/></View>
               <View style={styles.user}>
                 <View style={styles.userNameAndTel}>
                   <Text style={styles.userName}>备注：</Text>
                 </View>
                 <View style={styles.address}>
-                  <Text style={styles.addressText}>发顺丰快递</Text>
+                  <Text style={styles.addressText}>{order.remark}</Text>
                 </View>
               </View>
             </View>
           </View>
           <FlatList 
             contentContainerStyle={styles.goods1}
-            data={this.state.dataSource}
+            data={this.state.order.details}
             renderItem={({ item, index }) =>this._renderRow1(item, index)}
           />
           <View style={styles.goods}>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共三件</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥148.00</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥148.00</Text></View>
-            <View style={[styles.goodsInfo,styles.goodsInfo1]}><Text style={styles.goodsInfoTitle}>下单时间</Text><Text style={styles.price}>2017-11-27 14:56:21</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>+ ¥148.00</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>微信支付</Text><Text style={styles.price}>2017-11-27 14:56:21</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥138.00</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共{order.productCount}件</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥{order.orderAmount}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥0.00</Text></View>
+            <View style={[styles.goodsInfo, styles.goodsInfo1]}><Text style={styles.goodsInfoTitle}>下单时间</Text><Text style={styles.price}>{order.orderDate}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥0.00</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>微信支付</Text><Text style={styles.price}>{order.orderAmount}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥{order.orderAmount}</Text></View>
           </View>
           <View style={styles.btns}>
             <TouchableOpacity style={state===0?styles.cacelOrder:styles.hidden}>
@@ -143,8 +167,11 @@ export default class MyOrder extends Component {
             <TouchableOpacity style={state===0?styles.goPay:styles.hidden}>
               <Text style={styles.goPayText}>去付款</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={state>=1?styles.cacelOrder:styles.hidden}>
-              <Text >联系客服</Text>
+            <TouchableOpacity style={state===3?styles.goPay:styles.hidden}>
+              <Text style={styles.goPayText}>确认收货</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={state >= 1 ? styles.cacelOrder : styles.hidden} onPress={()=>navigate('ServiceCenter')}>
+              <Text>联系客服</Text>
             </TouchableOpacity>   
           </View>
         </ScrollView>
@@ -167,23 +194,25 @@ const styles = StyleSheet.create({
     paddingRight: pxToDp(26),
     backgroundColor: 'white',
   },
-  orderNumWrap: {
-    flexDirection: 'row',
+  order: {
     position: 'relative',
-    height: pxToDp(90),
+    height: pxToDp(79),
+    flexDirection: 'row',
     alignItems: 'center',
+    borderBottomWidth: pxToDp(1),
+    borderBottomColor: '#f1f1f1',
+    backgroundColor: 'white',
   },
-  orderNum:{
-    fontSize:pxToDp(28),
-    color: '#a7a7a7'
+  orderText: {
+    color: '#a2a2a2'
   },
-  orderContent: {
-    fontSize: pxToDp(28)
+  orderNum: {
+    marginLeft: pxToDp(12),
+    color: '#2b2b2b'
   },
-  result: {
+  state: {
     position: 'absolute',
     right: 0,
-    fontSize: pxToDp(28),
     color: '#ffae00',
   },
   schedule:{
@@ -442,6 +471,7 @@ const styles = StyleSheet.create({
   cacelOrder: {
     width: pxToDp(164),
     height: pxToDp(64),
+    marginRight: pxToDp(28),
     borderWidth: pxToDp(2),
     borderColor: '#d8d8d8',
     borderRadius: pxToDp(30),
@@ -449,7 +479,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   goPay: {
-    marginLeft: pxToDp(28),
     marginRight: pxToDp(28),
     width: pxToDp(164),
     height: pxToDp(64),

@@ -45,25 +45,50 @@ export default class Order extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: [{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }],
       text: '',
-      payNum:0
+      payNum: 0,
+      address: {},
+      dataSource: [],
+      totalAmount: 0,
+      shippingFee: 0
     };
+
+    this.loadData();
   }
+
+  loadData() {
+    Fetch(global.url + '/API/MyCart/checkout', 'post', {
+      addressId: 0,
+      defaultDeliveryType: '0'
+    }, (responseData) => {
+      if (responseData.success) {
+        this.setState({
+          dataSource: responseData.data.shopCartListDt,
+          address: responseData.data.address,
+          totalAmount: responseData.data.totalAmount,
+          shippingFee: responseData.data.shippingFee
+        });
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
   //list渲染
   _renderRow1(item, index) {
     return (
       <View style={styles.list}>
         <View style={styles.good}>
-          <Image style={styles.goodImg} source={require('../images/kangyangzhongxin.png')}></Image>
+          <Image style={styles.goodImg} source={{uri: item.cover}}></Image>
         </View>
         <View style={styles.goodDetail}>
-          <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.name}</Text></View>
+          <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.goodName}</Text></View>
           <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>规格：{item.spec}</Text></View>
           <View style={styles.goodPresentPriceWrap}>
-            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.presentPrice}</Text><Text style={styles.company}></Text>
+            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}></Text>
             <View style={styles.goodsNum}>
-              <Text>2</Text>
+              <Text>{item.count}</Text>
             </View>
           </View>
         </View>
@@ -84,8 +109,8 @@ export default class Order extends Component {
           <TouchableOpacity style={styles.address} onPress={() => {navigate('UserAddress')}}>
             <View style={styles.addressWrap}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}></Image></View>
             <View style={styles.userInfo}>
-              <View style={styles.user}><Text style={styles.userName}>张三丰</Text><Text style={styles.userPhone}>1802013458967</Text></View>
-              <View style={styles.userAddress}><Text style={styles.userAddressText}>江苏省南京市鼓楼区  中央门街道389号凤凰国际大厦11楼01</Text></View>
+              <View style={styles.user}><Text style={styles.userName}>{this.state.address.consignee}</Text><Text style={styles.userPhone}>{this.state.address.consigneePhone}</Text></View>
+              <View style={styles.userAddress}><Text style={styles.userAddressText}>{this.state.address.detailedAddress}</Text></View>
             </View>
             <View style={styles.dir}>
               <Image style={styles.dirImg} source={require('../images/rightDir.png')}></Image>
@@ -115,13 +140,13 @@ export default class Order extends Component {
           </View>
           <View style={styles.goods}>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共三件</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥148.00</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥148.00</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥148.00</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥{this.state.totalAmount}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥{this.state.shippingFee}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥0</Text></View>
           </View>
         </ScrollView>  
         <View style={styles.result}>    
-          <Text style={styles.resultTitle}>实付金额：</Text><Text style={styles.resultPrice}>¥148.00</Text><TouchableOpacity style={styles.payBtn}><Text style={styles.payBtnText}>去结算</Text></TouchableOpacity>  
+          <Text style={styles.resultTitle}>实付金额：</Text><Text style={styles.resultPrice}>¥{this.state.totalAmount+this.state.shippingFee}</Text><TouchableOpacity style={styles.payBtn}><Text style={styles.payBtnText}>去结算</Text></TouchableOpacity>
         </View>
       </View>
     );

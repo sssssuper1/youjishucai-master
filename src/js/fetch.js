@@ -9,6 +9,7 @@ module.exports=(url,method,params1,callback,err,)=>{
       'User-Agent': 'TDJAPP',
       'Accept': 'application/json',
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
     })
     if(method.toLowerCase()=='post'){
      fetch(url, {
@@ -33,7 +34,7 @@ module.exports=(url,method,params1,callback,err,)=>{
     }else{
       fetch(url, {
               method:method,
-              mode: 'same-origin',
+              mode: 'no-cors',
               headers: myHeaders
               // credentials:'omit',
             })

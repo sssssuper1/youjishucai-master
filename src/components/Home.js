@@ -105,7 +105,7 @@ export default class Home extends Component {
     }, (err) => { 
       this.setState({message: error.toString()})
       this.showAlert()
-      })
+    })
   }
   showAlert = () => {
     this.setState({
@@ -234,7 +234,7 @@ export default class Home extends Component {
     return (
       <View style={styles.rowGoods}>
         <TouchableOpacity onPress={() => {navigate('GoodsDetail')}}>
-          <Image style={styles.rowGoodsImg} source={require('../images/goods.jpg')}/>
+          <Image style={styles.rowGoodsImg} source={{uri:rowData.img}}/>
         </TouchableOpacity>
         <View ><Text style={styles.rowGoodsName}>{rowData.name}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>

@@ -46,8 +46,36 @@ export default class UserAddress extends Component {
   constructor(props) {
     super(props);
     this.state={
-      userAddresses:[{name: '张三丰', phoneNumber: '18012345678', province: '江苏省', city: '南京市', area: '鼓楼区', detailAddress: '中央门街道389号凤凰国际大厦'}],
+      userAddresses:[]
     }
+
+    this.loadData();
+  }
+  loadData() {
+    Fetch(global.url + '/API/user/getUserAddressList', 'get', '', (responseData) => {
+        if (responseData.success) {
+          let detailedAddress = responseData.data[0].detailedAddress.split(' ');
+
+          let data = {
+            name: responseData.data[0].consignee,
+            phoneNumber: responseData.data[0].consigneePhone,
+            province: detailedAddress[0],
+            city: detailedAddress[1],
+            area: detailedAddress[2].slice(0, detailedAddress[2].indexOf(',')),
+            detailAddress: detailedAddress[2].slice(detailedAddress[2].indexOf(',') + 1),
+            customerId: responseData.data[0].customerId,
+            id: responseData.data[0].id
+          };
+
+          this.setState({
+            userAddresses: [data]
+          });
+        }
+      },
+      (err) => {
+        alert(err);
+      }
+    );
   }
   _renderItem = ({item}) => {
       return (
@@ -76,7 +104,7 @@ export default class UserAddress extends Component {
           contentContainerStyle={styles.addressInfoWrap}
           renderItem={this._renderItem}
         />
-        <TouchableOpacity style={styles.btn} onPress={() => {navigate('EditAddress', {userAddress: this.state.userAddresses[0]})}}>
+        <TouchableOpacity style={styles.btn} onPress={() => {navigate('EditAddress', { userAddress: this.state.userAddresses[0] })}}>
           <Text style={styles.btnText}>编辑收货地址</Text>
         </TouchableOpacity>
       </View>

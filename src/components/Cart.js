@@ -46,13 +46,29 @@ export default class Cart extends Component {
     super(props);
     
     this.state = {
-      dataSource: [{ isSelect: true, name: '有机青菜', img: '', spec: '500g袋装', originalPrice: '58.90', presentPrice: '49.00', num: 2 }, { isSelect: false, name: '有机花菜', spec: '500g袋装', originalPrice: '12.90', presentPrice: '10.00', num: 1 }],
+      dataSource: [],
       isEdit: false,
-      checkAll: false,
+      checkAll: 0,
       sumNum: 0,
       totalPrice: 0,
       reducePrice: 0
     };
+
+    this.loadData();
+  }
+
+  loadData() {
+    Fetch(global.url + '/API/MyCart/getShopCartList', 'post', {}, (responseData) => {
+      if (responseData.success) {
+        this.setState({
+          dataSource: responseData.data.shopCartListDt
+        });
+        this.changeTotal();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
   }
 
   // 总价计算
@@ -61,12 +77,15 @@ export default class Cart extends Component {
     let totalPrice = 0;
     let totalOriginalPrice = 0;
     let reducePrice = 0;
+    let checkAll = 1;
 
     this.state.dataSource.forEach((data) => {
-      if (data.isSelect) {
-        totalPrice = totalPrice + data.presentPrice * data.num;
-        totalOriginalPrice = totalOriginalPrice + data.originalPrice * data.num;
-        sumNum = sumNum + data.num;
+      if (!!data.isChecked) {
+        totalPrice = totalPrice + data.price * data.count;
+        totalOriginalPrice = totalOriginalPrice + data.originalPrice * data.count;
+        sumNum = sumNum + data.count;
+      } else {
+        checkAll = 0;
       }
     });
 
@@ -74,33 +93,62 @@ export default class Cart extends Component {
 
     this.setState({
       sumNum: sumNum,
+      checkAll: checkAll,
       totalPrice: parseFloat(totalPrice.toFixed(2)),
       reducePrice: parseFloat(reducePrice.toFixed(2))
     });
   }
   // 减少件数
   reduceGoodsNum(index) { 
-    if (this.state.dataSource[index].num===1) { 
+    if (this.state.dataSource[index].count===1) { 
       return
     }
-    this.state.dataSource[index].num--
+    this.state.dataSource[index].count--
     let newData = JSON.parse(JSON.stringify(this.state.dataSource));
-    this.setState({ dataSource: newData });
-    this.changeTotal();
+
+    Fetch(global.url + '/API/MyCart/reduce', 'post', {
+      id: this.state.dataSource[index].id
+    }, (responseData) => {
+      if (responseData.success) {
+        this.setState({ dataSource: newData });
+        this.changeTotal();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
   }
   // 增加件数
   addGoodsNum(index) { 
-    this.state.dataSource[index].num++
+    this.state.dataSource[index].count++
     let newData = JSON.parse(JSON.stringify(this.state.dataSource));
-    this.setState({ dataSource: newData });
-    this.changeTotal();
+
+    Fetch(global.url + '/API/MyCart/plus', 'post', {
+      id: this.state.dataSource[index].id
+    }, (responseData) => {
+      if (responseData.success) {
+        this.setState({ dataSource: newData });
+        this.changeTotal();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
   }
   // 删除所选
   deleteSelected() {
     let newData = this.state.dataSource;
 
     for (let i = 0; i < newData.length; i++) {
-      if (newData[i].isSelect) {
+      if (newData[i].isChecked) {
+        Fetch(global.url + '/API/MyCart/getShopCartList', 'post', { id: newData[i].id, isDeleted: 1 }, (responseData) => {
+          if (responseData.success) {
+            
+          }
+        },
+        (err) => {
+          alert(err);
+        });
         newData.splice(i, 1);
         i--;
       }
@@ -109,14 +157,25 @@ export default class Cart extends Component {
     this.setState({ dataSource: newData });
     this.changeTotal();
   }
-  isSelectFu(index) { 
-    this.state.dataSource[index].isSelect = !this.state.dataSource[index].isSelect
+  isCheckedFu(index) { 
+    this.state.dataSource[index].isChecked = Number(!this.state.dataSource[index].isChecked);
     let newData = JSON.parse(JSON.stringify(this.state.dataSource));
-    let isSelect=this.state.dataSource.every((item) => { 
-        return item.isSelect===true
-    })
-    this.setState({ dataSource: newData, checkAll: isSelect });
-    this.changeTotal();
+    let isChecked = this.state.dataSource.every((item) => {
+      return item.isChecked == true
+    });
+
+    Fetch(global.url + '/API/MyCart/check', 'post', {
+      id: this.state.dataSource[index].id,
+      isChecked: this.state.dataSource[index].isChecked
+    }, (responseData) => {
+      if (responseData.success) {
+        this.setState({ dataSource: newData });
+        this.changeTotal();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
   }
   editFn() { 
     this.setState({ isEdit: true })
@@ -126,37 +185,47 @@ export default class Cart extends Component {
   }
   // 全选
   checkAll() { 
-    this.state.checkAll=!this.state.checkAll
+    this.state.checkAll = Number(!this.state.checkAll);
     for (let i = 0; i < this.state.dataSource.length;i++) { 
-      this.state.dataSource[i].isSelect = this.state.checkAll; 
+      this.state.dataSource[i].isChecked = this.state.checkAll; 
     }
     let newData = JSON.parse(JSON.stringify(this.state.dataSource));
-    this.setState({ dataSource: newData, checkAll: this.state.checkAll });
-    this.changeTotal();
+
+    Fetch(global.url + '/API/MyCart/checkAll', 'post', {
+      isChecked: this.state.checkAll
+    }, (responseData) => {
+      if (responseData.success) {
+        this.setState({ dataSource: newData, checkAll: this.state.checkAll });
+        this.changeTotal();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
   }
   //list渲染
   _renderRow1(item, index) {
     return (
       <View style={styles.list}>
         <TouchableOpacity style={styles.unchecked} onPress={() => { 
-           this.isSelectFu(index)
+           this.isCheckedFu(index)
         }}>
-          <Image style={styles.uncheckedImg} source={item.isSelect?require('../images/select.png'):require('../images/unchecked.png')}></Image> 
+          <Image style={styles.uncheckedImg} source={item.isChecked?require('../images/select.png'):require('../images/unchecked.png')}></Image> 
         </TouchableOpacity>
         <View style={styles.good}>
-          <Image style={styles.goodImg} source={require('../images/kangyangzhongxin.png')}></Image>
+          <Image style={styles.goodImg} source={{uri: item.goodImg[0]}}></Image>
         </View>
         <View style={styles.goodDetail}>
-          <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.name}</Text></View>
-          <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.spec}</Text></View>
+          <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.goodName}</Text></View>
+          <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.goodspecifications}</Text></View>
           <View style={styles.goodOriginalPriceWrap}><Text   style={styles.goodOriginalPrice}>￥{item.originalPrice}</Text></View>
           <View style={styles.goodPresentPriceWrap}>
-            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.presentPrice}</Text><Text style={styles.company}>/袋</Text>
+            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}>/袋</Text>
             <View style={styles.goodsNum}>
               <TouchableOpacity style={styles.goodsReduceWrap} onPress={() => { 
                 this.reduceGoodsNum(index)
               }}><Text style={styles.goodsReduce}>-</Text></TouchableOpacity>
-              <TouchableOpacity style={styles.numWrap}><Text style={styles.num}>{item.num}</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.numWrap}><Text style={styles.num}>{item.count}</Text></TouchableOpacity>
               <TouchableOpacity onPress={() => { 
                 this.addGoodsNum(index)
               }} style={styles.goodsAddWrap}><Text style={styles.goodsAdd}>+</Text></TouchableOpacity>
@@ -167,16 +236,13 @@ export default class Cart extends Component {
     );
   }
 
-  componentWillMount() {
-    this.changeTotal();
-  }
-
   render() {
     const { navigate, goBack } = this.props.navigation;
     let view;
     if (this.state.dataSource.length > 0) {
       view =
         <FlatList 
+          style={styles.flatList}
           contentContainerStyle={styles.goods1}
           data={this.state.dataSource}
           renderItem={({ item, index }) =>this._renderRow1(item, index)}
@@ -185,7 +251,7 @@ export default class Cart extends Component {
       view =
         <View style={styles.state}>
           <View style={styles.stateImgWrap}>
-            <Image style={styles.stateImg} source={require('../images/payFail.png')}></Image>
+            <Image style={styles.stateImg} source={require('../images/noneOfCart.png')}></Image>
           </View>
           <View style={styles.stateShow}><Text style={styles.stateShowText}>购物车竟然是空的</Text></View>
           <TouchableOpacity style={styles.stateButton}>
@@ -415,6 +481,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 2,
     borderBottomRightRadius:2,
   },
+  flatList: {
+    marginBottom: pxToDp(100),
+  },
   result: {
     flexDirection: 'row',
     width: '100%',
@@ -422,6 +491,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     height: pxToDp(100),
+    backgroundColor: '#ffffff',
     borderTopWidth: pxToDp(1),
     borderTopColor: '#daddde'
   },
