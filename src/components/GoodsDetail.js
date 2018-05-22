@@ -35,12 +35,7 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
+
 const renderPagination = (index, total, context) => {
   return (
     <View style={styles.paginationStyle}>
@@ -54,95 +49,233 @@ const renderPagination = (index, total, context) => {
 export default class GoodsDetail extends Component {
   constructor(props) {
     super(props);
+    const { params } = this.props.navigation.state;
+
     this.state={
-      modelVistibal:true
+      selectionModelVisible: false,
+      detailModelVisible: false,
+      productDetailDt: [{}],
+      specDt: [{}],
+      specIndex: 0,
+      count: 1,
     }
+
+    if (!!params && !!params.id) {
+      this.loadData(params.id);
+    }
+  }
+
+  loadData(id) {
+    Fetch(global.url + '/API/ProductDetail/getCommodityDetail', 'post', {
+      id: id
+    }, (responseData) => {
+      if (responseData.success) {
+        this.setState({
+          productDetailDt: responseData.data.productDetailDt,
+          specDt: responseData.data.specDt,
+        });
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
+  changeSpec(index) {
+    this.setState({
+      specIndex: index,
+    });
+  }
+
+  addToCart() {
+    Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
+      count: this.state.count,
+      goodspecifications: this.state.specDt[this.state.specIndex].id
+    }, (responseData) => {
+      if (responseData.success) {
+        alert(responseData.cartNum);
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
+  reduceGoodsNum() {
+    if (this.state.count === 1) {
+      return;
+    }
+    this.setState({
+      count: this.state.count - 1
+    });
+  }
+
+  addGoodsNum() {
+    this.setState({
+      count: this.state.count + 1
+    });
+  }
+
+  showselectionModel() {
+    this.setState({
+      selectionModelVisible: true
+    });
+  }
+
+  closeselectionModel() {
+    this.setState({
+      selectionModelVisible: false
+    });
+  }
+
+  showDetailModel() {
+    this.setState({
+      detailModelVisible: true
+    });
+  }
+
+  closeDetailModel() {
+    this.setState({
+      detailModelVisible: false
+    });
+  }
+
+  _renderSwiper(list) {
+    return list.map(item => this._renderSwiperImg(item));
+  }
+
+  _renderSwiperImg(item) {
+    return (
+      <View style={styles.slide}>
+        <Image style={styles.banner} source={{uri: item.goodImg}}></Image>
+      </View>
+    );
   }
   
   render() {
+    const { navigate } = this.props.navigation;
+    const { specIndex, productDetailDt, specDt } = this.state;
     return (
       <View style={styles.contenier}>
         <Header1 navigation={this.props.navigation} name="商品详情"></Header1>
         <View style={styles.wrapperWrap}>
-        <Swiper style={styles.wrapper}  renderPagination={renderPagination}  autoplay={true} >
-          <View style={styles.slide}>
-            <Image style={styles.banner} source={require("../images/goods.jpg")}></Image>
-          </View>
-          <View style={styles.slide}>
-            <Image style={styles.banner} source={require("../images/goods.jpg")}></Image>
-          </View>
-          <View style={styles.slide}>
-            <Image style={styles.banner} source={require("../images/goods.jpg")}></Image>
-          </View>
+        <Swiper style={styles.wrapper}  renderPagination={renderPagination} autoplay={true} >
+          {this._renderSwiper(this.state.productDetailDt)}
         </Swiper>
         </View>
         <View style={styles.goodsName}>
-          <Text style={styles.goodsNameText}>奥莱曼椰子汁蛋卷榴莲味猪肉有机朱可爱猪肉朱
-100g</Text>
+          <Text style={styles.goodsNameText}>{productDetailDt[specIndex].goodName}</Text>
         </View>
         <View style={styles.goodsPrice}>
-          <Text style={styles.nowPrice}>￥99.00</Text><Text style={styles.spec}>/盒</Text><Text style={styles.originalPrice}>￥159.00</Text>
+          <Text style={styles.nowPrice}>￥{specDt[specIndex].price}</Text>
+          <Text style={styles.spec}>/{specDt[specIndex].spec}</Text>
+          <Text style={styles.originalPrice}>￥{specDt[specIndex].preSellPrice}</Text>
         </View>
         <View style={styles.goodsDetail}>
-          <TouchableOpacity style={styles.goodsInfo}>
+          <TouchableOpacity style={styles.goodsInfo} onPress={this.showselectionModel.bind(this)}>
             <Text style={styles.title}>选择规格、数量</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.goodsInfo}>
+          <TouchableOpacity style={styles.goodsInfo} onPress={this.showDetailModel.bind(this)}>
             <Text style={styles.title}>产品参数</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
           </TouchableOpacity>    
         </View>
         <View style={styles.btns}>
-          <TouchableOpacity style={styles.goGoods}>
-            <View><Image style={styles.goGoodsImg} source={require('../images/menu1-1.png')}></Image></View>
+          <TouchableOpacity style={styles.goGoods} onPress={()=>{navigate('Home', {selectedTab: 'home'})}}>
+            <View><Image style={styles.goGoodsImg} source={require('../images/menu1-2.png')}></Image></View>
             <View><Text style={styles.goGoodsText}>有机食材</Text></View>  
           </TouchableOpacity>
-          <TouchableOpacity style={styles.customerService}> 
+          <TouchableOpacity style={styles.customerService} onPress={()=>{navigate('ServiceCenter')}}> 
             <View><Image style={styles.customerServiceImg} source={require('../images/customerService2.png')}></Image></View>
             <View><Text style={styles.customerServiceText}>客服</Text></View>    
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cart}>
+          <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}> 
             <View><Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image></View>
-            <View><Text tyle={styles.cartText}>购物车</Text></View>
-            <View style={styles.num}><Text style={styles.numText}>10</Text></View>    
+            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>10</Text></View>
+            <View><Text style={styles.cartText}>购物车</Text></View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addGoods}>
+          <TouchableOpacity style={styles.addGoods} onPress={this.addToCart.bind(this)}>
             <Text style={styles.addGoodsText}>加入购物车</Text>
-          </TouchableOpacity>  
+          </TouchableOpacity>
         </View>
         <Modal
-          animationType={"none"}
+          animationType={"slide"}
           transparent={true}
-          visible={this.state.modelVistibal}
-          onRequestClose={() => {alert("Modal has been closed.")}}
+          visible={this.state.selectionModelVisible}
           >
           <View style={{backgroundColor:"rgba(0,0,0,0.3)",height:"100%"}}>
             <View style={styles.modalWrap}>
               <View style={styles.modalGoods}>
-                <Image style={styles.modalGoodsImg} source={require('../images/goods.jpg')}></Image>
+                <Image style={styles.modalGoodsImg} source={{uri: productDetailDt[specIndex].cover}}></Image>
               </View>
               <View style={styles.modal}>
-                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNowPrice}>￥99.00</Text><Text style={styles.modalSymble}>/盒</Text></View>
-                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalOricalPrice}>￥159.09</Text></View>
+                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNowPrice}>￥{specDt[specIndex].price}</Text><Text style={styles.modalSymble}>/盒</Text></View>
+                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalOricalPrice}>￥{specDt[specIndex].preSellPrice}</Text></View>
                 <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNum}>库存：500</Text></View>
                 <View style={styles.modalGoodsSpecWrap}>
-                  <View style={styles.modalGoodsSpec}><Text>规格</Text><View style={styles.modalGoodsSpecContent}><Text style={styles.modalGoodsSpecContentText}>100g*1</Text></View></View>
-                  <View style={styles.modalGoodsNum}><Text>购买数量</Text><View style={styles.goodsNum}>
-              <TouchableOpacity style={styles.goodsReduceWrap} onPress={() => { 
-                this.reduceGoodsNum(index)
-              }}><Text style={styles.goodsReduce}>-</Text></TouchableOpacity>
-              <TouchableOpacity style={styles.numWrap}><Text style={styles.num}>1111</Text></TouchableOpacity>
-              <TouchableOpacity onPress={() => { 
-                this.addGoodsNum(index)
-              }} style={styles.goodsAddWrap}><Text style={styles.goodsAdd}>+</Text></TouchableOpacity>
-            </View></View>
+                  <View style={styles.modalGoodsSpec}>
+                    <Text>规格</Text>
+                    <View style={styles.modalGoodsSpecContent}><Text style={styles.modalGoodsSpecContentText}>{specDt[specIndex].spec}</Text></View>
+                  </View>
+                  <View style={styles.modalGoodsNum}>
+                    <Text>购买数量</Text>
+                    <View style={styles.goodsNum}>
+                      <TouchableOpacity style={styles.goodsReduceWrap} onPress={this.reduceGoodsNum.bind(this)}>
+                        <Text style={styles.goodsReduce}>-</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.numWrap}><Text style={styles.num}>{this.state.count}</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.goodsAddWrap} onPress={this.addGoodsNum.bind(this)}>
+                        <Text style={styles.goodsAdd}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
-                <TouchableOpacity style={styles.save}>
+                <TouchableOpacity style={styles.closeModel} onPress={this.closeselectionModel.bind(this)}>
+                  <Image style={styles.closeImg} source={require('../images/close.png')}></Image>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.save} onPress={this.addToCart.bind(this)}>
                   <Text style={styles.saveText}>加入购物车</Text>
                 </TouchableOpacity>
               </View> 
             </View> 
           </View>
         </Modal>      
+        <Modal
+          animationType={"slide"}
+          transparent={true}
+          visible={this.state.detailModelVisible}
+          >
+          <View style={{backgroundColor:"rgba(0,0,0,0.3)",height:"100%"}}>
+            <View style={styles.modalWrap}>
+              <View style={styles.modal}>
+                <View style={styles.detailTitle}>
+                  <Text style={styles.detailTitleText}>产品参数</Text>
+                </View>
+                <View style={styles.detailList}>
+                  <Text style={styles.detailListTitle}>产地</Text>
+                  <Text style={styles.detailListInfo}>江苏省南京市</Text>
+                </View>
+                <View style={styles.detailList}>
+                  <Text style={styles.detailListTitle}>规格</Text>
+                  <Text style={styles.detailListInfo}>100g*1</Text>
+                </View>
+                <View style={styles.detailList}>
+                  <Text style={styles.detailListTitle}>储存方式</Text>
+                  <Text style={styles.detailListInfo}>保鲜</Text>
+                </View>
+                <View style={styles.detailList}>
+                  <Text style={styles.detailListTitle}>品牌</Text>
+                  <Text style={styles.detailListInfo}>XXXXXXXXXX</Text>
+                </View>
+                <TouchableOpacity style={styles.closeModel} onPress={this.closeDetailModel.bind(this)}>
+                  <Image style={styles.closeImg} source={require('../images/close.png')}></Image>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.save} onPress={this.closeDetailModel.bind(this)}>
+                  <Text style={styles.saveText}>完成</Text>
+                </TouchableOpacity>
+              </View> 
+            </View> 
+          </View>
+        </Modal>  
       </View>
     );
   }
@@ -177,14 +310,14 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    resizeMode: 'contain',
   },
   goodsName:{
     paddingLeft: pxToDp(26),
     paddingRight: pxToDp(26),
     backgroundColor: 'white',
     justifyContent: 'center',
-    alignItems: 'center'  
   },
   goodsNameText: {
     fontSize: pxToDp(32),
@@ -252,6 +385,10 @@ const styles = StyleSheet.create({
     width: pxToDp(44),
     height: pxToDp(44)
   },
+  goGoodsText:{
+    fontSize: pxToDp(20),
+    color: '#818181'
+  },
   customerService:{
     paddingLeft: pxToDp(35),
     paddingRight: pxToDp(35),
@@ -259,20 +396,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  goGoodsText:{
-    fontSize: pxToDp(20),
-    color: '#818181'
-  },
   customerServiceImg:{
-    width: pxToDp(39),
-    height: pxToDp(37)
+    width: pxToDp(44),
+    height: pxToDp(44)
   },
   customerServiceText:{
     fontSize: pxToDp(20),
     color: '#818181'
   },
-  cart:{
-    position: 'relative',
+  cart: {
+    width: pxToDp(140),
     paddingLeft: pxToDp(35),
     paddingRight: pxToDp(35),
     height: pxToDp(100),
@@ -281,26 +414,26 @@ const styles = StyleSheet.create({
   },
   cartImg:{
     width: pxToDp(50),
-    height: pxToDp(43)
+    height: pxToDp(44)
   },
   cartText:{
     fontSize: pxToDp(20),
     color: '#818181'
   },
-  num:{
+  cartNumWrap:{
     position: 'absolute',
-    right: pxToDp(35),
+    right: pxToDp(30),
     top: pxToDp(10),
     width: pxToDp(41),
     height: pxToDp(25),
+    backgroundColor: '#fc4444',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: pxToDp(30),
-    backgroundColor: '#fd4448'
   },
-  numText:{
+  cartNum:{
     fontSize: pxToDp(20),
-    color: 'white',
+    color: 'white'
   },
   addGoods:{
     backgroundColor: '#2abd89',
@@ -339,7 +472,8 @@ const styles = StyleSheet.create({
   },
   modalGoodsImg:{
     width: pxToDp(230),
-    height: pxToDp(200)
+    height: pxToDp(200),
+    resizeMode: 'contain',
   },
   modalGoodsPriceNum:{
     marginLeft: pxToDp(310),
@@ -397,6 +531,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: pxToDp(1),
     borderBottomColor: '#f1f1f1'
   },
+  closeModel: {
+    position: 'absolute',
+    right: pxToDp(50),
+    top: pxToDp(50)
+  },
+  closeImg: {
+    width: pxToDp(30),
+    height: pxToDp(30)
+  },
   goodsNum: {
     position: 'absolute',
     right: pxToDp(26),
@@ -448,5 +591,31 @@ const styles = StyleSheet.create({
   saveText:{
     fontSize: pxToDp(32),
     color: 'white'
-  }
+  },
+  detailTitle:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: pxToDp(25),
+    height: pxToDp(90)
+  },
+  detailTitleText: {
+    fontSize: pxToDp(34),
+    color: '#2b2b2b'
+  },
+  detailList: {
+    marginLeft: pxToDp(34),
+    marginRight: pxToDp(34),
+    flexDirection: 'row',
+    height: pxToDp(90),
+    borderBottomWidth: pxToDp(1),
+    borderBottomColor: '#f1f1f1'
+  },
+  detailListTitle: {
+    width: pxToDp(170),
+    fontSize: pxToDp(28),
+    color: '#2b2b2b'
+  },
+  detailListInfo: {
+    fontSize: pxToDp(28),
+  },
 });

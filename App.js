@@ -307,7 +307,7 @@ const RootNavigator = StackNavigator({
   VipRegister: {
     screen: VipRegisterScreen,
   },
-  // 
+  // 忘记密码
   NewPassword: {
     screen: NewPasswordScreen,
   },
@@ -379,6 +379,7 @@ const RootNavigator = StackNavigator({
   EditAddress: {
     screen: EditAddressScreen,
   },
+  // 搜索
   SearchGoods: {
     screen: SearchGoodsScreen,
   },

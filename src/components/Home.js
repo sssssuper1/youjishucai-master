@@ -198,7 +198,11 @@ export default class Home extends Component {
         }
       ),
     ]).start();
-}
+  }
+  search() {
+    const { navigate } = this.props.navigation;
+    navigate('SearchGoods', { keyword: this.state.searchText });
+  }
   //点击1级菜单
   goods1NameFn(dataSource, rowID) {
     let type2 = new ListView.DataSource({
@@ -233,7 +237,7 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.rowGoods}>
-        <TouchableOpacity onPress={() => {navigate('GoodsDetail')}}>
+        <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: rowData.id})}}>
           <Image style={styles.rowGoodsImg} source={{uri:rowData.img}}/>
         </TouchableOpacity>
         <View ><Text style={styles.rowGoodsName}>{rowData.name}</Text></View>
@@ -259,8 +263,9 @@ export default class Home extends Component {
               returnKeyType={"search"}
               style={styles.headerSearch}
               underlineColorAndroid={'transparent'}
-              onChangeText={(text) => this.setState({searchText:text})}
-              placeholder={'有机大米'}
+              onChangeText={(text) => this.setState({ searchText: text })}
+              onSubmitEditing={this.search.bind(this)}
+              placeholder={'输入关键字直接搜索...'}
               placeholderTextColor={'#a6a6a6'}
             />
           </View>

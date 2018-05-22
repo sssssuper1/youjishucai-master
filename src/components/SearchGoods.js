@@ -45,30 +45,132 @@ function scrrollHeight(uiElementHeight) {
 export default class SearchGoods extends Component {
   constructor(props) {
     super(props);
+    const { params } = this.props.navigation.state;
+
     this.state={
-      RightdataSource: type2.cloneWithRows([]),
+      dataSource: [],
+    }
+
+    if (!!params && !!params.keyword) {
+      this.loadData(params.keyword);
     }
   }
-   //二级菜单的list渲染
-   _renderRow2(rowData, sectionID, rowID) {
+
+  search() {
+    this.loadData(this.state.searchText);
+  }
+
+  loadData(keyword) {
+    Fetch(global.url + '/API/home/getGoodsList', 'post', {
+      addressLabel: '',
+      categoryId: 0,
+      keyword: keyword,
+      loadAll: true,
+      pageIndex: '0'
+    }, (responseData) => {
+      if (responseData.success) {
+        this.setState({
+          dataSource: responseData.data.goods,
+          keyword: keyword
+        });
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      // 要求成为响应者：
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        store.dispatch({ type: types.addShopingNum.ADDNUM})
+        this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
+          this.animate();
+          // this.showAlert();
+          this.setState({cartNum: store.getState().count, message: "数据格式不对或者出错" })
+        })
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // 最近一次的移动距离为gestureState.move{X,Y}
+
+        // 从成为响应者开始时的累计手势移动距离为gestureState.d{x,y}
+      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        // 用户放开了所有的触摸点，且此时视图已经成为了响应者。
+        // 一般来说这意味着一个手势操作已经成功完成。
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+        // 另一个组件已经成为了新的响应者，所以当前手势将被取消。
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        // 返回一个布尔值，决定当前组件是否应该阻止原生组件成为JS响应者
+        // 默认返回true。目前暂时只支持android。
+        return true;
+      },
+    });
+  }
+  animate() {
+    Animated.sequence([
+        Animated.timing(                            // 随时间变化而执行的动画类型
+          this.state.fadeAnim,                      // 动画中的变量值
+          {
+            toValue: 1, 
+            duration: 100,                             // 透明度最终变为1，即完全不透明
+          },
+        ),            // 首先执行decay动画，结束后同时执行spring和twirl动画
+        Animated.parallel(
+            [
+              Animated.timing(this.state.right, {
+                  toValue: pxToDp(10),
+              duration: 500,
+              easing: Easing.quad
+              }),
+              Animated.timing(this.state.top, {
+                  toValue: pxToDp(10),
+                  duration: 500,
+                  easing: Easing.quad
+              })
+            ]
+      ),
+      Animated.timing(                            // 随时间变化而执行的动画类型
+        this.state.fadeAnim,                      // 动画中的变量值
+        {
+          toValue: 0,
+          duration: 100,                             // 透明度最终变为1，即完全不透明
+        }
+      ),
+    ]).start();
+  }
+  _renderRow1(item, index) {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.rowGoods}>
-        <View >
-          <Image style={styles.rowGoodsImg} source={require('../images/banner1.jpg')}/>
-        </View>
-        <View ><Text style={styles.rowGoodsName}>{rowData.name}</Text></View>
+        <TouchableOpacity onPress={()=>navigate('GoodsDetail',{id: item.id})}>
+          <Image style={styles.rowGoodsImg} source={{uri: item.cover}}/>
+        </TouchableOpacity>
+        <View ><Text style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
-          <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{rowData.money}</Text><Text style={styles.rowGoodsCompany}>/{rowData.company}</Text></View>
+          <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
           <View style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}><Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/></View>
         </View>
       </View>
     );
   }
   render() {
+    const { navigate, goBack } = this.props.navigation;
+    const { params } = this.props.navigation.state;
     return (
       <View style={styles.contenier}>  
         <View style={styles.header}>
-          <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
+          <TouchableOpacity style={styles.headerGoBack} onPress={()=>goBack()}>
+            <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
+          </TouchableOpacity>  
           <View style={styles.headerSearchWrap}>
             <Image style={styles.headerSearchImg} source={require("../images/search.png")}></Image>  
             <TextInput
@@ -76,20 +178,21 @@ export default class SearchGoods extends Component {
               style={styles.headerSearch}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({searchText:text})}
-              placeholder={'有机大米'}
+              placeholder={this.state.keyword}
+              onSubmitEditing={this.search.bind(this)}
               placeholderTextColor={'#a6a6a6'}
             />
           </View>
-          <TouchableOpacity style={styles.cart}>
+          <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}>
             <Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image>
-            <Text style={styles.cartNum}>100</Text>
+            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>0</Text></View>
           </TouchableOpacity>
         </View>
-        <ListView 
-          contentContainerStyle={styles.goods3}
-          dataSource={this.state.RightdataSource}
-          renderRow={this._renderRow2.bind(this)}
-        />
+        <FlatList 
+            contentContainerStyle={styles.goods3}  
+            data={this.state.dataSource}
+            renderItem={({ item, index }) =>this._renderRow1(item, index)}
+          />
       </View>
     );
   }
@@ -108,12 +211,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white'
   },
-  headerImg:{
+  headerGoBack: {
     position: 'absolute',
     left: pxToDp(34),
+    width: pxToDp(50),
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  headerImg:{
     width: pxToDp(24),
     height: pxToDp(40),
-    zIndex: 100,
   },
   headerText: {
     fontSize: pxToDp(36),
@@ -154,19 +262,74 @@ const styles = StyleSheet.create({
     width: pxToDp(52),
     height: pxToDp(42)
   },
-  cartNum:{
+  cartNumWrap:{
     position: 'absolute',
     right: 0,
     top: pxToDp(17),
     width: pxToDp(42),
     height: pxToDp(24),
-    fontSize: pxToDp(20),
-    color: 'white',
     borderRadius: pxToDp(30),
-    backgroundColor: '#fd4448'
+    backgroundColor: '#fd4448',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cartNum: {
+    color: 'white',
+    fontSize: pxToDp(20),
   },
   goods3: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  rowGoods: {
+    width: pxToDp(350),
+    borderWidth: pxToDp(2),
+    backgroundColor: '#ffffff',
+    borderColor: '#f4f4f4',
+  },
+  rowGoodsImg: {
+    width: pxToDp(350),
+    height: pxToDp(350),
+    marginBottom: pxToDp(18)
+  },
+  rowGoodsName: {
+    marginTop: pxToDp(10),
+    marginBottom: pxToDp(10),
+    paddingLeft: pxToDp(16),
+    fontSize: pxToDp(24),
+    color: '#2a2a2a'
+  },
+  rowGoodsMoneyAndAdd: {
+    position: 'relative',
+    flexDirection: "row",
+    marginBottom: pxToDp(30),
+  },
+  rowGoodsMoney: {
+    marginLeft: pxToDp(18),
+    flexDirection: "row",
+    alignItems: 'flex-end',
+  },
+  rowGoodsSymbol: {
+    fontSize: pxToDp(20),
+    color: "#ff0036",
+  },
+  rowGoodsNum: {
+    fontSize: pxToDp(26),
+    color: "#ff0036",
+  },
+  rowGoodsCompany: {
+    marginLeft: pxToDp(5),
+    fontSize: pxToDp(20),
+    color: "#aaaaaa",
+  },
+  rowGoodsAdd: {
+    position: 'absolute',
+    top: 0,
+    right: pxToDp(18)
+  },
+  rowGoodsAddImg: {
+    width: pxToDp(45),
+    height: pxToDp(45)
   },
 });

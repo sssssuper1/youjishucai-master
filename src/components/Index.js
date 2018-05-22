@@ -25,8 +25,16 @@ global.url="http://192.168.0.97:100"
 export default class Index extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedTab: 'my'
+    const { params } = this.props.navigation.state;
+
+    if (!!params && !!params.selectedTab) {
+      this.state = {
+        selectedTab: params.selectedTab
+      }
+    } else {
+      this.state = {
+        selectedTab: 'home'
+      }
     }
   }
   static navigationOptions = {
