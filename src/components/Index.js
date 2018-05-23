@@ -21,6 +21,7 @@ import Community from './Community';
 import Vip from './Vip';
 import My from './My';
 import TabNavigator from 'react-native-tab-navigator';
+import SplashScreen from 'react-native-splash-screen';
 import { StackNavigator } from 'react-navigation';
 
 global.url = "http://192.168.0.97:100";
@@ -58,6 +59,10 @@ export default class Index extends Component {
     (err) => {
       alert(err);
     });
+  }
+
+  componentWillMount() {
+    SplashScreen.hide();
   }
 
   render() {

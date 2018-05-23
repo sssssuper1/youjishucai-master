@@ -120,7 +120,7 @@ export default class Order extends Component {
               <Image style={styles.dirImg} source={require('../images/rightDir.png')}></Image>
             </View>  
           </TouchableOpacity>
-          <ImageBackground style={styles.addressBackground} source={require('../images/addressBackground.jpg')}>
+          <ImageBackground style={styles.addressBackground} source={require('../images/addressBackground.png')}>
           </ImageBackground>
           <FlatList 
             contentContainerStyle={styles.goods1}  

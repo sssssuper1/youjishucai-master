@@ -128,7 +128,7 @@ export default class My extends Component {
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
           <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('ServiceCenter')}}>
-            <Image style={styles.detailBtnImg}  source={require('../images/phone.png')}></Image>
+            <Image style={styles.detailBtnImg}  source={require('../images/telephone.png')}></Image>
             <Text style={styles.detailBtnText}>客服中心</Text> 
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>

@@ -85,7 +85,7 @@ export default class NewPassword extends Component {
     return (
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="修改密码"></Header1>
-        <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.jpg')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>{this.state.phoneNumber}</Text></View>
+        <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.png')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>{this.state.phoneNumber}</Text></View>
         <View style={styles.PickerWrap}>  
           <TextInput
             underlineColorAndroid={'transparent'}

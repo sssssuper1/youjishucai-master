@@ -62,7 +62,7 @@ export default class Message extends Component {
         <View style={styles.date}><View style={styles.dateContent}><Text style={styles.dateContentText}>4月20</Text></View></View>
         <TouchableOpacity style={styles.btn} onPress={() => {navigate('MessageDetail')}}>
           <View style={styles.message}>
-            <View style={styles.messageImgWrap}><Image style={styles.messageImg} source={require('../images/message.jpg')}></Image></View>
+            <View style={styles.messageImgWrap}><Image style={styles.messageImg} source={require('../images/message.png')}></Image></View>
             <View style={styles.messageContent}>
               <View style={styles.title}><Text style={styles.titleContent}>物流通知</Text></View>
               <View ><Text style={styles.p}>五一节到了快迪欧飞机火车就看见我，大胃发我我的娃胃王的发我我的娃五一节到了</Text></View>

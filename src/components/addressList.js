@@ -76,13 +76,13 @@ export default class Community extends Component {
         <View style={styles.wrapperWrap}>
           <Swiper style={styles.wrapper}  activeDot={<View style={{backgroundColor:'#007aff', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />} dot={<View style={{backgroundColor:'white', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}  autoplay={true} >
             <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.jpg")}></Image>
+              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
             </View>
             <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.jpg")}></Image>
+              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
             </View>
             <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.jpg")}></Image>
+              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
             </View>
           </Swiper>
         </View>

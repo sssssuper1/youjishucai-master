@@ -78,7 +78,8 @@ export default class PayToVip extends Component {
     
   }
   render() {
-    const{codeText,isInput} = this.state
+    const { codeText, isInput } = this.state;
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="vip会员购买付费"></Header1>
@@ -134,7 +135,7 @@ export default class PayToVip extends Component {
             <TouchableOpacity style={styles.payment}><Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image><Text>微信支付</Text><Image style={styles.isSelect} source={this.state.payNum===0?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
             <TouchableOpacity style={styles.payment}><Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image><Text>支付宝</Text><Image style={styles.isSelect} source={this.state.payNum===1?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.save}>
+          <TouchableOpacity style={styles.save} onPress={()=>navigate('PayFun')}>
             <Text style={styles.saveText}>立即支付</Text>
           </TouchableOpacity>
       </View>

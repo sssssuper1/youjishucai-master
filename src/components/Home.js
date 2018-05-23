@@ -51,15 +51,13 @@ export default class Home extends Component {
     //初始化
     this.state = {
       showAlert: false,
-      isBullet: false,
-      bulletMessage: '我的世界',
       LeftdataSource: type1.cloneWithRows([]),
       RightdataSource: type2.cloneWithRows([]),
-      selectName: '有机蔬菜',
+      selectName: '',
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
-      message: '',
+      message: 'error',
       rightGoods:[]
     }
     //菜单获取
@@ -92,10 +90,13 @@ export default class Home extends Component {
           }
           return array;
         })
-        this.setState({ LeftdataSource: type1.cloneWithRows(LeftdataSource), rightGoods: rightGoods, RightdataSource: type2.cloneWithRows(rightGoods[0]) }, () => { 
-          this.popupDialog.show(() => {
-            console.log('callback - will be called immediately')
-          });
+        this.setState({
+          LeftdataSource: type1.cloneWithRows(LeftdataSource),
+          rightGoods: rightGoods,
+          RightdataSource: type2.cloneWithRows(rightGoods[0]),
+          selectName: LeftdataSource[0].name
+        }, () => { 
+          // this.popupDialog.show();
         })
       } else { 
         this.setState({ message: "数据格式不对或者出错" });
@@ -111,25 +112,13 @@ export default class Home extends Component {
       showAlert: true
     });
   }
-  showBullet = () => {
-    this.setState({
-      isBullet: true
-    });
-  }
-  hideBullet = () => {
-    this.setState({
-      isBullet: false
-    });
-  }
   hideAlert = () => {
     this.setState({
       showAlert: false
     });
   }
   onButtonPress() {
-    this.popupDialog.dismiss(() => {
-      console.log('callback - will be called immediately')
-    });
+    this.popupDialog.dismiss();
   }
   componentWillMount() {
     this._panResponder = PanResponder.create({
@@ -247,7 +236,7 @@ export default class Home extends Component {
   }
   render() {
     const { navigate } = this.props.navigation;
-    const { showAlert, message, isBullet, bulletMessage } = this.state;
+    const { showAlert, message } = this.state;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.header} source={require('../images/headerBackground.png')} resizeMode='cover'>
@@ -274,13 +263,13 @@ export default class Home extends Component {
         <View style={styles.wrapperWrap}>
           <Swiper style={styles.wrapper}  activeDot={<View style={{backgroundColor:'#007aff', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />} dot={<View style={{backgroundColor:'white', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}  autoplay={true} >
             <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.jpg")}></Image>
+              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
             </View>
             <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.jpg")}></Image>
+              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
             </View>
             <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.jpg")}></Image>
+              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
             </View>
           </Swiper>
         </View>  
@@ -315,11 +304,13 @@ export default class Home extends Component {
         <AwesomeAlert
           show={showAlert}
           showProgress={false}
+          title="提示"
           message={message}
           closeOnTouchOutside={true}
           closeOnHardwareBackPress={false}
+          showCancelButton={false}
           showConfirmButton={true}
-          confirmText="知道了"
+          confirmText="确定"
           confirmButtonColor="#DD6B55"
           onConfirmPressed={() => {
             this.hideAlert();

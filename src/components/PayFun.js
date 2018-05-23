@@ -54,6 +54,10 @@ export default class PayFun extends Component {
   showAlert = () => {
     this.setState({
       showAlert: true
+    }, () => {
+      setTimeout(() => {
+        this.hideAlert();
+      },5000)
     });
   }
   showBullet = () => {
@@ -97,22 +101,12 @@ export default class PayFun extends Component {
         </TouchableOpacity>
         <AwesomeAlert
           show={showAlert}
-          showProgress={false}
-          title="提示"
-          message={message}
-          closeOnTouchOutside={true}
+          showProgress={true}
           closeOnHardwareBackPress={false}
-          showCancelButton={true}
-          showConfirmButton={true}
-          confirmText="确定"
-          cancelText="取消"
-          confirmButtonColor="#DD6B55"
-          onConfirmPressed={() => {
-            this.hideAlert();
-          }}
-          onCancelPressed={() => {
-            this.hideAlert();
-          }}
+          closeOnTouchOutside={false}
+          title='Loading..'
+          progressSize='small'
+          progressColor='gray'
         />
       </View>
     );

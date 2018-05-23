@@ -35,7 +35,7 @@ import {
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
-export default class PayFun extends Component {
+export default class AllOrder extends Component {
   constructor(props) {
     super(props);
     const { params } = this.props.navigation.state;
