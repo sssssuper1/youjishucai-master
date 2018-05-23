@@ -169,32 +169,50 @@ export default class PayFun extends Component {
     );
   }
   render() {
-    const {state} = this.state
+    const { state } = this.state;
+    const { navigate } = this.props.navigation;
+
+    let view;
+    if (this.state.dataSource.length > 0) {
+      view =
+      <FlatList 
+        data={this.state.dataSource}
+        renderItem={({ item, index }) =>this._renderRow(item, index)}
+      />
+    } else {
+      view =
+        <View style={styles.stateBlank}>
+          <View style={styles.stateImgWrap}>
+            <Image style={styles.stateImg} source={require('../images/noOrder.png')}></Image>
+          </View>
+          <View style={styles.stateShow}><Text style={styles.stateShowText}>您还没有相关订单</Text></View>
+          <TouchableOpacity style={styles.stateButton} onPress={() => navigate('Home')}>
+            <Text>立即选购</Text>
+          </TouchableOpacity>
+        </View>;
+    }
     return (
       <View style={styles.contenier}>
         <Header1 navigation={this.props.navigation} name="全部订单"></Header1>
         <ScrollView>
-        <View style={styles.stateBtns}>
-          <TouchableOpacity onPress={()=>{
-            this.changeState(0)
-          }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[0]}</Text></TouchableOpacity>
-          <TouchableOpacity onPress={()=>{
-            this.changeState(1)
-          }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[1]}</Text></TouchableOpacity>
-          <TouchableOpacity onPress={()=>{
-            this.changeState(2)
-          }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[2]}</Text></TouchableOpacity>
-          <TouchableOpacity onPress={()=>{
-            this.changeState(3)
-          }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[3]}</Text></TouchableOpacity>
-          <TouchableOpacity onPress={()=>{
-            this.changeState(4)
-          }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[4]}</Text></TouchableOpacity>
-        </View>
-        <FlatList 
-            data={this.state.dataSource}
-            renderItem={({ item, index }) =>this._renderRow(item, index)}
-        />
+          <View style={styles.stateBtns}>
+            <TouchableOpacity onPress={()=>{
+              this.changeState(0)
+            }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[0]}</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{
+              this.changeState(1)
+            }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[1]}</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{
+              this.changeState(2)
+            }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[2]}</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{
+              this.changeState(3)
+            }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[3]}</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{
+              this.changeState(4)
+            }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[4]}</Text></TouchableOpacity>
+          </View>
+          {view}
         </ScrollView>
       </View>
     );
@@ -409,5 +427,31 @@ const styles = StyleSheet.create({
   },
   buttonTextGrey: {
     color: '#808080'
-  }
+  },
+  stateBlank: {
+    width: '100%',
+    height: pxToDp(537),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  stateImgWrap: {
+    marginTop: pxToDp(60)
+  },
+  stateImg: {
+    width: pxToDp(253),
+    height: pxToDp(270)
+  },
+  stateShow: {
+    marginTop:pxToDp(50),
+  },
+  stateButton: {
+    marginTop: pxToDp(40),
+    width: pxToDp(200),
+    paddingTop: pxToDp(8),
+    paddingBottom: pxToDp(8),
+    borderWidth: pxToDp(1),
+    borderColor: '#a9a9a9',
+    borderRadius: pxToDp(10),
+    alignItems: 'center'
+  },
 });

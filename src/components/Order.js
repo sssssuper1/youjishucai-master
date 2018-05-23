@@ -75,6 +75,10 @@ export default class Order extends Component {
     });
   }
 
+  pay() {
+    this.props.navigation.navigate('PaySuccess', {amount: this.state.totalAmount + this.state.shippingFee});
+  }
+
   //list渲染
   _renderRow1(item, index) {
     return (
@@ -146,7 +150,11 @@ export default class Order extends Component {
           </View>
         </ScrollView>  
         <View style={styles.result}>    
-          <Text style={styles.resultTitle}>实付金额：</Text><Text style={styles.resultPrice}>¥{this.state.totalAmount+this.state.shippingFee}</Text><TouchableOpacity style={styles.payBtn}><Text style={styles.payBtnText}>去结算</Text></TouchableOpacity>
+          <Text style={styles.resultTitle}>实付金额：</Text>
+          <Text style={styles.resultPrice}>¥{this.state.totalAmount + this.state.shippingFee}</Text>
+          <TouchableOpacity style={styles.payBtn} onPress={this.pay.bind(this)}>
+            <Text style={styles.payBtnText}>去结算</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

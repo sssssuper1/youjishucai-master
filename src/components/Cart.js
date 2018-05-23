@@ -251,10 +251,10 @@ export default class Cart extends Component {
       view =
         <View style={styles.state}>
           <View style={styles.stateImgWrap}>
-            <Image style={styles.stateImg} source={require('../images/noneOfCart.png')}></Image>
+            <Image style={styles.stateImg} source={require('../images/noCart.png')}></Image>
           </View>
           <View style={styles.stateShow}><Text style={styles.stateShowText}>购物车竟然是空的</Text></View>
-          <TouchableOpacity style={styles.stateButton}>
+          <TouchableOpacity style={styles.stateButton} onPress={() => navigate('Home')}>
             <Text>立即选购</Text>
           </TouchableOpacity>
         </View>;
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   stateImgWrap: {
-
+    marginTop: pxToDp(200)
   },
   stateImg: {
     width: pxToDp(253),

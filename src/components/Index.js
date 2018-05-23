@@ -13,14 +13,17 @@ import {
   Image
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import types from '../actions/shopingCart';
+import store from '../store/index';
+import Fetch from '../js/fetch';
 import Home from './Home';
 import Community from './Community';
 import Vip from './Vip';
 import My from './My';
 import TabNavigator from 'react-native-tab-navigator';
 import { StackNavigator } from 'react-navigation';
-import store from '../store/index'
-global.url="http://192.168.0.97:100"
+
+global.url = "http://192.168.0.97:100";
 
 export default class Index extends Component {
   constructor(props) {
@@ -36,10 +39,27 @@ export default class Index extends Component {
         selectedTab: 'home'
       }
     }
+
+    this.loadData();
   }
   static navigationOptions = {
     header:null
   };
+
+  loadData() {
+    Fetch(global.url + '/api/home/GetInitDataForScript', 'get', '', (responseData) => {
+        alert('success')
+        // global.data = responseData;
+        // store.dispatch({
+        //   type: types.getShopingNum.GETNUM,
+        //   num: responseData.cartNum
+        // });
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
   render() {
     return (
         <TabNavigator tabBarStyle={{backgroundColor:'white',height: pxToDp(114),alignItems: 'center'}}>
@@ -98,8 +118,8 @@ const styles = StyleSheet.create({
   },
   menuImg2: {
     marginTop:pxToDp(10),
-    width:pxToDp(41),
-    height:pxToDp(41)
+    width:pxToDp(46),
+    height:pxToDp(46)
   },
   menuImg3: {
     marginTop:pxToDp(10),

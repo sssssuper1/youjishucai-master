@@ -50,10 +50,23 @@ export default class Person extends Component {
       modelVistibal:true,
       name: ''
     }
-    
   }
+
+  changeName() {
+    Fetch(global.url + '/API/user/editUserInfo', 'post', {
+      name: this.state.name
+    }, (responseData) => {
+      if (responseData.success) {
+        this.show();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
   show(){
-    this.refs.toast.show('hello world!');
+    this.refs.toast.show('修改成功!');
   }
   render() {
     return (
@@ -69,7 +82,7 @@ export default class Person extends Component {
           />
           <View style={styles.btnWrap}>
             <View style={styles.warn}><Text style={styles.warnText}>昵称由中文、英文、数字、组成。</Text></View>
-            <TouchableOpacity onPress={()=>{this.show()}}  style={styles.btn}><Text style={styles.btnText}>确定</Text></TouchableOpacity>
+            <TouchableOpacity onPress={this.changeName.bind(this)}  style={styles.btn}><Text style={styles.btnText}>确定</Text></TouchableOpacity>
           </View>
         </View> 
         <Toast ref="toast" style={styles.toast} position="top" positionValue={290}/>

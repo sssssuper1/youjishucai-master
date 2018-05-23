@@ -25,6 +25,7 @@ import Register from './src/components/Register';
 import Register1 from './src/components/Register1';
 import NewPassword from './src/components/NewPassword';
 import PayFun from './src/components/PayFun';
+import PaySuccess from './src/components/PaySuccess';
 import Cart from './src/components/Cart';
 import Order from './src/components/Order';
 import Set from './src/components/Set';
@@ -219,6 +220,16 @@ class PayFunScreen extends Component {
     );
   }
 }
+class PaySuccessScreen extends Component { 
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <PaySuccess navigation={this.props.navigation} />
+    );
+  }
+}
 class SearchGoodsScreen extends Component { 
   static navigationOptions = {
     header:null
@@ -366,6 +377,10 @@ const RootNavigator = StackNavigator({
   // 支付失败
   PayFun: {
     screen: PayFunScreen,
+  },
+  // 支付成功
+  PaySuccess: {
+    screen: PaySuccessScreen,
   },
   // 订单详情
   MyOrder: {

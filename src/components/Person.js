@@ -12,6 +12,7 @@ import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
+import Toast from 'react-native-easy-toast';
 import {
   Platform,
   StyleSheet,
@@ -46,8 +47,27 @@ export default class Person extends Component {
   constructor(props) {
     super(props);
     this.state={
-      modelVistibal:true
+      modelVistibal: true,
+      sex: '0',
     }
+  }
+
+  changeSex(value) {
+    this.setState({ sex: value });
+    Fetch(global.url + '/API/user/editUserInfo', 'post', {
+      sex: value
+    }, (responseData) => {
+      if (responseData.success) {
+        this.show();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
+  show(){
+    this.refs.toast.show('修改成功!');
   }
   
   render() {
@@ -59,13 +79,23 @@ export default class Person extends Component {
           <TouchableOpacity style={styles.set} onPress={() => {navigate('Name')}}>
             <Text style={styles.text}>昵称</Text><Text style={styles.warn}>张三丰</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.set}>
-            <Text style={styles.text}>性别</Text><Text style={styles.warn}>未设置</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
-          </TouchableOpacity>
+          <View style={styles.set}>
+            <Text style={styles.text}>性别</Text>
+            <Picker
+              style={styles.Picker}
+              selectedValue={this.state.sex}
+              itemStyle={styles.itempicker}
+              onValueChange={(value) => this.changeSex(value)}>
+              <Picker.Item label='男' value='0' />
+              <Picker.Item label='女' value='1' />
+            </Picker>
+            <Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+          </View>
           <TouchableOpacity style={styles.set}>
             <Text style={styles.text}>生日</Text><Text style={styles.warn}>1993-05-05</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
-          </TouchableOpacity>   
-        </View> 
+          </TouchableOpacity>
+        </View>
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={290}/>
       </View>
     );
   }
@@ -89,6 +119,20 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f1f1f1',
     backgroundColor: "white",
   },
+  Picker: {
+    width: pxToDp(130),
+    position: 'absolute',
+    right: 0,
+    marginLeft: pxToDp(108),
+    color: '#a9a9a9',
+    height: pxToDp(82),
+    alignItems: 'flex-end',
+    backgroundColor:'white',
+  },
+  itempicker: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   text:{
     marginLeft: pxToDp(28),
     fontSize: pxToDp(32),
@@ -97,7 +141,7 @@ const styles = StyleSheet.create({
   warn: {
     position: 'absolute',
     right: pxToDp(58),
-    fontSize: pxToDp(28),
+    fontSize: pxToDp(32),
     color: '#a9a9a9'
   },
   Img:{
@@ -122,5 +166,8 @@ const styles = StyleSheet.create({
   saveText:{
     fontSize: pxToDp(32),
     color: 'white'
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });

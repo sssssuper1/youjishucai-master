@@ -37,10 +37,8 @@ import pxToDp from '../js/pxToDp';
 const deviceHeightDp = Dimensions.get('window').height;
 const deviceWidthDp = Dimensions.get('window').width;
 function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
   return deviceHeightDp-uiElementHeight;
 }
-
 
 export default class SearchGoods extends Component {
   constructor(props) {
@@ -49,6 +47,9 @@ export default class SearchGoods extends Component {
 
     this.state={
       dataSource: [],
+      right: new Animated.Value(10),
+      top: new Animated.Value(10),
+      fadeAnim: new Animated.Value(0),
     }
 
     if (!!params && !!params.keyword) {
@@ -88,11 +89,9 @@ export default class SearchGoods extends Component {
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
-        store.dispatch({ type: types.addShopingNum.ADDNUM})
+        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1})
         this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
           this.animate();
-          // this.showAlert();
-          this.setState({cartNum: store.getState().count, message: "数据格式不对或者出错" })
         })
       },
       onPanResponderMove: (evt, gestureState) => {
@@ -165,6 +164,24 @@ export default class SearchGoods extends Component {
   render() {
     const { navigate, goBack } = this.props.navigation;
     const { params } = this.props.navigation.state;
+
+    let view;
+    if (this.state.dataSource.length > 0) {
+      view = 
+      <FlatList 
+        contentContainerStyle={styles.goods3}  
+        data={this.state.dataSource}
+        renderItem={({ item, index }) =>this._renderRow1(item, index)}
+      />
+    } else {
+      view = 
+      <View style={styles.state}>
+        <View style={styles.stateImgWrap}>
+          <Image style={styles.stateImg} source={require('../images/noResult.png')}></Image>
+        </View>
+        <View style={styles.stateShow}><Text style={styles.stateShowText}>没有找到搜索结果</Text></View>
+      </View>;
+    }
     return (
       <View style={styles.contenier}>  
         <View style={styles.header}>
@@ -185,14 +202,23 @@ export default class SearchGoods extends Component {
           </View>
           <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}>
             <Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>0</Text></View>
+            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
           </TouchableOpacity>
         </View>
-        <FlatList 
-            contentContainerStyle={styles.goods3}  
-            data={this.state.dataSource}
-            renderItem={({ item, index }) =>this._renderRow1(item, index)}
-          />
+        {view}
+        <Animated.View                            // 可动画化的视图组件
+          style={{
+            position:"absolute",
+            zIndex: 1000,
+            opacity: this.state.fadeAnim,
+            width: pxToDp(30), height: pxToDp(30),
+            backgroundColor: '#2abd89',
+            borderRadius:50,
+            right: this.state.right,
+            top: this.state.top,
+          }}
+        >
+        </Animated.View>
       </View>
     );
   }
@@ -331,5 +357,21 @@ const styles = StyleSheet.create({
   rowGoodsAddImg: {
     width: pxToDp(45),
     height: pxToDp(45)
+  },
+  state: {
+    width: '100%',
+    height: pxToDp(537),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  stateImgWrap: {
+    marginTop: pxToDp(200)
+  },
+  stateImg: {
+    width: pxToDp(253),
+    height: pxToDp(270)
+  },
+  stateShow: {
+    marginTop:pxToDp(50),
   },
 });

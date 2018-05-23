@@ -59,7 +59,6 @@ export default class Home extends Component {
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
-      cartNum: store.getState().count,
       message: '',
       rightGoods:[]
     }
@@ -140,11 +139,9 @@ export default class Home extends Component {
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
-        store.dispatch({ type: types.addShopingNum.ADDNUM})
+        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1})
         this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
           this.animate();
-          // this.showAlert();
-          this.setState({cartNum: store.getState().count, message: "数据格式不对或者出错" })
         })
       },
       onPanResponderMove: (evt, gestureState) => {
@@ -271,7 +268,7 @@ export default class Home extends Component {
           </View>
           <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}} >
             <Image style={styles.cartImg} source={require("../images/cart.png")}></Image>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.cartNum}</Text></View>
+            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
           </TouchableOpacity>  
         </ImageBackground>
         <View style={styles.wrapperWrap}>

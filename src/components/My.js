@@ -41,7 +41,7 @@ export default class My extends Component {
     this.state = {
       paymentDt: 0,
       shipmentDt: 0,
-      goodsReceiptDt: 0
+      goodsReceiptDt: 0,
     }
   }
 
@@ -81,7 +81,9 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart1Img]}>
               <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
             </View>
-            <View style={styles.cart1NumWrap}><Text style={styles.cart1Num}>100</Text></View>
+            <View style={store.getState().count > 0 ? styles.cart1NumWrap : styles.hidden}>
+              <Text style={styles.cart1Num}>{store.getState().count}</Text>
+            </View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>购物车</Text>
             </View>
