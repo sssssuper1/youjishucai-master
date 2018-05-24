@@ -11,7 +11,6 @@ import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
   StyleSheet,
@@ -44,16 +43,20 @@ export default class SearchGoods extends Component {
   constructor(props) {
     super(props);
     const { params } = this.props.navigation.state;
+    let showAlert = true;
+
+    if (!!params && !!params.keyword) {
+      this.loadData(params.keyword);
+    } else {
+      showAlert = false;
+    }
 
     this.state={
       dataSource: [],
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
-    }
-
-    if (!!params && !!params.keyword) {
-      this.loadData(params.keyword);
+      showAlert: showAlert
     }
   }
 
@@ -73,7 +76,7 @@ export default class SearchGoods extends Component {
         this.setState({
           dataSource: responseData.data.goods,
           keyword: keyword
-        });
+        },() => this.hideAlert());
       }
     },
     (err) => {
@@ -146,6 +149,13 @@ export default class SearchGoods extends Component {
       ),
     ]).start();
   }
+
+  hideAlert() {
+    this.setState({
+      showAlert: false
+    });
+  }
+
   _renderRow1(item, index) {
     const { navigate } = this.props.navigation;
     return (
@@ -173,7 +183,7 @@ export default class SearchGoods extends Component {
         data={this.state.dataSource}
         renderItem={({ item, index }) =>this._renderRow1(item, index)}
       />
-    } else {
+    } else if (!this.state.showAlert) {
       view = 
       <View style={styles.state}>
         <View style={styles.stateImgWrap}>
@@ -219,6 +229,15 @@ export default class SearchGoods extends Component {
           }}
         >
         </Animated.View>
+        <AwesomeAlert
+          show={this.state.showAlert}
+          showProgress={true}
+          closeOnHardwareBackPress={false}
+          closeOnTouchOutside={false}
+          title='Loading..'
+          progressSize='small'
+          progressColor='gray'
+        />
       </View>
     );
   }

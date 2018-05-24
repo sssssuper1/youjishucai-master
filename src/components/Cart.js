@@ -51,7 +51,8 @@ export default class Cart extends Component {
       checkAll: 0,
       sumNum: 0,
       totalPrice: 0,
-      reducePrice: 0
+      reducePrice: 0,
+      showAlert: true
     };
 
     this.loadData();
@@ -64,10 +65,17 @@ export default class Cart extends Component {
           dataSource: responseData.data.shopCartListDt
         });
         this.changeTotal();
+        this.hideAlert();
       }
     },
     (err) => {
       alert(err);
+    });
+  }
+
+  hideAlert(){
+    this.setState({
+      showAlert: false
     });
   }
 
@@ -112,6 +120,7 @@ export default class Cart extends Component {
       if (responseData.success) {
         this.setState({ dataSource: newData });
         this.changeTotal();
+        store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: 1 });
       }
     },
     (err) => {
@@ -129,6 +138,7 @@ export default class Cart extends Component {
       if (responseData.success) {
         this.setState({ dataSource: newData });
         this.changeTotal();
+        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 });
       }
     },
     (err) => {
@@ -141,16 +151,24 @@ export default class Cart extends Component {
 
     for (let i = 0; i < newData.length; i++) {
       if (newData[i].isChecked) {
-        Fetch(global.url + '/API/MyCart/getShopCartList', 'post', { id: newData[i].id, isDeleted: 1 }, (responseData) => {
+        Fetch(global.url + '/API/MyCart/getShopCartList', 'post',
+          {
+            id: newData[i].id,
+            isDeleted: 1
+          }, (responseData) => {
           if (responseData.success) {
-            
+            this.setState({
+              dataSource: responseData.data.shopCartListDt
+            });
+            this.changeTotal();
+            store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: newData[i].count });
           }
         },
         (err) => {
           alert(err);
         });
-        newData.splice(i, 1);
-        i--;
+        // newData.splice(i, 1);
+        // i--;
       }
     }
 
@@ -218,9 +236,9 @@ export default class Cart extends Component {
         <View style={styles.goodDetail}>
           <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.goodName}</Text></View>
           <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.goodspecifications}</Text></View>
-          <View style={styles.goodOriginalPriceWrap}><Text   style={styles.goodOriginalPrice}>￥{item.originalPrice}</Text></View>
+          <View style={styles.goodOriginalPriceWrap}><Text style={styles.goodOriginalPrice}>￥{item.originalPrice}</Text></View>
           <View style={styles.goodPresentPriceWrap}>
-            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}>/袋</Text>
+            <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}></Text>
             <View style={styles.goodsNum}>
               <TouchableOpacity style={styles.goodsReduceWrap} onPress={() => { 
                 this.reduceGoodsNum(index)
@@ -247,7 +265,7 @@ export default class Cart extends Component {
           data={this.state.dataSource}
           renderItem={({ item, index }) =>this._renderRow1(item, index)}
         />;
-    } else {
+    } else if(!this.state.showAlert) {
       view =
         <View style={styles.state}>
           <View style={styles.stateImgWrap}>
@@ -305,6 +323,15 @@ export default class Cart extends Component {
             <Text style={styles.deleteText}>删除</Text>
           </View> 
         </View>
+        <AwesomeAlert
+          show={this.state.showAlert}
+          showProgress={true}
+          closeOnHardwareBackPress={false}
+          closeOnTouchOutside={false}
+          title='Loading..'
+          progressSize='small'
+          progressColor='gray'
+        />
       </View>
     );
   }

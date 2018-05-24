@@ -42,6 +42,8 @@ export default class My extends Component {
       paymentDt: 0,
       shipmentDt: 0,
       goodsReceiptDt: 0,
+      name: global.data.user.name,
+      vip: global.data.user.vip,
     }
   }
 
@@ -60,19 +62,27 @@ export default class My extends Component {
       }
     );
   }
+
+  callBack() {
+    this.setState({
+      name: global.data.user.name,
+      vip: global.data.user.vip,
+    });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.header} source={require('../images/myBackground.png')} resizeMode='cover'>
           <View style={styles.headPointer}>
-            <Image style={styles.headPointerImg} source={require('../images/gongxiangzhijia.png')}></Image>
-            <Image style={styles.vip} source={require('../images/vip.png')}></Image>
+            {this.state.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip.png')}></Image> :
+            <Image style={styles.headPointerImg} source={require('../images/noVip.png')}></Image>  }  
           </View>
           <View>
-            <Text style={styles.name}>张三丰</Text>
+            <Text style={styles.name}>{this.state.name}</Text>
           </View>
-          <TouchableOpacity style={styles.set} onPress={() => {navigate('Set')}}>
+          <TouchableOpacity style={styles.set} onPress={() => {navigate('Set',{callBack: ()=>this.callBack()})}}>
             <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
           </TouchableOpacity>  
         </ImageBackground>

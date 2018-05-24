@@ -53,6 +53,7 @@ export default class MyOrder extends Component {
       state: 0,
       order: {
         details: [],
+        showConfirm: false,
       }
     }
 
@@ -72,6 +73,36 @@ export default class MyOrder extends Component {
       alert(err);
     });
   }
+
+  // 取消订单
+  cancelOrder() {
+    this.hideConfirm();
+
+    Fetch(global.url + '/API/order/Cancel', 'post', {
+      orderId: this.orderId
+    },
+    (responseData) => {
+      if (responseData.success) {
+        this.loadData();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
+  showConfirm() {
+    this.setState({
+      showConfirm: true
+    });
+  }
+
+  hideConfirm() {
+    this.setState({
+      showConfirm: false
+    });
+  }
+
   //list渲染
   _renderRow1(item, index) {
     return (
@@ -161,7 +192,7 @@ export default class MyOrder extends Component {
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥{order.orderAmount}</Text></View>
           </View>
           <View style={styles.btns}>
-            <TouchableOpacity style={state===0?styles.cacelOrder:styles.hidden}>
+            <TouchableOpacity style={state === 0 ? styles.cacelOrder : styles.hidden} onPress={()=>this.showConfirm()}>
               <Text>取消订单</Text>
             </TouchableOpacity>
             <TouchableOpacity style={state===0?styles.goPay:styles.hidden}>
@@ -175,6 +206,25 @@ export default class MyOrder extends Component {
             </TouchableOpacity>   
           </View>
         </ScrollView>
+        <AwesomeAlert
+          show={this.state.showConfirm}
+          showProgress={false}
+          title="提示"
+          message="确认要取消订单吗？"
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="取消"
+          confirmText="确认"
+          confirmButtonColor="#29be87"
+          onCancelPressed={() => {
+            this.hideConfirm();
+          }}
+          onConfirmPressed={() => {
+            this.cancelOrder();
+          }}
+        />
       </View>
     );
   }

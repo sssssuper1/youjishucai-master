@@ -30,7 +30,8 @@ import {
   Alert,
   Button,
   FlatList,
-  Picker
+  Picker,
+  BackHandler
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 const deviceHeightDp = Dimensions.get('window').height;
@@ -51,15 +52,38 @@ export default class Header1 extends Component {
     });
     this.state = {
       name: props.name,
+    }
+  }
+
+  componentWillMount() {
+    if (Platform.OS === 'android') { 
+      BackHandler.addEventListener('hardwareBackPress', this.doCallBack);
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress', this.doCallBack);
     }  
   }
-    render() {
-      const { name } = this.state;
-      const { goBack } = this.props.navigation;
+
+  doCallBack = () => {
+    const { state } = this.props.navigation;
+    if (state.params != undefined && state.params.callBack != undefined) {
+      state.params.callBack();
+    }
+  }
+
+  render() {
+    const { name } = this.state;
+    const { goBack, state } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <View style={styles.header}>
-          <TouchableOpacity style={styles.headerGoBack} onPress={() => {goBack()}}>
+          <TouchableOpacity style={styles.headerGoBack} onPress={() => {
+            this.doCallBack();
+            goBack();
+          }}>
             <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
           </TouchableOpacity>
           <Text style={styles.headerText}>{name}</Text>  

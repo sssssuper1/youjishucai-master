@@ -11,7 +11,6 @@ import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
   StyleSheet,
@@ -50,7 +49,10 @@ export default class AllOrder extends Component {
 
     this.state = {
       state: now,
-      dataSource: []
+      dataSource: [],
+      showAlert: true,
+      showConfirm: false,
+      cancelId: NaN
     };
 
     this.loadData();
@@ -66,12 +68,47 @@ export default class AllOrder extends Component {
         if (responseData.success) {
           this.data = responseData.data.orderList;
           this.changeListData(this.state.state);
+          this.hideAlert();
         }
       },
       (err) => {
         alert(err);
       }
     );
+  }
+
+  cancelOrder() {
+    this.hideConfirm();
+
+    Fetch(global.url + '/API/order/Cancel', 'post', {
+      orderId: this.state.cancelId
+    },
+    (responseData) => {
+      if (responseData.success) {
+        this.loadData();
+      }
+    },
+    (err) => {
+      alert(err);
+    });
+  }
+
+  hideAlert() {
+    this.setState({
+      showAlert: false
+    });
+  }
+
+  showConfirm() {
+    this.setState({
+      showConfirm: true
+    });
+  }
+
+  hideConfirm() {
+    this.setState({
+      showConfirm: false
+    });
   }
 
   changeState(num){
@@ -81,6 +118,7 @@ export default class AllOrder extends Component {
 
     this.changeListData(num);
   }
+
   changeListData(num){
     if (num === 0) {
       this.setState({
@@ -133,7 +171,9 @@ export default class AllOrder extends Component {
             <TouchableOpacity style={item.orderState>0?styles.orderButtonGrey:styles.hidden} onPress={() => {navigate('MyOrder', {orderId: item.id})}}>
               <Text style={styles.buttonTextGrey}>查看订单</Text>  
             </TouchableOpacity>
-            <TouchableOpacity style={item.orderState===0?styles.orderButtonGrey:styles.hidden} onPress={() => {navigate('MyOrder', {orderId: item.id})}}>
+            <TouchableOpacity style={item.orderState === 0 ? styles.orderButtonGrey : styles.hidden} onPress={() => {
+              this.setState({ cancelId: item.id },()=>this.showConfirm())
+            }}>
               <Text style={styles.buttonTextGrey}>取消订单</Text>  
             </TouchableOpacity>
             <TouchableOpacity style={item.orderState===0?styles.orderButtonGreen:styles.hidden} onPress={() => {navigate('MyOrder', {orderId: item.id})}}>
@@ -179,7 +219,7 @@ export default class AllOrder extends Component {
         data={this.state.dataSource}
         renderItem={({ item, index }) =>this._renderRow(item, index)}
       />
-    } else {
+    } else if(!this.state.showAlert) {
       view =
         <View style={styles.stateBlank}>
           <View style={styles.stateImgWrap}>
@@ -214,6 +254,34 @@ export default class AllOrder extends Component {
           </View>
           {view}
         </ScrollView>
+        <AwesomeAlert
+          show={this.state.showAlert}
+          showProgress={true}
+          closeOnHardwareBackPress={false}
+          closeOnTouchOutside={false}
+          title='Loading..'
+          progressSize='small'
+          progressColor='gray'
+        />
+        <AwesomeAlert
+          show={this.state.showConfirm}
+          showProgress={false}
+          title="提示"
+          message="确认要取消订单吗？"
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="取消"
+          confirmText="确认"
+          confirmButtonColor="#29be87"
+          onCancelPressed={() => {
+            this.hideConfirm();
+          }}
+          onConfirmPressed={() => {
+            this.cancelOrder();
+          }}
+        />
       </View>
     );
   }

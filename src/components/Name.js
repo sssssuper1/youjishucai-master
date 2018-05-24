@@ -57,7 +57,10 @@ export default class Person extends Component {
       name: this.state.name
     }, (responseData) => {
       if (responseData.success) {
+        global.data.user.name = this.state.name;
         this.show();
+        this.props.navigation.state.params.callBack();
+        this.props.navigation.goBack();
       }
     },
     (err) => {

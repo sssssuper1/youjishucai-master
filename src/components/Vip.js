@@ -51,7 +51,14 @@ export default class Vip extends Component {
       rowHasChanged: (r1, r2) => r1 !== r2,
       sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
     });
-    this.state={isVip:false}
+    let isVip = false;
+    if (global.data.user.vip > 0) {
+      isVip = true;
+    }
+    this.state = {
+      isVip: isVip,
+      name: global.data.user.name,
+    }
   }
   render() {
     const { navigate } = this.props.navigation;
@@ -66,8 +73,9 @@ export default class Vip extends Component {
                   <Image style={styles.vipHeadportait} source={require('../images/vip.png')}></Image>      
                 </View>
                 <View style={styles.vipNameAndCard}>
-                  <View style={styles.vipName}><Text style={styles.vipNameText1}>会员：</Text><Text style={styles.vipNameText1}>张三丰</Text></View>
-                  <View style={styles.vipCard}><Text style={styles.vipCardText1}>卡号：</Text><Text style={styles.vipCardText1}>XCF201821</Text></View>      
+                  <View style={styles.vipName}><Text style={styles.vipNameText1}>会员：</Text><Text style={styles.vipNameText1}>{this.state.name}</Text></View>
+                  <View style={styles.vipCard}><Text style={styles.vipCardText1}>卡号：</Text><Text style={styles.vipCardText1}>XCF201821</Text></View>
+                  <View style={styles.vipCard}><Text style={styles.vipTimeText}>2019-04-30 会员到期 ></Text></View>      
                 </View>        
               </ImageBackground>
               <View style={styles.codeWrap}>
@@ -96,7 +104,7 @@ export default class Vip extends Component {
               </View>          
             </View>        
           </ScrollView>
-          <ScrollView contentContainerStyle={styles.scroll}>
+          <ScrollView contentContainerStyle={isVip?styles.hidden:styles.scroll}>
             <View style={styles.vipInfo}>      
               <ImageBackground style={styles.vipBackground} source={require('../images/vipBackground.png')} resizeMode='cover'>
                 <View style={styles.vipImages}>
@@ -204,8 +212,12 @@ const styles = StyleSheet.create({
   vipNameText1: {
     fontSize: pxToDp(28)      
   },
-  vipCartText1: {
+  vipCardText1: {
     fontSize: pxToDp(28)
+  },
+  vipTimeText: {
+    fontSize: pxToDp(28),
+    color: 'white'
   },
   codeWrap: {
     paddingTop: pxToDp(38),  

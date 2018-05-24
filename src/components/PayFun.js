@@ -54,20 +54,6 @@ export default class PayFun extends Component {
   showAlert = () => {
     this.setState({
       showAlert: true
-    }, () => {
-      setTimeout(() => {
-        this.hideAlert();
-      },5000)
-    });
-  }
-  showBullet = () => {
-    this.setState({
-      isBullet: true
-    });
-  }
-  hideBullet = () => {
-    this.setState({
-      isBullet: false
     });
   }
   hideAlert = () => {

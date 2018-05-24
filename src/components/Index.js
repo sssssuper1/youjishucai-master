@@ -10,7 +10,9 @@ import {
   StyleSheet,
   Text,
   View,
-  Image
+  Image,
+  BackHandler,
+  ToastAndroid
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import types from '../actions/shopingCart';
@@ -25,6 +27,7 @@ import SplashScreen from 'react-native-splash-screen';
 import { StackNavigator } from 'react-navigation';
 
 global.url = "http://192.168.0.97:100";
+let firstClick = 0;
 
 export default class Index extends Component {
   constructor(props) {
@@ -48,13 +51,12 @@ export default class Index extends Component {
   };
 
   loadData() {
-    Fetch(global.url + '/api/home/GetInitDataForScript', 'get', '', (responseData) => {
-        alert('success')
-        // global.data = responseData;
-        // store.dispatch({
-        //   type: types.getShopingNum.GETNUM,
-        //   num: responseData.cartNum
-        // });
+    Fetch(global.url + '/api/home/GetInitData', 'get', '', (responseData) => {
+      global.data = responseData;
+      store.dispatch({
+        type: types.getShopingNum.GETNUM,
+        num: responseData.cartNum
+      });
     },
     (err) => {
       alert(err);
@@ -63,6 +65,27 @@ export default class Index extends Component {
 
   componentWillMount() {
     SplashScreen.hide();
+    if (Platform.OS === 'android') { 
+      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    }  
+  }
+
+  handleBack = () => {
+    alert(this.props.navigation.state.routes)
+    let timestamp = (new Date()).valueOf();
+    if (timestamp - firstClick > 2000) {
+        firstClick = timestamp;
+        ToastAndroid.show('再按一次退出', ToastAndroid.SHORT);
+        return true;
+    } else {
+      BackHandler.exitApp();
+    }
   }
 
   render() {

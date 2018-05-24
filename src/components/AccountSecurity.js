@@ -45,8 +45,10 @@ function scrrollHeight(uiElementHeight) {
 export default class AccountSecurity extends Component {
   constructor(props) {
     super(props);
+    let phoneNumber = global.data.user.phone
     this.state={
-      modelVistibal:true
+      modelVistibal: true,
+      phone: phoneNumber.slice(0,3) + '****' + phoneNumber.slice(7),
     }
   }
   
@@ -57,7 +59,7 @@ export default class AccountSecurity extends Component {
         <Header1 navigation={this.props.navigation} name="账户安全"></Header1>
         <View style={styles.margin}>
           <TouchableOpacity style={styles.set} onPress={() => {navigate('ModifyPhoneNum')}}>
-            <Text style={styles.text}>修改手机号码</Text><Text style={styles.warn}>180******8685</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+            <Text style={styles.text}>修改手机号码</Text><Text style={styles.warn}>{this.state.phone}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
           <TouchableOpacity style={styles.set} onPress={() => {navigate('ModifyPassword')}}>
             <Text style={styles.text}>修改密码</Text><Text style={styles.warn}>修改</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>

@@ -75,8 +75,20 @@ export default class PayToVip extends Component {
         this.setState({isInput:false,codeText: '获取验证码'})
       }
     },1000)
-    
   }
+
+  changePaymentMethod() {
+    if (this.state.payNum === 0) {
+      this.setState({
+        payNum: 1
+      })
+    } else if (this.state.payNum === 1) {
+      this.setState({
+        payNum: 0
+      })
+    }
+  }
+
   render() {
     const { codeText, isInput } = this.state;
     const { navigate } = this.props.navigation;
@@ -132,8 +144,16 @@ export default class PayToVip extends Component {
             </View>
           </View>
           <View style={styles.paymentMethod}>
-            <TouchableOpacity style={styles.payment}><Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image><Text>微信支付</Text><Image style={styles.isSelect} source={this.state.payNum===0?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
-            <TouchableOpacity style={styles.payment}><Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image><Text>支付宝</Text><Image style={styles.isSelect} source={this.state.payNum===1?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
+            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+              <Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image>
+              <Text>微信支付</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+              <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
+              <Text>支付宝</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.save} onPress={()=>navigate('PayFun')}>
             <Text style={styles.saveText}>立即支付</Text>

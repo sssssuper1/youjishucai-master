@@ -10,8 +10,7 @@ import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
+import Toast, {DURATION} from 'react-native-easy-toast';
 import {
   Platform,
   StyleSheet,
@@ -51,11 +50,14 @@ export default class GoodsDetail extends Component {
     super(props);
     const { params } = this.props.navigation.state;
 
+    this.index = 0;
+
     this.state={
       selectionModelVisible: false,
       detailModelVisible: false,
       productDetailDt: [{}],
       specDt: [{}],
+      productIndex: 0,
       specIndex: 0,
       count: 1,
     }
@@ -93,7 +95,9 @@ export default class GoodsDetail extends Component {
       goodspecifications: this.state.specDt[this.state.specIndex].id
     }, (responseData) => {
       if (responseData.success) {
-        alert(responseData.cartNum);
+        this.refs.toast.show('加入成功!');
+        store.dispatch({ type: types.addShopingNum.ADDNUM, num: this.state.count })
+        this.closeselectionModel();
       }
     },
     (err) => {
@@ -151,10 +155,22 @@ export default class GoodsDetail extends Component {
       </View>
     );
   }
+
+  _renderSpecifications(list) {
+    return list.map((item, index) => {
+      return (
+        <TouchableOpacity style={this.state.specIndex === index ? styles.modalGoodsSpecContent : styles.modalGoodsSpecContent1}
+          onPress={() => this.changeSpec(index)}>
+          <Text style={this.state.specIndex === index?styles.modalGoodsSpecContentText:styles.modalGoodsSpecContentText1}>{item.spec}</Text>
+        </TouchableOpacity>
+      );
+    })
+  }
   
   render() {
     const { navigate } = this.props.navigation;
-    const { specIndex, productDetailDt, specDt } = this.state;
+    const { specIndex, productIndex, productDetailDt, specDt } = this.state;
+
     return (
       <View style={styles.contenier}>
         <Header1 navigation={this.props.navigation} name="商品详情"></Header1>
@@ -164,7 +180,7 @@ export default class GoodsDetail extends Component {
         </Swiper>
         </View>
         <View style={styles.goodsName}>
-          <Text style={styles.goodsNameText}>{productDetailDt[specIndex].goodName}</Text>
+          <Text style={styles.goodsNameText}>{productDetailDt[productIndex].goodName}</Text>
         </View>
         <View style={styles.goodsPrice}>
           <Text style={styles.nowPrice}>￥{specDt[specIndex].price}</Text>
@@ -190,7 +206,7 @@ export default class GoodsDetail extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}> 
             <View><Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image></View>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>10</Text></View>
+            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
             <View><Text style={styles.cartText}>购物车</Text></View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.addGoods} onPress={this.addToCart.bind(this)}>
@@ -205,7 +221,7 @@ export default class GoodsDetail extends Component {
           <View style={{backgroundColor:"rgba(0,0,0,0.3)",height:"100%"}}>
             <View style={styles.modalWrap}>
               <View style={styles.modalGoods}>
-                <Image style={styles.modalGoodsImg} source={{uri: productDetailDt[specIndex].cover}}></Image>
+                <Image style={styles.modalGoodsImg} source={{uri: productDetailDt[productIndex].cover}}></Image>
               </View>
               <View style={styles.modal}>
                 <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNowPrice}>￥{specDt[specIndex].price}</Text><Text style={styles.modalSymble}>/盒</Text></View>
@@ -214,7 +230,7 @@ export default class GoodsDetail extends Component {
                 <View style={styles.modalGoodsSpecWrap}>
                   <View style={styles.modalGoodsSpec}>
                     <Text>规格</Text>
-                    <View style={styles.modalGoodsSpecContent}><Text style={styles.modalGoodsSpecContentText}>{specDt[specIndex].spec}</Text></View>
+                    {this._renderSpecifications(specDt)}
                   </View>
                   <View style={styles.modalGoodsNum}>
                     <Text>购买数量</Text>
@@ -276,6 +292,7 @@ export default class GoodsDetail extends Component {
             </View> 
           </View>
         </Modal>  
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={410}/>
       </View>
     );
   }
@@ -512,16 +529,31 @@ const styles = StyleSheet.create({
   },
   modalGoodsSpecContent:{
     marginLeft: pxToDp(35),
-    width: pxToDp(158),
+    paddingLeft: pxToDp(20),
+    paddingRight: pxToDp(20),
     height: pxToDp(64),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#2abd89',
     borderRadius: pxToDp(30)
   },
+  modalGoodsSpecContent1:{
+    marginLeft: pxToDp(35),
+    paddingLeft: pxToDp(20),
+    paddingRight: pxToDp(20),
+    height: pxToDp(64),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f4f4f4',
+    borderRadius: pxToDp(30)
+  },
   modalGoodsSpecContentText:{
     fontSize: pxToDp(28),
     color: 'white'
+  },
+  modalGoodsSpecContentText1:{
+    fontSize: pxToDp(28),
+    color: 'black'
   },
   modalGoodsNum:{
     flexDirection: 'row',
@@ -617,5 +649,8 @@ const styles = StyleSheet.create({
   },
   detailListInfo: {
     fontSize: pxToDp(28),
+  },
+  toast:{
+    backgroundColor: '#626262'
   },
 });

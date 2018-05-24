@@ -79,6 +79,18 @@ export default class Order extends Component {
     this.props.navigation.navigate('PaySuccess', {amount: this.state.totalAmount + this.state.shippingFee});
   }
 
+  changePaymentMethod() {
+    if (this.state.payNum === 0) {
+      this.setState({
+        payNum: 1
+      })
+    } else if (this.state.payNum === 1) {
+      this.setState({
+        payNum: 0
+      })
+    }
+  }
+
   //list渲染
   _renderRow1(item, index) {
     return (
@@ -139,8 +151,16 @@ export default class Order extends Component {
             />  
           </View>
           <View style={styles.paymentMethod}>
-            <TouchableOpacity style={styles.payment}><Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image><Text>微信支付</Text><Image style={styles.isSelect} source={this.state.payNum===0?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
-            <TouchableOpacity style={styles.payment}><Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image><Text>支付宝</Text><Image style={styles.isSelect} source={this.state.payNum===1?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
+            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+              <Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image>
+              <Text>微信支付</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+              <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
+              <Text>支付宝</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
           </View>
           <View style={styles.goods}>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共三件</Text></View>
