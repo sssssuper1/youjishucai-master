@@ -12,6 +12,7 @@ import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
+import { StackActions, NavigationActions } from 'react-navigation';
 import {
   Platform,
   StyleSheet,
@@ -49,6 +50,18 @@ export default class Set extends Component {
       modelVistibal:true
     }
   }
+
+  logout() {
+    global.storage.remove({
+      key: 'Cookie'
+    });
+
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+    });
+    this.props.navigation.dispatch(resetAction);
+  }
   
   render() {
     const { navigate } = this.props.navigation;
@@ -66,7 +79,7 @@ export default class Set extends Component {
         <TouchableOpacity style={[styles.set,styles.margin]}>
           <Image style={styles.Img} source={require('../images/about.png')}></Image><Text style={styles.text}>关于我们</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
         </TouchableOpacity> 
-        <TouchableOpacity style={styles.save} onPress={() => {navigate('SignIn')}}>
+        <TouchableOpacity style={styles.save} onPress={this.logout.bind(this)}>
           <Text style={styles.saveText}>退出当前账户</Text>
         </TouchableOpacity>
       </View>

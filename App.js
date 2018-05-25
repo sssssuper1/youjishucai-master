@@ -37,8 +37,12 @@ import UserAddress from './src/components/UserAddress';
 import EditAddress from './src/components/EditAddress';
 import VipRegister from './src/components/VipRegister';
 import TabNavigator from 'react-native-tab-navigator';
+import SplashScreen from 'react-native-splash-screen';
 import { StackNavigator } from 'react-navigation';
-import store from './src/store/index'
+import store from './src/store/index';
+import { storage } from './src/js/StorageUtil';
+
+global.storage = storage;
 
 class NewPasswordScreen extends Component { 
   static navigationOptions = {
@@ -301,116 +305,157 @@ class PayToVipScreen extends Component {
   }
 }
 
-const RootNavigator = StackNavigator({
-  // 主页
-  Home: {
-    screen: HomeScreen,
-  },
-  // 登录
-  SignIn: {
-    screen: SignInScreen,
-  }, 
-  // 购物车
-  Cart: {
-    screen: CartScreen,
-  },
-  // vip会员注册
-  VipRegister: {
-    screen: VipRegisterScreen,
-  },
-  // 忘记密码
-  NewPassword: {
-    screen: NewPasswordScreen,
-  },
-  // 注册
-  Register1: {
-    screen: Register1Screen,
-  },
-  // 注册/忘记密码 输入手机号
-  Register: {
-    screen: RegisterScreen,
-  },
-  // 客服中心
-  ServiceCenter: {
-    screen: ServiceCenterScreen,
-  },
-  // 系统消息详情页
-  MessageDetail: {
-    screen: MessageDetailScreen,
-  },
-  // 系统消息
-  Message: {
-    screen: MessageScreen,
-  },
-  // 修改密码
-  ModifyPassword: {
-    screen: ModifyPasswordScreen,
-  },
-  // 修改手机
-  ModifyPhoneNum: {
-    screen: ModifyPhoneNumScreen,
-  },
-  // 账号安全
-  AccountSecurity: {
-    screen: AccountSecurityScreen,
-  },
-  // 修改昵称
-  Name: {
-    screen: NameScreen,
-  },
-  // 个人信息
-  Person: {
-    screen: PersonScreen,
-  },
-  // 设置
-  Set: {
-    screen: SetScreen,
-  },
-  // 商品详情
-  GoodsDetail: {
-    screen: GoodsDetailScreen,
-  },
-  // 全部订单
-  AllOrder: {
-    screen: AllOrderScreen,
-  },
-  // 支付失败
-  PayFun: {
-    screen: PayFunScreen,
-  },
-  // 支付成功
-  PaySuccess: {
-    screen: PaySuccessScreen,
-  },
-  // 订单详情
-  MyOrder: {
-    screen: MyOrderScreen,
-  },
-  // 收货地址
-  UserAddress: {
-    screen: UserAddressScreen,
-  },
-  // 编辑收货地址
-  EditAddress: {
-    screen: EditAddressScreen,
-  },
-  // 搜索
-  SearchGoods: {
-    screen: SearchGoodsScreen,
-  },
-  // vip购买付费
-  PayToVip: {
-    screen: PayToVipScreen,
-  },
-  // 确认订单
-  Order: {
-    screen: OrderScreen,
-  },
-  
-  
-});
+function configAppNavigator(isLoggeIn) {
+  return StackNavigator({
+    // 主页
+    Home: {
+      screen: HomeScreen,
+    },
+    // 登录
+    SignIn: {
+      screen: SignInScreen,
+    }, 
+    // 购物车
+    Cart: {
+      screen: CartScreen,
+    },
+    // vip会员注册
+    VipRegister: {
+      screen: VipRegisterScreen,
+    },
+    // 忘记密码
+    NewPassword: {
+      screen: NewPasswordScreen,
+    },
+    // 注册
+    Register1: {
+      screen: Register1Screen,
+    },
+    // 注册/忘记密码 输入手机号
+    Register: {
+      screen: RegisterScreen,
+    },
+    // 客服中心
+    ServiceCenter: {
+      screen: ServiceCenterScreen,
+    },
+    // 系统消息详情页
+    MessageDetail: {
+      screen: MessageDetailScreen,
+    },
+    // 系统消息
+    Message: {
+      screen: MessageScreen,
+    },
+    // 修改密码
+    ModifyPassword: {
+      screen: ModifyPasswordScreen,
+    },
+    // 修改手机
+    ModifyPhoneNum: {
+      screen: ModifyPhoneNumScreen,
+    },
+    // 账号安全
+    AccountSecurity: {
+      screen: AccountSecurityScreen,
+    },
+    // 修改昵称
+    Name: {
+      screen: NameScreen,
+    },
+    // 个人信息
+    Person: {
+      screen: PersonScreen,
+    },
+    // 设置
+    Set: {
+      screen: SetScreen,
+    },
+    // 商品详情
+    GoodsDetail: {
+      screen: GoodsDetailScreen,
+    },
+    // 全部订单
+    AllOrder: {
+      screen: AllOrderScreen,
+    },
+    // 支付失败
+    PayFun: {
+      screen: PayFunScreen,
+    },
+    // 支付成功
+    PaySuccess: {
+      screen: PaySuccessScreen,
+    },
+    // 订单详情
+    MyOrder: {
+      screen: MyOrderScreen,
+    },
+    // 收货地址
+    UserAddress: {
+      screen: UserAddressScreen,
+    },
+    // 编辑收货地址
+    EditAddress: {
+      screen: EditAddressScreen,
+    },
+    // 搜索
+    SearchGoods: {
+      screen: SearchGoodsScreen,
+    },
+    // vip购买付费
+    PayToVip: {
+      screen: PayToVipScreen,
+    },
+    // 确认订单
+    Order: {
+      screen: OrderScreen,
+    },
+    
+    
+  }, {
+    initialRouteName: isLoggeIn ? 'Home' : 'SignIn'
+  });
+}
+
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      checkedLogin: false,
+      isLoggedIn: false
+    }
+  }
+
+  componentDidMount() {
+    // SplashScreen.hide();
+    global.storage.load({
+      key: 'Cookie'
+    }).then(ret => {
+      this.setState({
+        checkedLogin: true
+      });
+      if (ret.userId == 'TestUser') {
+        this.setState({
+          isLoggedIn: true
+        });
+      }
+    }).catch(err => {
+      this.setState({
+        checkedLogin: true
+      });
+    });
+  }
+
   render() {
+    const { checkedLogin, isLoggedIn } = this.state;
+
+    if (!checkedLogin) {
+      return null;
+    }
+
+    const RootNavigator = configAppNavigator(isLoggedIn);
     return <RootNavigator store={store} />;
   }
 }

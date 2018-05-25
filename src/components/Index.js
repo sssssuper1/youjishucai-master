@@ -44,6 +44,10 @@ export default class Index extends Component {
       }
     }
 
+    this._didFocusSubscription = props.navigation.addListener('didFocus', payload =>
+      BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    );
+
     this.loadData();
   }
   static navigationOptions = {
@@ -63,21 +67,19 @@ export default class Index extends Component {
     });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     SplashScreen.hide();
-    if (Platform.OS === 'android') { 
-      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
-    }
+    this._willBlurSubscription = this.props.navigation.addListener('willBlur', payload =>
+      BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    );
   }
 
   componentWillUnmount() {
-    if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    }  
+    this._didFocusSubscription && this._didFocusSubscription.remove();
+    this._willBlurSubscription && this._willBlurSubscription.remove();
   }
 
-  handleBack = () => {
-    alert(this.props.navigation.state.routes)
+  onBackButtonPressAndroid = () => {
     let timestamp = (new Date()).valueOf();
     if (timestamp - firstClick > 2000) {
         firstClick = timestamp;

@@ -13,7 +13,7 @@ import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
-import PopupDialog from 'react-native-popup-dialog';
+import SplashScreen from 'react-native-splash-screen';
 import {
   Platform,
   StyleSheet,
@@ -54,12 +54,17 @@ export default class SignIn extends Component {
       phone:'',
       password: ''
     }
-    
   }
+
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+
   isHidden(){
     let isHidden=!this.state.isHidden;
     this.setState({isHidden:isHidden})
   }
+
   phoneInput(text){
     let disabled=true
     if(text.length>0&&this.state.password.length>0){
@@ -67,6 +72,7 @@ export default class SignIn extends Component {
     }
     this.setState({disabled:disabled,phone:text})
   }
+
   passwordInput(text){
     let disabled=true
     if(this.state.phone.length>0&&text.length>0){
@@ -74,6 +80,17 @@ export default class SignIn extends Component {
     }
     this.setState({disabled:disabled,password:text}) 
   }
+
+  login() {
+    global.storage.save({
+      key: 'Cookie',
+      data: {
+        userId: 'TestUser'
+      }
+    });
+    this.props.navigation.replace('Home');
+  }
+  
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -107,7 +124,7 @@ export default class SignIn extends Component {
               <Image style={this.state.isHidden ? styles.opacity : styles.showPassword} source={require('../images/showPassword.png')}></Image>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => {navigate('Home')}} disabled={this.state.disabled} style={this.state.disabled?styles.signIn:styles.signIn1}><Text style={{color:"white"}}>登录</Text></TouchableOpacity>
+          <TouchableOpacity onPress={this.login.bind(this)} disabled={this.state.disabled} style={this.state.disabled?styles.signIn:styles.signIn1}><Text style={{color:"white"}}>登录</Text></TouchableOpacity>
           <View style={styles.otherBtn}>
             <TouchableOpacity style={[styles.btn, styles.register]} onPress={() => {navigate('Register',{linkType: 1})}}>
               <Text style={styles.registerText}>快速注册</Text>
