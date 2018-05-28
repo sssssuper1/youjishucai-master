@@ -6,11 +6,11 @@
 
 import React, { Component, PureComponent } from 'react';
 import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
-import Fetch from '../js/fetch'
-import Header from './Header'
-import AwesomeAlert from 'react-native-awesome-alerts';
+import types from '../actions/shopingCart';
+import store from '../store/index';
+import Fetch from '../js/fetch';
+import Header from './Header';
+import wxPay from '../js/wxPay';
 import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
@@ -33,13 +33,6 @@ import {
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
-
 
 export default class Order extends Component {
   constructor(props) {
@@ -66,7 +59,8 @@ export default class Order extends Component {
           dataSource: responseData.data.shopCartListDt,
           address: responseData.data.address,
           totalAmount: responseData.data.totalAmount,
-          shippingFee: responseData.data.shippingFee
+          shippingFee: responseData.data.shippingFee,
+          enterpriseAccountPayment: responseData.data.enterpriseAccountPayment
         });
       }
     },
@@ -76,7 +70,23 @@ export default class Order extends Component {
   }
 
   pay() {
-    this.props.navigation.navigate('PaySuccess', {amount: this.state.totalAmount + this.state.shippingFee});
+    const { navigate } = this.props.navigation;
+
+    let params = {
+      isApp: true,
+      cartProducts: this.state.dataSource.shopCartListDt,
+      customerAddressId: 0,
+      customerCouponId: '',
+      defaultDeliveryType: 0,
+      enterpriseAccountPayment: this.state.enterpriseAccountPayment,
+      pickUpPerson: '',
+      pickUpPhone: '',
+      pickUpPointsId: '',
+      remark: '',
+      isApp:true
+    }
+    wxPay(params, navigate, '/API/Order/Add');
+    // this.props.navigation.navigate('PaySuccess', {amount: this.state.totalAmount + this.state.shippingFee});
   }
 
   changePaymentMethod(payNum) {
@@ -85,6 +95,7 @@ export default class Order extends Component {
     });
   }
 
+  //地址选择后重取数据
   callBack() {
     this.loadData();
   }
@@ -109,6 +120,7 @@ export default class Order extends Component {
       </View>  
     );
   }
+
   render() {
     const { navigate, goBack } = this.props.navigation;
     return (
