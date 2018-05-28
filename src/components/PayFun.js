@@ -34,13 +34,6 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
-
 
 export default class PayFun extends Component {
   constructor(props) {
@@ -51,16 +44,25 @@ export default class PayFun extends Component {
       showAlert: false,
     }
   }
+
   showAlert = () => {
     this.setState({
       showAlert: true
     });
   }
+
   hideAlert = () => {
     this.setState({
       showAlert: false
     });
   }
+
+  changePaymentMethod(payNum) {
+    this.setState({
+      payNum: payNum
+    });
+  }
+
   render() {
     const {userAddresses,state,showAlert,message} = this.state
     return (
@@ -77,8 +79,16 @@ export default class PayFun extends Component {
           <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>订单号</Text><Text style={styles.price}>211547346896</Text></View>
         </View>
         <View style={styles.paymentMethod}>
-          <TouchableOpacity style={styles.payment}><Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image><Text>微信支付</Text><Image style={styles.isSelect} source={this.state.payNum===0?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
-          <TouchableOpacity style={styles.payment}><Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image><Text>支付宝</Text><Image style={styles.isSelect} source={this.state.payNum===1?require('../images/select.png'):require('../images/unchecked.png')}></Image></TouchableOpacity>
+          <TouchableOpacity style={styles.payment} onPress={() => this.changePaymentMethod(0)}>
+            <Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image>
+            <Text>微信支付</Text>
+            <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.payment} onPress={() => this.changePaymentMethod(1)}>
+            <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
+            <Text>支付宝</Text>
+            <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.save} onPress={()=>{
           this.showAlert()

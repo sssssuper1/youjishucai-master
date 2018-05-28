@@ -58,7 +58,9 @@ export default class Home extends Component {
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
       message: 'error',
-      rightGoods:[]
+      announce: '',
+      rightGoods: [],
+      count: store.getState().count
     }
     //菜单获取
     let manuUrl=global.url + '/api/home/initSgHome'
@@ -94,7 +96,8 @@ export default class Home extends Component {
           LeftdataSource: type1.cloneWithRows(LeftdataSource),
           rightGoods: rightGoods,
           RightdataSource: type2.cloneWithRows(rightGoods[0]),
-          selectName: LeftdataSource[0].name
+          selectName: LeftdataSource[0].name,
+          announce: '为了让公司员工过一个欢乐祥和的五一劳动节，现将我司放假时间通知如下：2018年4月29日至2018年5月1日放假，共3天（届时3天内订单将统一在2018年5月2日正式上班安排发出，敬请谅解.'
         }, () => { 
           // this.popupDialog.show();
         })
@@ -105,6 +108,12 @@ export default class Home extends Component {
     }, (err) => { 
       this.setState({message: error.toString()})
       this.showAlert()
+    })
+
+    this.unsubscribe = store.subscribe(() => {
+      this.setState({
+        count: store.getState().count
+      })
     })
   }
   showAlert = () => {
@@ -153,6 +162,11 @@ export default class Home extends Component {
       },
     });
   }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   animate() {
     Animated.sequence([
         Animated.timing(                            // 随时间变化而执行的动画类型
@@ -257,7 +271,7 @@ export default class Home extends Component {
           </View>
           <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}} >
             <Image style={styles.cartImg} source={require("../images/cart.png")}></Image>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
+            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
           </TouchableOpacity>  
         </ImageBackground>
         <View style={styles.wrapperWrap}>
@@ -326,12 +340,7 @@ export default class Home extends Component {
             </View>
           <View style={styles.bullet}>
             <View style={styles.bulletTitle}><Text style={styles.bulletTitleText}>消息通知</Text></View>  
-            <View style={styles.bulletContent}><Text style={styles.bulletContentText}>为了让公司员工过一个欢乐祥和的
-              五一劳动节，现将我司放假时间通
-              知如下：2018年4月29日至2018年
-              5月1日放假，共3天（届时3天内订
-              单将统一在2018年5月2日正式上班
-              安排发出，敬请谅解.</Text>
+            <View style={styles.bulletContent}><Text style={styles.bulletContentText}>{this.state.announce}</Text>
             </View>
             <TouchableOpacity style={styles.button} onPress={this.onButtonPress.bind(this)}>
               <Text

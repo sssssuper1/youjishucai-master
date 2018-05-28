@@ -56,8 +56,15 @@ export default class SearchGoods extends Component {
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
-      showAlert: showAlert
+      showAlert: showAlert,
+      count: store.getState().count
     }
+
+    this.unsubscribe = store.subscribe(() => {
+      this.setState({
+        count: store.getState().count
+      })
+    })
   }
 
   search() {
@@ -117,6 +124,11 @@ export default class SearchGoods extends Component {
       },
     });
   }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+  
   animate() {
     Animated.sequence([
         Animated.timing(                            // 随时间变化而执行的动画类型
@@ -171,6 +183,7 @@ export default class SearchGoods extends Component {
       </View>
     );
   }
+
   render() {
     const { navigate, goBack } = this.props.navigation;
     const { params } = this.props.navigation.state;
@@ -212,7 +225,7 @@ export default class SearchGoods extends Component {
           </View>
           <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}>
             <Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
+            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
           </TouchableOpacity>
         </View>
         {view}

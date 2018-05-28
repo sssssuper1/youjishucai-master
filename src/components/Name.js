@@ -48,7 +48,8 @@ export default class Person extends Component {
     super(props);
     this.state={
       modelVistibal:true,
-      name: ''
+      name: '',
+      message: '该用户名已被占用，另取一个名字吧~'
     }
   }
 
@@ -59,8 +60,9 @@ export default class Person extends Component {
       if (responseData.success) {
         global.data.user.name = this.state.name;
         this.show();
-        this.props.navigation.state.params.callBack();
-        this.props.navigation.goBack();
+        // this.popupDialog.show();
+        // this.props.navigation.state.params.callBack();
+        // this.props.navigation.goBack();
       }
     },
     (err) => {
@@ -69,8 +71,13 @@ export default class Person extends Component {
   }
 
   show(){
-    this.refs.toast.show('修改成功!');
+    this.refs.toast.show('昵称修改成功!');
   }
+
+  popupClose() {
+    this.popupDialog.dismiss();
+  }
+
   render() {
     return (
       <View style={styles.contenier} >
@@ -88,7 +95,21 @@ export default class Person extends Component {
             <TouchableOpacity onPress={this.changeName.bind(this)}  style={styles.btn}><Text style={styles.btnText}>确定</Text></TouchableOpacity>
           </View>
         </View> 
-        <Toast ref="toast" style={styles.toast} position="top" positionValue={290}/>
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={290} />
+        <PopupDialog
+          width={pxToDp(600)} 
+          height={pxToDp(385)} 
+          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+          >
+          <View style={styles.bullet}>
+            <View style={styles.bulletTitle}><Text style={styles.bulletTitleText}>提示</Text></View>  
+            <View style={styles.bulletContent}><Text style={styles.bulletContentText}>{this.state.message}</Text>
+            </View>
+            <TouchableOpacity style={styles.button} onPress={this.popupClose.bind(this)}>
+              <Text style={styles.buttonText}>确定</Text>
+            </TouchableOpacity>
+          </View>
+        </PopupDialog>
       </View>
     );
   }
@@ -131,7 +152,39 @@ const styles = StyleSheet.create({
   toast:{
     backgroundColor: '#626262'
   },
-  // modal:{
-  //   width: 
-  // }
+  bullet: {
+    alignItems: 'center',
+    padding: 0
+  },
+  bulletTitle: {
+    marginTop: pxToDp(55),
+    marginBottom: pxToDp(25),
+    width: pxToDp(480)
+  },
+  bulletTitleText: {
+    fontSize: pxToDp(40),
+    color: "#333335",
+  },
+  bulletContent: {
+    width: pxToDp(480)
+  },
+  bulletContentText: {
+    fontSize: pxToDp(33),
+    color: '#99979a'
+  },
+  button: {
+    marginTop: pxToDp(50),
+    marginBottom: pxToDp(50),
+    width: '100%',
+    height: pxToDp(100),
+    borderTopWidth: pxToDp(1),
+    borderTopColor: '#d9ddde',
+    backgroundColor: "white",
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    color: "#2abd89",
+    fontSize: pxToDp(33),
+  }
 });

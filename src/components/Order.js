@@ -79,16 +79,14 @@ export default class Order extends Component {
     this.props.navigation.navigate('PaySuccess', {amount: this.state.totalAmount + this.state.shippingFee});
   }
 
-  changePaymentMethod() {
-    if (this.state.payNum === 0) {
-      this.setState({
-        payNum: 1
-      })
-    } else if (this.state.payNum === 1) {
-      this.setState({
-        payNum: 0
-      })
-    }
+  changePaymentMethod(payNum) {
+    this.setState({
+      payNum: payNum
+    });
+  }
+
+  callBack() {
+    this.loadData();
   }
 
   //list渲染
@@ -122,11 +120,20 @@ export default class Order extends Component {
           <Text style={styles.headerTitle}>确认订单</Text>
         </View>
         <ScrollView> 
-          <TouchableOpacity style={styles.address} onPress={() => {navigate('UserAddress')}}>
+          <TouchableOpacity style={!!this.state.address.consignee?styles.address:styles.hidden} onPress={() => {navigate('UserAddress', {callBack: () => this.callBack()})}}>
             <View style={styles.addressWrap}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}></Image></View>
             <View style={styles.userInfo}>
               <View style={styles.user}><Text style={styles.userName}>{this.state.address.consignee}</Text><Text style={styles.userPhone}>{this.state.address.consigneePhone}</Text></View>
               <View style={styles.userAddress}><Text style={styles.userAddressText}>{this.state.address.detailedAddress}</Text></View>
+            </View>
+            <View style={styles.dir}>
+              <Image style={styles.dirImg} source={require('../images/rightDir.png')}></Image>
+            </View>  
+          </TouchableOpacity>
+          <TouchableOpacity style={!this.state.address.consignee?styles.addressNone:styles.hidden} onPress={() => {navigate('UserAddress')}}>
+            <View style={styles.addressWrap}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}></Image></View>
+            <View style={styles.userInfo}>
+              <View style={styles.userAddress}><Text style={styles.userAddressText}>请编辑收货地址</Text></View>
             </View>
             <View style={styles.dir}>
               <Image style={styles.dirImg} source={require('../images/rightDir.png')}></Image>
@@ -151,12 +158,12 @@ export default class Order extends Component {
             />  
           </View>
           <View style={styles.paymentMethod}>
-            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(0)}>
               <Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image>
               <Text>微信支付</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(1)}>
               <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
@@ -186,6 +193,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
+  hidden: {
+    display: 'none'
+  },
   header: {
     position: 'relative',
     height: pxToDp(96),
@@ -213,6 +223,15 @@ const styles = StyleSheet.create({
     paddingLeft: pxToDp(26),
     paddingRight: pxToDp(26),
     height: pxToDp(190),
+    alignItems: "center",
+    justifyContent: 'center',
+    backgroundColor: 'white'
+  },
+  addressNone: {
+    flexDirection: 'row',
+    paddingLeft: pxToDp(26),
+    paddingRight: pxToDp(26),
+    height: pxToDp(105),
     alignItems: "center",
     justifyContent: 'center',
     backgroundColor: 'white'

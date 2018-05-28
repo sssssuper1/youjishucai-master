@@ -139,6 +139,10 @@ export default class EditAddress extends Component {
     
     Fetch(global.url + '/API/user/updateAddress', 'post', params, (responseData) => {
       if (responseData.success) {
+        const { state } = this.props.navigation;
+        if (state.params != undefined && state.params.callBack != undefined) {
+          state.params.callBack();
+        }
         navigate('UserAddress');
       }
     },

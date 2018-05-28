@@ -33,23 +33,11 @@ import {
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  return deviceHeightDp-uiElementHeight;
-}
-
 
 export default class Community extends Component {
   constructor(props) {
     super(props);
-    //左边菜单
-    var type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //右边菜单  
-    let type2 = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
-    });
+
     this.state = {
       menuNum: 0,
       list1: [{
@@ -63,10 +51,6 @@ export default class Community extends Component {
   swipeMenu(num) { 
     this.setState({ menuNum:num})
   }
-  componentWillMount() {
-   
-  }
-
 
   render() {
     let {menuNum } = this.state
@@ -78,7 +62,7 @@ export default class Community extends Component {
             this.swipeMenu(0)
           }}>
             <View style={styles.menuImgWrap}>
-              <Image style={styles.menuImg} source={require("../images/tangyidian.png")}></Image>
+              <Image style={styles.menuImg} source={menuNum===0?require("../images/tangyidian-2.png"):require("../images/tangyidian-1.png")}></Image>
             </View>
             <View style={styles.menuNameWrap}>
               <Text style={menuNum===0?styles.menuName1:styles.menuName}>汤一点</Text>
@@ -89,7 +73,7 @@ export default class Community extends Component {
             this.swipeMenu(1)
           }}>
             <View style={styles.menuImgWrap}>
-              <Image style={styles.menuImg} source={require("../images/kangyangzhongxin.png")}></Image>
+              <Image style={styles.menuImg} source={menuNum===1?require("../images/kangyangzhongxin-2.png"):require("../images/kangyangzhongxin-1.png")}></Image>
             </View>
             <View style={styles.menuNameWrap}>
               <Text style={menuNum===1?styles.menuName1:styles.menuName}>康养中心</Text>
@@ -100,7 +84,7 @@ export default class Community extends Component {
             this.swipeMenu(2)
           }}>
             <View style={styles.menuImgWrap}>
-              <Image style={styles.menuImg} source={require("../images/gongxiangzhijia.png")}></Image>
+              <Image style={styles.menuImg} source={menuNum===2?require("../images/gongxiangzhijia-2.png"):require("../images/gongxiangzhijia-1.png")}></Image>
             </View>
             <View style={styles.menuNameWrap}>
               <Text style={menuNum===2?styles.menuName1:styles.menuName}>共享商家</Text>
@@ -114,7 +98,7 @@ export default class Community extends Component {
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
               <View style={styles.list1ContentImgLeft}>
-                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin.png")}></Image>
+                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
               </View>
               <View style={styles.list1ContentRIght}>
                 <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>汤一点(南京山西路店)</Text></View>
@@ -129,7 +113,7 @@ export default class Community extends Component {
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
               <View style={styles.list1ContentImgLeft}>
-                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin.png")}></Image>
+                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
               </View>
               <View style={styles.list1ContentRIght}>
                 <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>汤一点(南京山西路店)</Text></View>
@@ -144,7 +128,7 @@ export default class Community extends Component {
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
               <View style={styles.list1ContentImgLeft}>
-                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin.png")}></Image>
+                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
               </View>
               <View style={styles.list1ContentRIght}>
                 <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>汤一点(南京山西路店)</Text></View>

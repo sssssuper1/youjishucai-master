@@ -44,7 +44,14 @@ export default class My extends Component {
       goodsReceiptDt: 0,
       name: global.data.user.name,
       vip: global.data.user.vip,
+      count: store.getState().count
     }
+
+    this.unsubscribe = store.subscribe(() => {
+      this.setState({
+        count: store.getState().count
+      })
+    })
   }
 
   loadData() {
@@ -70,6 +77,10 @@ export default class My extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -91,8 +102,8 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart1Img]}>
               <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
             </View>
-            <View style={store.getState().count > 0 ? styles.cart1NumWrap : styles.hidden}>
-              <Text style={styles.cart1Num}>{store.getState().count}</Text>
+            <View style={this.state.count > 0 ? styles.cart1NumWrap : styles.hidden}>
+              <Text style={styles.cart1Num}>{this.state.count}</Text>
             </View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>购物车</Text>

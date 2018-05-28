@@ -77,6 +77,11 @@ export default class UserAddress extends Component {
       }
     );
   }
+
+  callBack() {
+    this.loadData();
+  }
+
   _renderItem = ({item}) => {
       return (
         <View style={styles.addressInfo}>
@@ -104,7 +109,7 @@ export default class UserAddress extends Component {
           contentContainerStyle={styles.addressInfoWrap}
           renderItem={this._renderItem}
         />
-        <TouchableOpacity style={styles.btn} onPress={() => {navigate('EditAddress', { userAddress: this.state.userAddresses[0] })}}>
+        <TouchableOpacity style={styles.btn} onPress={() => {navigate('EditAddress', { userAddress: this.state.userAddresses[0], callBack: () => this.callBack()})}}>
           <Text style={styles.btnText}>编辑收货地址</Text>
         </TouchableOpacity>
       </View>

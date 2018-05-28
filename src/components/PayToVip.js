@@ -65,16 +65,10 @@ export default class PayToVip extends Component {
     },1000)
   }
 
-  changePaymentMethod() {
-    if (this.state.payNum === 0) {
-      this.setState({
-        payNum: 1
-      })
-    } else if (this.state.payNum === 1) {
-      this.setState({
-        payNum: 0
-      })
-    }
+  changePaymentMethod(payNum) {
+    this.setState({
+      payNum: payNum
+    });
   }
 
   render() {
@@ -132,12 +126,12 @@ export default class PayToVip extends Component {
             </View>
           </View>
           <View style={styles.paymentMethod}>
-            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(0)}>
               <Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image>
               <Text>微信支付</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.payment} onPress={this.changePaymentMethod.bind(this)}>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(1)}>
               <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>

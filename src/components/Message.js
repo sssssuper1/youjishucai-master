@@ -48,9 +48,9 @@ export default class Message extends Component {
     super(props);
     this.state={
       modelVistibal:true,
-      name: ''
+      name: '',
+      messages: []
     }
-    
   }
   show(){
     this.refs.toast.show('hello world!');
@@ -64,8 +64,8 @@ export default class Message extends Component {
           <View style={styles.message}>
             <View style={styles.messageImgWrap}><Image style={styles.messageImg} source={require('../images/message.png')}></Image></View>
             <View style={styles.messageContent}>
-              <View style={styles.title}><Text style={styles.titleContent}>物流通知</Text></View>
-              <View ><Text style={styles.p}>五一节到了快迪欧飞机火车就看见我，大胃发我我的娃胃王的发我我的娃五一节到了</Text></View>
+              <View style={styles.title}><Text style={styles.titleContent}>{item.title}</Text></View>
+              <View ><Text style={styles.p}>{item.content}</Text></View>
             </View> 
           </View>
           <View style={styles.seeDetail}>
@@ -76,13 +76,30 @@ export default class Message extends Component {
     )
   }
   render() {
+    const { navigate } = this.props.navigation;
+    let view;
+    if (this.state.messages.length > 0) {
+      view = 
+      <FlatList
+          data={this.state.messages}
+          renderItem={({item}) => this._render(item)}
+        />  
+    } else {
+      view =
+        <View style={styles.state}>
+          <View style={styles.stateImgWrap}>
+            <Image style={styles.stateImg} source={require('../images/noMessage.png')}></Image>
+          </View>
+          <View style={styles.stateShow}><Text style={styles.stateShowText}>您还没有消息通知</Text></View>
+          <TouchableOpacity style={styles.stateButton} onPress={() => navigate('Home', {selectedTab: 'home'})}>
+            <Text>去逛逛</Text>
+          </TouchableOpacity>
+        </View>  
+    }
     return (
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="系统消息"></Header1>
-        <FlatList
-          data={[{key: 'a'}, {key: 'b'}, {key: 'c'}]}
-          renderItem={({item}) => this._render(item)}
-        />          
+        {view}       
       </View>
     );
   }
@@ -166,5 +183,31 @@ const styles = StyleSheet.create({
     marginLeft: pxToDp(16),
     width: pxToDp(12),
     height: pxToDp(22)
-  }
+  },
+  state: {
+    width: '100%',
+    height: pxToDp(537),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  stateImgWrap: {
+    marginTop: pxToDp(200)
+  },
+  stateImg: {
+    width: pxToDp(253),
+    height: pxToDp(270)
+  },
+  stateShow: {
+    marginTop:pxToDp(50),
+  },
+  stateButton: {
+    marginTop: pxToDp(40),
+    width: pxToDp(200),
+    paddingTop: pxToDp(8),
+    paddingBottom: pxToDp(8),
+    borderWidth: pxToDp(1),
+    borderColor: '#a9a9a9',
+    borderRadius: pxToDp(10),
+    alignItems: 'center'
+  },
 });
