@@ -280,21 +280,23 @@ export default class Cart extends Component {
 
     return (
       <View style={styles.contenier}>  
-        <ImageBackground style={styles.header} source={require('../images/headerBackground.png')} resizeMode='cover'>
-          <TouchableOpacity style={styles.headerGoBack} onPress={() => {goBack()}}>
-            <Image style={styles.headerGoBackImg} source={require('../images/leftDir.png')}></Image>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>购物车</Text>
-          <TouchableOpacity onPress={() => { 
-            this.editFn()
-          }} style={!this.state.isEdit&&this.state.dataSource.length>0?styles.headerEdit:styles.hidden}>
-            <Text  style={styles.headerEditText}>编辑</Text>
-          </TouchableOpacity> 
-          <TouchableOpacity onPress={() => { 
-            this.finish()
-          }} style={this.state.isEdit&&this.state.dataSource.length>0?styles.headerEdit:styles.hidden}>
-            <Text  style={styles.headerEditText}>完成</Text>
-          </TouchableOpacity>  
+        <ImageBackground style={styles.headerContainer} source={require('../images/headerBackground.png')} resizeMode='cover'>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.headerGoBack} onPress={() => {goBack()}}>
+              <Image style={styles.headerGoBackImg} source={require('../images/leftDir.png')}></Image>
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>购物车</Text>
+            <TouchableOpacity onPress={() => { 
+              this.editFn()
+            }} style={!this.state.isEdit&&this.state.dataSource.length>0?styles.headerEdit:styles.hidden}>
+              <Text  style={styles.headerEditText}>编辑</Text>
+            </TouchableOpacity> 
+            <TouchableOpacity onPress={() => { 
+              this.finish()
+            }} style={this.state.isEdit&&this.state.dataSource.length>0?styles.headerEdit:styles.hidden}>
+              <Text  style={styles.headerEditText}>完成</Text>
+            </TouchableOpacity>  
+          </View>
         </ImageBackground>
         {view}
         <View style={this.state.dataSource.length>0?styles.result:styles.hidden}>
@@ -341,6 +343,19 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  headerContainer: {
+    position: 'relative',
+    height: pxToDp(96),
+    ...Platform.select({
+      ios: {
+        height: pxToDp(124),
+        paddingTop: pxToDp(28)
+      },
+      android: {
+        height: pxToDp(96),
+      }
+    })
   },
   header: {
     position: 'relative',

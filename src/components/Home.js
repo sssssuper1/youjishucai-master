@@ -253,26 +253,28 @@ export default class Home extends Component {
     const { showAlert, message } = this.state;
     return (
       <View style={styles.contenier}>  
-        <ImageBackground style={styles.header} source={require('../images/headerBackground.png')} resizeMode='cover'>
-          <TouchableOpacity style={styles.customerServiceBtn} onPress={() => {navigate('ServiceCenter')}}>
-            <Image style={styles.customerServiceImg} source={require("../images/customerService.png")}></Image>
-          </TouchableOpacity>
-          <View style={styles.headerSearchWrap}>
-            <Image style={styles.headerSearchImg} source={require("../images/search.png")}></Image>  
-            <TextInput
-              returnKeyType={"search"}
-              style={styles.headerSearch}
-              underlineColorAndroid={'transparent'}
-              onChangeText={(text) => this.setState({ searchText: text })}
-              onSubmitEditing={this.search.bind(this)}
-              placeholder={'输入关键字直接搜索...'}
-              placeholderTextColor={'#a6a6a6'}
-            />
+        <ImageBackground style={styles.headerBackground} source={require('../images/headerBackground.png')} resizeMode='cover'>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.customerServiceBtn} onPress={() => {navigate('ServiceCenter')}}>
+              <Image style={styles.customerServiceImg} source={require("../images/customerService.png")}></Image>
+            </TouchableOpacity>
+            <View style={styles.headerSearchWrap}>
+              <Image style={styles.headerSearchImg} source={require("../images/search.png")}></Image>  
+              <TextInput
+                returnKeyType={"search"}
+                style={styles.headerSearch}
+                underlineColorAndroid={'transparent'}
+                onChangeText={(text) => this.setState({ searchText: text })}
+                onSubmitEditing={this.search.bind(this)}
+                placeholder={'输入关键字直接搜索...'}
+                placeholderTextColor={'#a6a6a6'}
+              />
+            </View>
+            <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}} >
+              <Image style={styles.cartImg} source={require("../images/cart.png")}></Image>
+              <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
+            </TouchableOpacity> 
           </View>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}} >
-            <Image style={styles.cartImg} source={require("../images/cart.png")}></Image>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
-          </TouchableOpacity>  
         </ImageBackground>
         <View style={styles.wrapperWrap}>
           <Swiper style={styles.wrapper}  activeDot={<View style={{backgroundColor:'#007aff', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />} dot={<View style={{backgroundColor:'white', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}  autoplay={true} >
@@ -375,14 +377,24 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  headerBackground: {
+    ...Platform.select({
+      ios: {
+        height: pxToDp(124),
+        paddingTop: pxToDp(28)
+      },
+      android: {
+        height: pxToDp(96),
+      }
+    })
+  },
   header: {
     flexDirection: 'row',
     paddingTop: pxToDp(17),
     paddingBottom: pxToDp(17),
     paddingLeft: pxToDp(12),
     paddingRight: pxToDp(12),
-    height: pxToDp(100),
-    backgroundColor: '#ff8b00'
+    height: pxToDp(96),
   },
   customerServiceBtn: {
     flexDirection: 'row',

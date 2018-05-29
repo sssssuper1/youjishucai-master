@@ -151,6 +151,88 @@ export default class EditAddress extends Component {
     });
   }
   render() {
+    let province, city, area;
+    if (Platform.OS == 'android') {
+      province = 
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>所在省：</Text>
+          <Picker
+            style={styles.Picker}
+            itemStyle={styles.itempicker} 
+            selectedValue={this.state.selectedProvinces}
+            onValueChange={(lang) => this.setState({selectedProvinces: lang,citys:this.citys(citysWrap,lang),area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
+            {
+              this.state.provinces.map((item)=>  <Picker.Item label={item} value={item} />)
+            }
+          </Picker>
+        </View>
+      city = 
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>所在市：</Text>
+          <Picker
+            style={styles.Picker}
+            selectedValue={this.state.selectedCitys}
+            itemStyle={styles.itempicker} 
+            onValueChange={(lang) => this.setState({selectedCitys: lang,area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
+            {
+              this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
+            }
+          </Picker>
+        </View>
+      area = 
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>所在区：</Text>
+          <Picker
+            style={styles.Picker}
+            selectedValue={this.state.selectedArea}
+            itemStyle={styles.itempicker}
+            onValueChange={(lang) => this.setState({selectedArea: lang})}>
+            {
+              this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
+          }
+          </Picker>
+        </View>
+    } else {
+      province = 
+        <View style={styles.PickerWrap2}>  
+          <Text style={styles.PickerTitle}>所在省：</Text>
+          <Picker
+            style={styles.Picker2}
+            itemStyle={styles.itempicker} 
+            selectedValue={this.state.selectedProvinces}
+            onValueChange={(lang) => this.setState({selectedProvinces: lang,citys:this.citys(citysWrap,lang),area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
+            {
+              this.state.provinces.map((item)=>  <Picker.Item label={item} value={item} />)
+            }
+          </Picker>
+        </View>
+      city = 
+        <View style={styles.PickerWrap2}>  
+          <Text style={styles.PickerTitle}>所在市：</Text>
+          <Picker
+            style={styles.Picker2}
+            selectedValue={this.state.selectedCitys}
+            itemStyle={styles.itempicker} 
+            onValueChange={(lang) => this.setState({selectedCitys: lang,area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
+            {
+              this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
+            }
+          </Picker>
+        </View>
+      area = 
+        <View style={styles.PickerWrap2}>  
+          <Text style={styles.PickerTitle}>所在区：</Text>
+          <Picker
+            style={styles.Picker2}
+            selectedValue={this.state.selectedArea}
+            itemStyle={styles.itempicker}
+            onValueChange={(lang) => this.setState({selectedArea: lang})}>
+            {
+              this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
+            }
+          </Picker>
+        </View>
+    }
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="编辑收货地址"></Header1>
@@ -177,42 +259,9 @@ export default class EditAddress extends Component {
                 value={this.state.phoneNumber}
               /> 
             </View>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>所在省：</Text>
-              <Picker
-                style={styles.Picker}
-                itemStyle={styles.itempicker} 
-                selectedValue={this.state.selectedProvinces}
-                onValueChange={(lang) => this.setState({selectedProvinces: lang,citys:this.citys(citysWrap,lang),area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
-                {
-                  this.state.provinces.map((item)=>  <Picker.Item label={item} value={item} />)
-                }
-              </Picker>
-            </View>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>所在市：</Text>
-              <Picker
-                style={styles.Picker}
-                selectedValue={this.state.selectedCitys}
-                itemStyle={styles.itempicker} 
-                onValueChange={(lang) => this.setState({selectedCitys: lang,area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
-                {
-                  this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
-                }
-              </Picker>
-            </View>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>所在区：</Text>
-              <Picker
-                style={styles.Picker}
-                selectedValue={this.state.selectedArea}
-                itemStyle={styles.itempicker}
-                onValueChange={(lang) => this.setState({selectedArea: lang})}>
-                {
-                  this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
-              }
-              </Picker>
-            </View>
+            {province}
+            {city}
+            {area}            
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>详细地址：</Text>
               <TextInput
@@ -238,6 +287,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
+  hidden: {
+    display: 'none'
+  },
   header:{
     height: pxToDp(96),
     alignItems: 'center',
@@ -258,11 +310,19 @@ const styles = StyleSheet.create({
     height: pxToDp(82),
     backgroundColor:'white'
   },
+  Picker2: {
+    flex: 1,
+    fontSize: pxToDp(20),
+    color: '#a9a9a9',
+    height: pxToDp(82),
+    backgroundColor:'white'
+  },
   itempicker: {
     flex: 1,
     backgroundColor:'white'
   },
   PickerWrap:{
+    height: pxToDp(90),
     paddingLeft: pxToDp(26),
     borderTopWidth: pxToDp(1),
     borderTopColor: '#daddde',
@@ -271,6 +331,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'relative',
     textAlign: 'center'
+  },
+  PickerWrap2:{
+    height: pxToDp(90),
+    paddingLeft: pxToDp(26),
+    borderTopWidth: pxToDp(1),
+    borderTopColor: '#daddde',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    position: 'relative',
+    // textAlign: 'center'
   },
   PickerTitle:{
     fontSize: pxToDp(28),

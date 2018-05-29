@@ -34,11 +34,6 @@ import {
   BackHandler
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class Header1 extends Component {
   constructor(props) {
@@ -78,7 +73,7 @@ export default class Header1 extends Component {
     const { name } = this.state;
     const { goBack, state } = this.props.navigation;
     return (
-      <View style={styles.contenier}>  
+      <View style={styles.container}>  
         <View style={styles.header}>
           <TouchableOpacity style={styles.headerGoBack} onPress={() => {
             this.doCallBack();
@@ -94,12 +89,20 @@ export default class Header1 extends Component {
 }
 
 const styles = StyleSheet.create({
+  container:{
+    backgroundColor: 'white',
+  },
   header:{
     position: 'relative',
-    height: pxToDp(96),
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white'
+    height: pxToDp(96),
+    ...Platform.select({
+      ios: {
+        marginTop: pxToDp(28)
+      },
+      android: {}
+    })
   },
   headerGoBack: {
     position: 'absolute',

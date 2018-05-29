@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor:'white'
   },
   PickerWrap:{
+    height: pxToDp(109),
     paddingLeft: pxToDp(26),
     borderTopWidth: pxToDp(1),
     borderTopColor: '#daddde',

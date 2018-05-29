@@ -58,6 +58,7 @@ export default class ModifyPassword extends Component {
         <View style={styles.margin}>
           <View style={styles.passwordWrap}>
             <TextInput
+              style={styles.textWrap}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({name:text})}
               secureTextEntry={true}
@@ -67,6 +68,7 @@ export default class ModifyPassword extends Component {
           </View> 
           <View style={styles.passwordWrap}>
             <TextInput
+              style={styles.textWrap}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({name:text})}
               secureTextEntry={true}
@@ -76,6 +78,7 @@ export default class ModifyPassword extends Component {
           </View> 
           <View style={styles.passwordWrap}>
             <TextInput
+              style={styles.textWrap}
               underlineColorAndroid={'transparent'}
               secureTextEntry={true}
               onChangeText={(text) => this.setState({name:text})}
@@ -103,8 +106,12 @@ const styles = StyleSheet.create({
   passwordWrap:{
     height: pxToDp(109),
     borderBottomWidth: pxToDp(1),
+    paddingLeft: pxToDp(30),
     borderBottomColor: '#f1f1f1',
     backgroundColor:'white'
+  },
+  textWrap: {
+    height: pxToDp(109),
   },
   fonter:{
     margin: pxToDp(34),

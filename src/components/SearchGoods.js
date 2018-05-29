@@ -206,27 +206,29 @@ export default class SearchGoods extends Component {
       </View>;
     }
     return (
-      <View style={styles.contenier}>  
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.headerGoBack} onPress={()=>goBack()}>
-            <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
-          </TouchableOpacity>  
-          <View style={styles.headerSearchWrap}>
-            <Image style={styles.headerSearchImg} source={require("../images/search.png")}></Image>  
-            <TextInput
-              returnKeyType={"search"}
-              style={styles.headerSearch}
-              underlineColorAndroid={'transparent'}
-              onChangeText={(text) => this.setState({searchText:text})}
-              placeholder={this.state.keyword}
-              onSubmitEditing={this.search.bind(this)}
-              placeholderTextColor={'#a6a6a6'}
-            />
+      <View style={styles.contenier}>
+        <View style={styles.headerContainer}>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.headerGoBack} onPress={()=>goBack()}>
+              <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
+            </TouchableOpacity>  
+            <View style={styles.headerSearchWrap}>
+              <Image style={styles.headerSearchImg} source={require("../images/search.png")}></Image>  
+              <TextInput
+                returnKeyType={"search"}
+                style={styles.headerSearch}
+                underlineColorAndroid={'transparent'}
+                onChangeText={(text) => this.setState({searchText:text})}
+                placeholder={this.state.keyword}
+                onSubmitEditing={this.search.bind(this)}
+                placeholderTextColor={'#a6a6a6'}
+              />
+            </View>
+            <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}>
+              <Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image>
+              <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}>
-            <Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
-          </TouchableOpacity>
         </View>
         {view}
         <Animated.View                            // 可动画化的视图组件
@@ -261,13 +263,21 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
+  headerContainer: {
+    backgroundColor: 'white'
+  },
   header:{
     position: 'relative',
-    height: pxToDp(96),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white'
+    height: pxToDp(96),
+    ...Platform.select({
+      ios: {
+        marginTop: pxToDp(28)
+      },
+      android: {}
+    })
   },
   headerGoBack: {
     position: 'absolute',

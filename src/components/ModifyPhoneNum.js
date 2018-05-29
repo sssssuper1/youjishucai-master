@@ -90,6 +90,7 @@ export default class ModifyPhoneNum extends Component {
           </View>
           <View style={styles.passwordWrap}>
             <TextInput
+              style={styles.setCode}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({name:text})}
               placeholder={'请输入验证码'}
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
     marginTop: pxToDp(14),
   },
   PickerWrap:{
+    paddingLeft: pxToDp(30),
     borderTopWidth: pxToDp(1),
     borderTopColor: '#daddde',
     flexDirection: 'row',
@@ -125,7 +127,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f1f1f1'
   },
   detailAddress:{
-    flex: 1
+    flex: 1,
+    height: pxToDp(109)
   },
   getCode:{
     marginRight: pxToDp(26),
@@ -154,7 +157,11 @@ const styles = StyleSheet.create({
   getCodeText1:{
     fontSize: pxToDp(24),
   },
+  setCode:{
+    height: pxToDp(109)
+  },
   passwordWrap:{
+    paddingLeft: pxToDp(30),
     height: pxToDp(109),
     borderBottomWidth: pxToDp(1),
     borderBottomColor: '#f1f1f1',

@@ -191,7 +191,8 @@ const styles = StyleSheet.create({
     color: '#2b2b2b'
   },
   detailAddress:{
-    flex: 1
+    flex: 1,
+    height: pxToDp(109)
   },
   save:{
     position: "absolute",
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
   vipItems:{
     borderBottomWidth: pxToDp(1),
     borderBottomColor: '#f1f1f1',
-    height: pxToDp(88),
+    height: pxToDp(109),
     flexDirection: 'row',
     alignItems: 'center'
   },

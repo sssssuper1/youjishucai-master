@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     height: pxToDp(35)
   },
   PickerWrap:{
-    paddingLeft: pxToDp(26),
+    paddingLeft: pxToDp(34),
     borderTopWidth: pxToDp(1),
     borderTopColor: '#daddde',
     flexDirection: 'row',
@@ -174,7 +174,8 @@ const styles = StyleSheet.create({
     color: '#2b2b2b'
   },
   detailAddress:{
-    flex: 1
+    flex: 1,
+    height: pxToDp(109),
   },
   save:{
     position: "absolute",

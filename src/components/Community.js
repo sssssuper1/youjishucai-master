@@ -222,19 +222,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: pxToDp(22),
     paddingRight: pxToDp(22),
+    alignItems: 'center'
+    
   },
   list1ContentImgLeft: {
     marginLeft: pxToDp(10),
     marginRight: pxToDp(10),
-    width: pxToDp(110),
-    height: pxToDp(110),
-    borderRadius: pxToDp(100),
+    width: pxToDp(90),
+    height: pxToDp(90),
     overflow: 'hidden'
   },
   list1ContentImg: {
-    width: pxToDp(110),
-    height: pxToDp(110),
-    borderRadius: pxToDp(100),
+    width: pxToDp(90),
+    height: pxToDp(90),
   },
   list1ContentRIght: {
     flex: 1,

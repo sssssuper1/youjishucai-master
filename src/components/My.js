@@ -85,17 +85,19 @@ export default class My extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
-        <ImageBackground style={styles.header} source={require('../images/myBackground.png')} resizeMode='cover'>
-          <View style={styles.headPointer}>
-            {this.state.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip.png')}></Image> :
-            <Image style={styles.headPointerImg} source={require('../images/noVip.png')}></Image>  }  
+        <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
+          <View style={styles.header}>
+            <View style={styles.headPointer}>
+              {this.state.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip.png')}></Image> :
+              <Image style={styles.headPointerImg} source={require('../images/noVip.png')}></Image>  }  
+            </View>
+            <View>
+              <Text style={styles.name}>{this.state.name}</Text>
+            </View>
+            <TouchableOpacity style={styles.set} onPress={() => {navigate('Set',{callBack: ()=>this.callBack()})}}>
+              <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
+            </TouchableOpacity>  
           </View>
-          <View>
-            <Text style={styles.name}>{this.state.name}</Text>
-          </View>
-          <TouchableOpacity style={styles.set} onPress={() => {navigate('Set',{callBack: ()=>this.callBack()})}}>
-            <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
-          </TouchableOpacity>  
         </ImageBackground>
         <View style={styles.cartInfo}>
           <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}}>
@@ -172,6 +174,19 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
+  headerContainer: {
+    position: 'relative',
+    height: pxToDp(270),
+    ...Platform.select({
+      ios: {
+        height: pxToDp(298),
+        paddingTop: pxToDp(28)
+      },
+      android: {
+        height: pxToDp(270),
+      }
+    })
+  },
   header: {
     position: 'relative',
     flexDirection: 'row',
@@ -186,7 +201,6 @@ const styles = StyleSheet.create({
   headPointerImg: {
     width: pxToDp(136),
     height: pxToDp(136),
-    borderRadius: 100
   },
   vip: {
     position: 'absolute',

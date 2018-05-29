@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
   account: {
     flex:1,
     height:"100%",
+    paddingLeft: pxToDp(20)
   },
   btnPasswrd:{
     width: pxToDp(80),

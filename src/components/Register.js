@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
   phoneNumber:{
     marginTop: pxToDp(15),
     height: pxToDp(106),
-    backgroundColor:'white'
+    backgroundColor:'white',
+    paddingLeft: pxToDp(34)
   },
   fonter: {
     paddingLeft: pxToDp(34),

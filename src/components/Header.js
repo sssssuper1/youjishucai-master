@@ -56,7 +56,7 @@ export default class Header extends Component {
     render() {
         const { name}=this.state
     return (
-      <View style={styles.contenier}>  
+      <View style={styles.container}>  
         <ImageBackground style={styles.header} source={require('../images/headerBackground.png')} resizeMode='cover'>
           <Text style={styles.headerText}>{name}</Text>
         </ImageBackground>
@@ -67,9 +67,17 @@ export default class Header extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    height: pxToDp(96),
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        height: pxToDp(124),
+        paddingTop: pxToDp(28)
+      },
+      android: {
+        height: pxToDp(96),
+      }
+    })
   },
   headerText: {
     fontSize: pxToDp(36),

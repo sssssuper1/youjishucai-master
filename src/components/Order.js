@@ -32,6 +32,7 @@ import {
   Button,
   FlatList
 } from 'react-native';
+import Header1 from './Header1';
 import pxToDp from '../js/pxToDp';
 
 export default class Order extends Component {
@@ -122,15 +123,10 @@ export default class Order extends Component {
   }
 
   render() {
-    const { navigate, goBack } = this.props.navigation;
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}> 
-        <View style={styles.header} >
-          <TouchableOpacity style={styles.headerGoBack} onPress={() => {goBack()}}>
-            <Image style={styles.headerGoBackImg} source={require('../images/orderDir.png')}></Image>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>确认订单</Text>
-        </View>
+        <Header1 navigation={this.props.navigation} name="确认订单"></Header1>
         <ScrollView> 
           <TouchableOpacity style={!!this.state.address.consignee?styles.address:styles.hidden} onPress={() => {navigate('UserAddress', {callBack: () => this.callBack()})}}>
             <View style={styles.addressWrap}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}></Image></View>

@@ -121,10 +121,12 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   margin:{
-    marginTop: pxToDp(14)
+    marginTop: pxToDp(14),
   },
   name: {
-    backgroundColor: 'white'
+    height: pxToDp(109),
+    paddingLeft: pxToDp(34),
+    backgroundColor: 'white',
   },
   btnWrap: {
     paddingLeft: pxToDp(34),
