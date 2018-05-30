@@ -447,7 +447,6 @@ const styles = StyleSheet.create({
     width: pxToDp(40),
     height: pxToDp(24),
     backgroundColor: "#fd4448",
-    color: "white",
     borderRadius: 36,
     fontSize: pxToDp(20),
     alignItems: "center",
@@ -471,7 +470,6 @@ const styles = StyleSheet.create({
   goods1Name: {
     width: "100%",
     height: pxToDp(93),
-    lineHeight: pxToDp(93),
     borderBottomWidth: pxToDp(1),
     borderBottomColor: '#daddde',
     backgroundColor: '#f4f4f4',
@@ -510,7 +508,7 @@ const styles = StyleSheet.create({
   },
   goods2: {
     width: pxToDp(576),
-    height: scrrollHeight(242),
+    height: scrrollHeight(pxToDp(242)),
     paddingLeft: pxToDp(24),
     backgroundColor: "white",
   },

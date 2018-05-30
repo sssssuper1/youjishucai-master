@@ -163,7 +163,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     position: 'relative',
-    textAlign: 'center'
   },
   warn: {
     fontSize: pxToDp(28),

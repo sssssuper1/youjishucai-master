@@ -40,12 +40,12 @@ export default class Community extends Component {
 
     this.state = {
       menuNum: 0,
-      list1: [{
+      list1: {
         img: '',
         name: '汤一点(南京山西路店)',
         address: '南京市鼓楼区山西路1号乐购仕5F',
         distance: '10km'
-      }]
+      }
     }
   }
   swipeMenu(num) { 
@@ -53,7 +53,7 @@ export default class Community extends Component {
   }
 
   render() {
-    let {menuNum } = this.state
+    let {menuNum, list1 } = this.state
     return (
       <View style={styles.contenier}>  
         <Header name="正弘新社群"></Header>
@@ -93,7 +93,7 @@ export default class Community extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={[{ key: 'a' }, { key: 'b' }, { key: 'b' }, { key: 'b' }, { key: 'b' }]}
+          data={[list1,list1,list1]}
           style={menuNum===0?styles.list1:styles.list2}
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
@@ -101,14 +101,14 @@ export default class Community extends Component {
                 <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
               </View>
               <View style={styles.list1ContentRIght}>
-                <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>汤一点(南京山西路店)</Text></View>
-                <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>南京市鼓楼区山西路1号乐购仕5F</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>>10km</Text></View></View>
+                <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>{item.name}</Text></View>
+                <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
               </View>
             </View>
           }
         /> 
         <FlatList
-          data={[{ key: 'a' }, { key: 'b' }, { key: 'b' }, { key: 'b' }, { key: 'b' }]}
+          data={[list1,list1,list1]}
           style={menuNum===1?styles.list1:styles.list2}
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
@@ -116,14 +116,14 @@ export default class Community extends Component {
                 <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
               </View>
               <View style={styles.list1ContentRIght}>
-                <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>汤一点(南京山西路店)</Text></View>
-                <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>南京市鼓楼区山西路1号乐购仕5F</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>>10km</Text></View></View>
+              <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>{item.name}</Text></View>
+              <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
               </View>
             </View>
           }
         /> 
         <FlatList
-          data={[{ key: 'a' }, { key: 'b' }, { key: 'b' }, { key: 'b' }, { key: 'b' }]}
+          data={[list1,list1,list1]}
           style={menuNum===2?styles.list1:styles.list2}
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
@@ -131,8 +131,8 @@ export default class Community extends Component {
                 <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
               </View>
               <View style={styles.list1ContentRIght}>
-                <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>汤一点(南京山西路店)</Text></View>
-                <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>南京市鼓楼区山西路1号乐购仕5F</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>>10km</Text></View></View>
+              <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>{item.name}</Text></View>
+              <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
               </View>
             </View>
           }

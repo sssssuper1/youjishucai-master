@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     position: 'relative',
-    textAlign: 'center',
     borderBottomWidth: pxToDp(1),
     borderBottomColor: '#f1f1f1'
   },

@@ -31,7 +31,8 @@ import {
   Alert,
   Button,
   FlatList,
-  Picker
+  Picker,
+  TouchableHighlight
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import citysWrap from '../json/citys.json'
@@ -55,22 +56,35 @@ export default class EditAddress extends Component {
         name: params.userAddress.name,
         phoneNumber: params.userAddress.phoneNumber,
         customerId: params.userAddress.customerId,
-        id: params.userAddress.id
+        id: params.userAddress.id,
+        pickerNum: 0
       }
     } else {
       this.state={
         provinces: this.provinces(citysWrap),
         citys: this.citys(citysWrap,this.provinces(citysWrap)[0]),
         area: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0]),
-        selectedProvinces: this.provinces(citysWrap)[0],
-        selectedCitys: this.citys(citysWrap,this.provinces(citysWrap)[0])[0],
-        selectedArea: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0])[0],
+        selectedProvinces: '',
+        selectedCitys: '',
+        selectedArea: '',
         detailAddress:'',
         name:'',
-        phoneNumber:''
+        phoneNumber:'',
+        pickerNum: 0
       }
     }
     
+  }
+  togglePicker(num){
+    if (num === this.state.pickerNum) {
+      this.setState({
+        pickerNum: 0
+      });
+    } else {
+      this.setState({
+        pickerNum: num
+      });
+    }
   }
   provinces(citysWrap){
     if(!citysWrap){
@@ -151,9 +165,31 @@ export default class EditAddress extends Component {
     });
   }
   render() {
-    let province, city, area;
+    let view;
     if (Platform.OS == 'android') {
-      province = 
+      view =
+      <View style={styles.user}>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>收货人：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            placeholder={''}
+            onChangeText={(text) => this.setState({name:text})}
+            value={this.state.name}
+          /> 
+        </View>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>手机号码：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            maxLength={11}
+            placeholder={''}
+            onChangeText={(text) => this.setState({phoneNumber:text})}
+            value={this.state.phoneNumber}
+          /> 
+        </View>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在省：</Text>
           <Picker
@@ -166,7 +202,6 @@ export default class EditAddress extends Component {
             }
           </Picker>
         </View>
-      city = 
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在市：</Text>
           <Picker
@@ -179,100 +214,123 @@ export default class EditAddress extends Component {
             }
           </Picker>
         </View>
-      area = 
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在区：</Text>
           <Picker
-            style={styles.Picker}
+            style={styles.Picker2}
             selectedValue={this.state.selectedArea}
             itemStyle={styles.itempicker}
             onValueChange={(lang) => this.setState({selectedArea: lang})}>
             {
               this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
-          }
+            }
           </Picker>
+        </View>     
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>详细地址：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            placeholder={'街道、楼牌号'}
+            onChangeText={(text) => this.setState({detailAddress:text})}
+            value={this.state.detailAddress}
+          /> 
         </View>
+      </View>  
     } else {
-      province = 
-        <View style={styles.PickerWrap2}>  
-          <Text style={styles.PickerTitle}>所在省：</Text>
-          <Picker
-            style={styles.Picker2}
-            itemStyle={styles.itempicker} 
-            selectedValue={this.state.selectedProvinces}
-            onValueChange={(lang) => this.setState({selectedProvinces: lang,citys:this.citys(citysWrap,lang),area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
-            {
-              this.state.provinces.map((item)=>  <Picker.Item label={item} value={item} />)
-            }
-          </Picker>
+      view =
+      <View style={styles.user}>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>收货人：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            placeholder={''}
+            onChangeText={(text) => this.setState({name:text})}
+            value={this.state.name}
+          /> 
         </View>
-      city = 
-        <View style={styles.PickerWrap2}>  
-          <Text style={styles.PickerTitle}>所在市：</Text>
-          <Picker
-            style={styles.Picker2}
-            selectedValue={this.state.selectedCitys}
-            itemStyle={styles.itempicker} 
-            onValueChange={(lang) => this.setState({selectedCitys: lang,area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
-            {
-              this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
-            }
-          </Picker>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>手机号码：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            maxLength={11}
+            placeholder={''}
+            onChangeText={(text) => this.setState({phoneNumber:text})}
+            value={this.state.phoneNumber}
+          /> 
         </View>
-      area = 
-        <View style={styles.PickerWrap2}>  
-          <Text style={styles.PickerTitle}>所在区：</Text>
-          <Picker
-            style={styles.Picker2}
-            selectedValue={this.state.selectedArea}
-            itemStyle={styles.itempicker}
-            onValueChange={(lang) => this.setState({selectedArea: lang})}>
-            {
-              this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
-            }
-          </Picker>
+        <TouchableHighlight onPress={()=>this.togglePicker(1)}>  
+          <View style={styles.PickerWrap}>
+            <Text style={styles.PickerTitle}>所在省：</Text>
+            <Text>{this.state.selectedProvinces}</Text>
+          </View>
+        </TouchableHighlight>
+        <Picker
+          style={this.state.pickerNum===1?styles.Picker2:styles.hidden}
+          itemStyle={styles.itempicker} 
+          selectedValue={this.state.selectedProvinces}
+          onValueChange={(lang) => this.setState({
+            selectedProvinces: lang,
+            selectedCitys: '',
+            citys:this.citys(citysWrap,lang),
+            selectedArea: '',
+            area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
+          {
+            this.state.provinces.map((item) =>  <Picker.Item label={item} value={item} />)
+          }
+        </Picker>
+        <TouchableHighlight onPress={()=>this.togglePicker(2)}>
+          <View style={styles.PickerWrap}>
+            <Text style={styles.PickerTitle}>所在市：</Text>
+            <Text>{this.state.selectedCitys}</Text>
+          </View>
+        </TouchableHighlight>
+        <Picker
+          style={this.state.pickerNum===2?styles.Picker2:styles.hidden}
+          selectedValue={this.state.selectedCitys}
+          itemStyle={styles.itempicker} 
+          onValueChange={(lang) => this.setState({
+            selectedCitys: lang,
+            selectedArea: '',
+            area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
+          {
+            this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
+          }
+        </Picker>
+        <TouchableHighlight onPress={()=>this.togglePicker(3)}>  
+          <View  style={styles.PickerWrap}>
+            <Text style={styles.PickerTitle}>所在区：</Text>
+            <Text>{this.state.selectedArea}</Text>
+          </View>
+        </TouchableHighlight>     
+        <Picker
+          style={this.state.pickerNum===3?styles.Picker2:styles.hidden}
+          selectedValue={this.state.selectedArea}
+          itemStyle={styles.itempicker}
+          onValueChange={(lang) => this.setState({selectedArea: lang})}>
+          {
+            this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
+          }
+        </Picker>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>详细地址：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            placeholder={'街道、楼牌号'}
+            onChangeText={(text) => this.setState({detailAddress:text})}
+            value={this.state.detailAddress}
+          /> 
         </View>
+      </View> 
     }
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="编辑收货地址"></Header1>
         <ScrollView>
-          <View style={styles.user}>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>收货人：</Text>
-              <TextInput
-                underlineColorAndroid={'transparent'}
-                style={styles.detailAddress}
-                placeholder={''}
-                onChangeText={(text) => this.setState({name:text})}
-                value={this.state.name}
-              /> 
-            </View>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>手机号码：</Text>
-              <TextInput
-                underlineColorAndroid={'transparent'}
-                style={styles.detailAddress}
-                maxLength={11}
-                placeholder={''}
-                onChangeText={(text) => this.setState({phoneNumber:text})}
-                value={this.state.phoneNumber}
-              /> 
-            </View>
-            {province}
-            {city}
-            {area}            
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>详细地址：</Text>
-              <TextInput
-                underlineColorAndroid={'transparent'}
-                style={styles.detailAddress}
-                placeholder={'街道、楼牌号'}
-                onChangeText={(text) => this.setState({detailAddress:text})}
-                value={this.state.detailAddress}
-              /> 
-            </View>
-          </View>  
+          {view}
         </ScrollView>
         <TouchableOpacity style={styles.save} onPress={() => this.submit()}>
             <Text style={styles.saveText}>保存</Text>
@@ -311,11 +369,10 @@ const styles = StyleSheet.create({
     backgroundColor:'white'
   },
   Picker2: {
-    flex: 1,
     fontSize: pxToDp(20),
     color: '#a9a9a9',
-    height: pxToDp(82),
-    backgroundColor:'white'
+    height: pxToDp(282),
+    backgroundColor:'grey'
   },
   itempicker: {
     flex: 1,
@@ -332,16 +389,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     textAlign: 'center'
   },
-  PickerWrap2:{
-    height: pxToDp(90),
-    paddingLeft: pxToDp(26),
-    borderTopWidth: pxToDp(1),
-    borderTopColor: '#daddde',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    position: 'relative',
-    // textAlign: 'center'
+  PickerContainer:{
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: pxToDp(320),
+    backgroundColor: 'grey',
   },
   PickerTitle:{
     fontSize: pxToDp(28),

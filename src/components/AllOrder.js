@@ -238,19 +238,19 @@ export default class AllOrder extends Component {
           <View style={styles.stateBtns}>
             <TouchableOpacity onPress={()=>{
               this.changeState(0)
-            }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[0]}</Text></TouchableOpacity>
+            }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[0]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(1)
-            }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[1]}</Text></TouchableOpacity>
+            }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[1]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(2)
-            }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[2]}</Text></TouchableOpacity>
+            }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[2]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(3)
-            }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[3]}</Text></TouchableOpacity>
+            }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[3]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(4)
-            }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text>{this.states[4]}</Text></TouchableOpacity>
+            }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[4]}</Text></TouchableOpacity>
           </View>
           {view}
         </ScrollView>
@@ -319,6 +319,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderBottomWidth: pxToDp(2),
     borderBottomColor: '#2abd89'
+  },
+  orderSort: {
+    fontSize: pxToDp(30),
   },
   goods1:{
     marginTop: pxToDp(15),
@@ -491,10 +494,12 @@ const styles = StyleSheet.create({
     borderWidth: pxToDp(2)
   },
   buttonTextWhite: {
-    color: '#ffffff'
+    color: '#ffffff',
+    fontSize: pxToDp(30)
   },
   buttonTextGrey: {
-    color: '#808080'
+    color: '#808080',
+    fontSize: pxToDp(30)
   },
   stateBlank: {
     width: '100%',

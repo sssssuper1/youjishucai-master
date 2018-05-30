@@ -36,12 +36,6 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class Person extends Component {
   constructor(props) {
@@ -50,22 +44,45 @@ export default class Person extends Component {
       modelVistibal: true,
       sex: global.data.user.sex,
       name: global.data.user.name,
+      showPicker : false
     }
+  }
+
+  togglePicker() {
+    this.setState({
+      showPicker: !this.state.showPicker
+    }, () => {
+      if (!this.state.showPicker) {
+        Fetch(global.url + '/API/user/editUserInfo', 'post', {
+          sex: this.state.sex
+        }, (responseData) => {
+          if (responseData.success) {
+            global.data.user.sex = this.state.sex;
+            this.show();
+          }
+        },
+        (err) => {
+          alert(err);
+        });
+      }
+    });
   }
 
   changeSex(value) {
     this.setState({ sex: value });
-    Fetch(global.url + '/API/user/editUserInfo', 'post', {
-      sex: value
-    }, (responseData) => {
-      if (responseData.success) {
-        global.data.user.sex = value;
-        this.show();
-      }
-    },
-    (err) => {
-      alert(err);
-    });
+    if (Platform.OS == 'android') {
+      Fetch(global.url + '/API/user/editUserInfo', 'post', {
+        sex: value
+      }, (responseData) => {
+        if (responseData.success) {
+          global.data.user.sex = value;
+          this.show();
+        }
+      },
+      (err) => {
+        alert(err);
+      });
+    }
   }
 
   callBack() {
@@ -80,6 +97,40 @@ export default class Person extends Component {
   
   render() {
     const { navigate } = this.props.navigation;
+    let picker;
+
+    if (Platform.OS == 'android') {
+      picker = 
+      <View style={styles.set}>
+        <Text style={styles.text}>性别</Text>
+        <Picker
+          style={styles.Picker}
+          selectedValue={this.state.sex}
+          itemStyle={styles.itempicker}
+          onValueChange={(value) => this.changeSex(value)}>
+          <Picker.Item label='男' value={0} />
+          <Picker.Item label='女' value={1} />
+        </Picker>
+        <Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+      </View>
+    } else {
+      picker = 
+      <View>
+        <TouchableOpacity style={styles.set} onPress={()=>this.togglePicker()}>
+          <Text style={styles.text}>性别</Text>
+          <Text style={styles.warn}>{!this.state.sex?'男':'女'}</Text>
+          <Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+        </TouchableOpacity>
+        <Picker
+          style={this.state.showPicker?styles.Picker2:styles.hidden}
+          selectedValue={this.state.sex}
+          itemStyle={styles.itempicker}
+          onValueChange={(value) => this.changeSex(value)}>
+          <Picker.Item label='男' value={0} />
+          <Picker.Item label='女' value={1} />
+        </Picker>
+      </View>
+    }
     return (
       <View style={styles.contenier}>
         <Header1 navigation={this.props.navigation} name="个人信息"></Header1>
@@ -87,18 +138,7 @@ export default class Person extends Component {
           <TouchableOpacity style={styles.set} onPress={() => {navigate('Name',{callBack: ()=>this.callBack()})}}>
             <Text style={styles.text}>昵称</Text><Text style={styles.warn}>{this.state.name}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
-          <View style={styles.set}>
-            <Text style={styles.text}>性别</Text>
-            <Picker
-              style={styles.Picker}
-              selectedValue={this.state.sex}
-              itemStyle={styles.itempicker}
-              onValueChange={(value) => this.changeSex(value)}>
-              <Picker.Item label='男' value={0} />
-              <Picker.Item label='女' value={1} />
-            </Picker>
-            <Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
-          </View>
+          {picker}
           <TouchableOpacity style={styles.set}>
             <Text style={styles.text}>生日</Text><Text style={styles.warn}>1993-05-05</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
@@ -113,6 +153,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none',
   },
   margin:{
     marginTop: pxToDp(14)
@@ -136,6 +179,11 @@ const styles = StyleSheet.create({
     height: pxToDp(82),
     alignItems: 'flex-end',
     backgroundColor:'white',
+  },
+  Picker2: {
+    fontSize: pxToDp(20),
+    color: '#a9a9a9',
+    height: pxToDp(182),
   },
   itempicker: {
     flex: 1,

@@ -96,7 +96,6 @@ export default class Index extends Component {
           <TabNavigator.Item
               selected={this.state.selectedTab === 'home'}
               title="有机蔬菜"
-              tabStyle={{color:'white'}}
               titleStyle={{color:'#999'}}
               selectedTitleStyle={{color:'#01d6c2'}}
               renderIcon={() => <Image style={styles.menuImg1} source={require('../images/menu1-1.png')} />}

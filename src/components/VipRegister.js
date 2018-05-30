@@ -19,6 +19,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  TouchableHighlight,
   TextInput,
   ScrollView,
   ListView,
@@ -35,34 +36,33 @@ import {
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import citysWrap from '../json/citys.json'
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
-
 
 export default class VipRegister extends Component {
   constructor(props) {
     super(props);
-    //左边菜单
-    var type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //右边菜单  
-    let type2 = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
-    });
+
     this.state={
       provinces: this.provinces(citysWrap),
       citys: this.citys(citysWrap,this.provinces(citysWrap)[0]),
       area: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0]),
-      selectedProvinces: this.provinces(citysWrap)[0],
-      selectedCitys: this.citys(citysWrap,this.provinces(citysWrap)[0])[0],
-      selectedArea: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0])[0],
-      detailAddress:'',
-      name:'',
-      ID:''
+      selectedProvinces: '',
+      selectedCitys: '',
+      selectedArea: '',
+      detailAddress: '',
+      name: '',
+      ID: '',
+      pickerNum: 0
+    }
+  }
+  togglePicker(num){
+    if (num === this.state.pickerNum) {
+      this.setState({
+        pickerNum: 0
+      });
+    } else {
+      this.setState({
+        pickerNum: num
+      });
     }
   }
   provinces(citysWrap){
@@ -117,6 +117,125 @@ export default class VipRegister extends Component {
       return area
   }
   render() {
+    let pickers;
+    if (Platform.OS == 'android') {
+      pickers = 
+      <View style={styles.pickers}>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>所在省：</Text>
+          <Picker
+            style={styles.Picker}
+            itemStyle={styles.itempicker} 
+            selectedValue={this.state.selectedProvinces}
+            onValueChange={(lang) => this.setState({selectedProvinces: lang,citys:this.citys(citysWrap,lang),area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
+            {
+              this.state.provinces.map((item)=>  <Picker.Item label={item} value={item} />)
+            }
+          </Picker>
+        </View>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>所在市：</Text>
+          <Picker
+            style={styles.Picker}
+            selectedValue={this.state.selectedCitys}
+            itemStyle={styles.itempicker} 
+            onValueChange={(lang) => this.setState({selectedCitys: lang,area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
+            {
+              this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
+            }
+          </Picker>
+        </View>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>所在区：</Text>
+          <Picker
+            style={styles.Picker}
+            selectedValue={this.state.selectedArea}
+            itemStyle={styles.itempicker}
+            onValueChange={(lang) => this.setState({selectedArea: lang})}>
+            {
+              this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
+          }
+          </Picker>
+        </View>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>详细地址：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            placeholder={'街道、楼牌号'}
+            onChangeText={(text) => this.setState({detailAddress:text})}
+            value={this.state.detailAddress}
+          /> 
+        </View>
+      </View>  
+    } else {
+      pickers = 
+      <View style={styles.pickers}>
+        <TouchableHighlight onPress={()=>this.togglePicker(1)}>  
+          <View style={styles.PickerWrap}>
+            <Text style={styles.PickerTitle}>所在省：</Text>
+            <Text>{this.state.selectedProvinces}</Text>
+          </View>
+        </TouchableHighlight>
+        <Picker
+          style={this.state.pickerNum===1?styles.Picker2:styles.hidden}
+          itemStyle={styles.itempicker} 
+          selectedValue={this.state.selectedProvinces}
+          onValueChange={(lang) => this.setState({
+            selectedProvinces: lang,
+            selectedCitys: this.citys(citysWrap,lang)[0],
+            citys:this.citys(citysWrap,lang),
+            selectedArea: '',
+            area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
+          {
+            this.state.provinces.map((item) =>  <Picker.Item label={item} value={item} />)
+          }
+        </Picker>
+        <TouchableHighlight onPress={()=>this.togglePicker(2)}>
+          <View style={styles.PickerWrap}>
+            <Text style={styles.PickerTitle}>所在市：</Text>
+            <Text>{this.state.selectedCitys}</Text>
+          </View>
+        </TouchableHighlight>
+        <Picker
+          style={this.state.pickerNum===2?styles.Picker2:styles.hidden}
+          selectedValue={this.state.selectedCitys}
+          itemStyle={styles.itempicker} 
+          onValueChange={(lang) => this.setState({
+            selectedCitys: lang,
+            selectedArea: '',
+            area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
+          {
+            this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
+          }
+        </Picker>
+        <TouchableHighlight onPress={()=>this.togglePicker(3)}>  
+          <View  style={styles.PickerWrap}>
+            <Text style={styles.PickerTitle}>所在区：</Text>
+            <Text>{this.state.selectedArea}</Text>
+          </View>
+        </TouchableHighlight>     
+        <Picker
+          style={this.state.pickerNum===3?styles.Picker2:styles.hidden}
+          selectedValue={this.state.selectedArea}
+          itemStyle={styles.itempicker}
+          onValueChange={(lang) => this.setState({selectedArea: lang})}>
+          {
+            this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
+          }
+        </Picker>
+        <View style={styles.PickerWrap}>  
+          <Text style={styles.PickerTitle}>详细地址：</Text>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            placeholder={'街道、楼牌号'}
+            onChangeText={(text) => this.setState({detailAddress:text})}
+            value={this.state.detailAddress}
+          /> 
+        </View>
+      </View> 
+    }
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
@@ -144,59 +263,11 @@ export default class VipRegister extends Component {
               /> 
             </View>
           </View>
-          <View style={styles.pickers}>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>所在省：</Text>
-              <Picker
-                style={styles.Picker}
-                itemStyle={styles.itempicker} 
-                selectedValue={this.state.selectedProvinces}
-                onValueChange={(lang) => this.setState({selectedProvinces: lang,citys:this.citys(citysWrap,lang),area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
-                {
-                  this.state.provinces.map((item)=>  <Picker.Item label={item} value={item} />)
-                }
-              </Picker>
-            </View>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>所在市：</Text>
-              <Picker
-                style={styles.Picker}
-                selectedValue={this.state.selectedCitys}
-                itemStyle={styles.itempicker} 
-                onValueChange={(lang) => this.setState({selectedCitys: lang,area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
-                {
-                  this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
-                }
-              </Picker>
-            </View>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>所在区：</Text>
-              <Picker
-                style={styles.Picker}
-                selectedValue={this.state.selectedArea}
-                itemStyle={styles.itempicker}
-                onValueChange={(lang) => this.setState({selectedArea: lang})}>
-                {
-                  this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
-              }
-              </Picker>
-            </View>
-            <View style={styles.PickerWrap}>  
-              <Text style={styles.PickerTitle}>详细地址：</Text>
-              <TextInput
-                underlineColorAndroid={'transparent'}
-                style={styles.detailAddress}
-                placeholder={'街道、楼牌号'}
-                onChangeText={(text) => this.setState({detailAddress:text})}
-                value={this.state.detailAddress}
-              /> 
-            </View>
-          </View>  
+          {pickers}
         </ScrollView>
-
-          <TouchableOpacity style={styles.save} onPress={() => { navigate('PayToVip') }}>
-             <Text style={styles.saveText}>保存</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.save} onPress={() => { navigate('PayToVip') }}>
+            <Text style={styles.saveText}>保存</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -206,6 +277,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none'
   },
   header:{
     height: pxToDp(96),
@@ -230,12 +304,18 @@ const styles = StyleSheet.create({
     height: pxToDp(82),
     backgroundColor:'white'
   },
+  Picker2: {
+    fontSize: pxToDp(20),
+    color: '#a9a9a9',
+    height: pxToDp(282),
+    backgroundColor:'grey'
+  },
   itempicker: {
     flex: 1,
     backgroundColor:'white'
   },
   PickerWrap:{
-    height: pxToDp(109),
+    height: pxToDp(90),
     paddingLeft: pxToDp(26),
     borderTopWidth: pxToDp(1),
     borderTopColor: '#daddde',

@@ -451,8 +451,6 @@ const styles = StyleSheet.create({
     color: '#2a2a2a'
   },
   goodSpecWrap: {
-    fontSize: pxToDp(24),
-    color: '#a7a7a7'
   },
   goodSpec: {
     fontSize: pxToDp(24),
