@@ -42,7 +42,16 @@ export default class PayFun extends Component {
       payNum:0,
       message: 'XZCXZCxzcxzcsdfdsafds',
       showAlert: false,
+      warning: '订单支付尚未完成，是否继续完成支付操作~'
     }
+  }
+
+  popupShow() {
+    this.popupDialog.show();
+  }
+
+  popupClose() {
+    this.popupDialog.dismiss();
   }
 
   showAlert = () => {
@@ -64,10 +73,11 @@ export default class PayFun extends Component {
   }
 
   render() {
-    const {userAddresses,state,showAlert,message} = this.state
+    const { userAddresses, state, showAlert, message } = this.state;
+    const { goBack } = this.props.navigation;
     return (
       <View style={styles.contenier}>
-        <Header1 navigation={this.props.navigation} name="请选择支付方式"></Header1>
+        <Header1 navigation={this.props.navigation} name="请选择支付方式" popupShow={this.popupShow.bind(this)}></Header1>
         <View style={styles.state}>
           <View style={styles.stateImgWrap}>
             <Image style={styles.stateImg} source={require('../images/payFail.png')}></Image> 
@@ -104,6 +114,25 @@ export default class PayFun extends Component {
           progressSize='small'
           progressColor='gray'
         />
+        <PopupDialog
+          width={pxToDp(600)} 
+          height={pxToDp(385)} 
+          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+          >
+          <View style={styles.bullet}>
+            <View style={styles.bulletTitle}><Text style={styles.bulletTitleText}>提示</Text></View>  
+            <View style={styles.bulletContent}><Text style={styles.bulletContentText}>{this.state.warning}</Text>
+            </View>
+            <View style={styles.buttonContent}>
+              <TouchableOpacity style={styles.button} onPress={() => goBack()}>
+                <Text style={styles.buttonCancle}>取消</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.buttonCut]} onPress={this.popupClose.bind(this)}>
+                <Text style={styles.buttonConfirm}>确定</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </PopupDialog>
       </View>
     );
   }
@@ -223,4 +252,52 @@ const styles = StyleSheet.create({
     fontSize: pxToDp(32),
     color: 'white'
   },
+  bullet: {
+    alignItems: 'center',
+    padding: 0
+  },
+  bulletTitle: {
+    marginTop: pxToDp(55),
+    marginBottom: pxToDp(25),
+    width: pxToDp(480)
+  },
+  bulletTitleText: {
+    fontSize: pxToDp(40),
+    color: "#333335",
+  },
+  bulletContent: {
+    width: pxToDp(480)
+  },
+  bulletContentText: {
+    fontSize: pxToDp(33),
+    color: '#99979a'
+  },
+  buttonContent: {
+    marginTop: pxToDp(50),
+    marginBottom: pxToDp(50),
+    height: pxToDp(100),
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: "white",
+    borderTopWidth: pxToDp(1),
+    borderTopColor: '#d9ddde',
+  },
+  button: {
+    width: '50%',
+    height: pxToDp(100),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonCut: {
+    borderLeftWidth: pxToDp(1),
+    borderLeftColor: '#d9ddde',
+  },
+  buttonConfirm: {
+    color: "#2abd89",
+    fontSize: pxToDp(33),
+  },
+  buttonCancle: {
+    color: "#000000",
+    fontSize: pxToDp(33),
+  }
 });

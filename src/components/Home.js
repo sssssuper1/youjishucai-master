@@ -327,7 +327,7 @@ export default class Home extends Component {
           showCancelButton={false}
           showConfirmButton={true}
           confirmText="确定"
-          confirmButtonColor="#DD6B55"
+          confirmButtonColor="#29be87"
           onConfirmPressed={() => {
             this.hideAlert();
           }}

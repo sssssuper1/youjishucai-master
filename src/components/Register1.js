@@ -55,10 +55,14 @@ export default class Register1 extends Component {
       phoneNumber: params.phoneNumber,
       isInput: false,
       codeText: '获取验证码',
+      message: '注册尚未完成，是否继续完成注册操作~'
     }
   }
-  show(){
-    this.refs.toast.show('hello world!');
+  popupShow() {
+    this.popupDialog.show();
+  }
+  popupClose() {
+    this.popupDialog.dismiss();
   }
   getCode(){
     clearInterval(this.state.timer)
@@ -79,10 +83,10 @@ export default class Register1 extends Component {
   }
   render() {
     const { codeText, isInput } = this.state;
-    const { navigate } = this.props.navigation;
+    const { navigate, goBack } = this.props.navigation;
     return (
       <View style={styles.contenier} >
-        <Header1 navigation={this.props.navigation} name="注册"></Header1>
+        <Header1 navigation={this.props.navigation} name="注册" popupShow={this.popupShow.bind(this)}></Header1>
         <View style={styles.phone}><Image style={styles.phoneImg} source={require('../images/phone.png')}></Image><Text style={styles.warn}>验证码短信已发送至:</Text><Text style={styles.phoneNumber}>{this.state.phoneNumber}</Text></View>
         <View style={styles.PickerWrap}>  
           <TextInput
@@ -130,6 +134,25 @@ export default class Register1 extends Component {
         <View style={styles.fonter}>
           <Fonter name="提交" onPress={() => {navigate('Home')}}></Fonter>
         </View>
+        <PopupDialog
+          width={pxToDp(600)} 
+          height={pxToDp(385)} 
+          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+          >
+          <View style={styles.bullet}>
+            <View style={styles.bulletTitle}><Text style={styles.bulletTitleText}>提示</Text></View>  
+            <View style={styles.bulletContent}><Text style={styles.bulletContentText}>{this.state.message}</Text>
+            </View>
+            <View style={styles.buttonContent}>
+              <TouchableOpacity style={styles.button} onPress={() => goBack()}>
+                <Text style={styles.buttonCancle}>取消</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.buttonCut]} onPress={this.popupClose.bind(this)}>
+                <Text style={styles.buttonConfirm}>确定</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </PopupDialog>
       </View>
     );
   }
@@ -224,4 +247,52 @@ const styles = StyleSheet.create({
   getCodeText1:{
     fontSize: pxToDp(24),
   },
+  bullet: {
+    alignItems: 'center',
+    padding: 0
+  },
+  bulletTitle: {
+    marginTop: pxToDp(55),
+    marginBottom: pxToDp(25),
+    width: pxToDp(480)
+  },
+  bulletTitleText: {
+    fontSize: pxToDp(40),
+    color: "#333335",
+  },
+  bulletContent: {
+    width: pxToDp(480)
+  },
+  bulletContentText: {
+    fontSize: pxToDp(33),
+    color: '#99979a'
+  },
+  buttonContent: {
+    marginTop: pxToDp(50),
+    marginBottom: pxToDp(50),
+    height: pxToDp(100),
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: "white",
+    borderTopWidth: pxToDp(1),
+    borderTopColor: '#d9ddde',
+  },
+  button: {
+    width: '50%',
+    height: pxToDp(100),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonCut: {
+    borderLeftWidth: pxToDp(1),
+    borderLeftColor: '#d9ddde',
+  },
+  buttonConfirm: {
+    color: "#2abd89",
+    fontSize: pxToDp(33),
+  },
+  buttonCancle: {
+    color: "#000000",
+    fontSize: pxToDp(33),
+  }
 });

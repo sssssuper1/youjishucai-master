@@ -217,7 +217,7 @@ export default class EditAddress extends Component {
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在区：</Text>
           <Picker
-            style={styles.Picker2}
+            style={styles.Picker}
             selectedValue={this.state.selectedArea}
             itemStyle={styles.itempicker}
             onValueChange={(lang) => this.setState({selectedArea: lang})}>

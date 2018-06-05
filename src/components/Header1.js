@@ -38,13 +38,7 @@ import pxToDp from '../js/pxToDp';
 export default class Header1 extends Component {
   constructor(props) {
     super(props);
-    //左边菜单
-    var type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //右边菜单  
-    let type2 = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
-    });
+
     this.state = {
       name: props.name,
     }
@@ -64,6 +58,11 @@ export default class Header1 extends Component {
 
   doCallBack = () => {
     const { state } = this.props.navigation;
+    if (this.props.popupShow != undefined) {
+      this.props.popupShow();
+      return true;
+    }
+
     if (state.params != undefined && state.params.callBack != undefined) {
       state.params.callBack();
     }
@@ -76,8 +75,12 @@ export default class Header1 extends Component {
       <View style={styles.container}>  
         <View style={styles.header}>
           <TouchableOpacity style={styles.headerGoBack} onPress={() => {
-            this.doCallBack();
-            goBack();
+            if (this.props.popupShow != undefined) {
+              this.props.popupShow();
+            } else {
+              this.doCallBack();
+              goBack();
+            }
           }}>
             <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
           </TouchableOpacity>
