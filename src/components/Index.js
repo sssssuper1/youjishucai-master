@@ -63,7 +63,7 @@ export default class Index extends Component {
       });
     },
     (err) => {
-      alert(err);
+      Alert.alert('提示',err);
     });
   }
 

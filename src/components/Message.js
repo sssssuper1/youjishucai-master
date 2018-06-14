@@ -36,12 +36,6 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class Message extends Component {
   constructor(props) {
@@ -49,27 +43,44 @@ export default class Message extends Component {
     this.state={
       modelVistibal:true,
       name: '',
-      messages: []
+      messages: [
+        {
+          date: '4月20日',
+          title: '物流通知',
+          contents: '哈哈哈哈哈哈哈哈哈',
+          isNews: true
+        },
+        {
+          date: '4月15日',
+          title: '春暖花开有机食品节',
+          contents: '哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈,哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈,哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈',
+          isNews: false
+        }
+      ]
     }
-  }
-  show(){
-    this.refs.toast.show('hello world!');
   }
   _render(item) {
     const { navigate } = this.props.navigation;
     return(
       <View style={styles.list}>
-        <View style={styles.date}><View style={styles.dateContent}><Text style={styles.dateContentText}>4月20</Text></View></View>
+        <View style={styles.date}><View style={styles.dateContent}><Text style={styles.dateContentText}>{item.date}</Text></View></View>
         <TouchableOpacity style={styles.btn} onPress={() => {navigate('MessageDetail')}}>
           <View style={styles.message}>
             <View style={styles.messageImgWrap}><Image style={styles.messageImg} source={require('../images/message.png')}></Image></View>
             <View style={styles.messageContent}>
               <View style={styles.title}><Text style={styles.titleContent}>{item.title}</Text></View>
-              <View ><Text style={styles.p}>{item.content}</Text></View>
+              <View style={styles.contents}>
+                <Text numberOfLines={2} style={styles.p}>{item.contents}</Text>
+              </View>
             </View> 
           </View>
           <View style={styles.seeDetail}>
-            <View style={styles.goSeeDetail}><Text style={styles.goSeeDetailTitle}>查看详情</Text><Image style={styles.goSeeDetailDir} source={require('../images/rightDir.png')}></Image></View>
+            <View style={styles.goSeeDetail}>
+              <Text style={item.isNews ? styles.goSeeDetailTitle : styles.outOfDate}>
+                {item.isNews ? '查看详情' : '已过期'}
+              </Text>
+              <Image style={styles.goSeeDetailDir} source={require('../images/rightDir.png')}></Image>
+            </View>
           </View>
         </TouchableOpacity>
       </View>
@@ -152,15 +163,19 @@ const styles = StyleSheet.create({
     flex:1,
     height: pxToDp(182),
     justifyContent: 'center',
+    paddingTop: pxToDp(10)
   },
-  title: {
+  contents: {
+    marginTop: pxToDp(10),
+    height: pxToDp(90)
   },
   titleContent: {
     fontSize: pxToDp(32)
   },
   p:{
     fontSize: pxToDp(28),
-    color: '#9f9f9f'
+    lineHeight: pxToDp(40),
+    color: '#9f9f9f',
   },
   seeDetail: {
     position: 'relative',
@@ -178,6 +193,10 @@ const styles = StyleSheet.create({
   goSeeDetailTitle: {
     fontSize: pxToDp(24),
     color: '#2abd89'
+  },
+  outOfDate: {
+    fontSize: pxToDp(24),
+    color: '#9f9f9f'
   },
   goSeeDetailDir: {
     marginLeft: pxToDp(16),

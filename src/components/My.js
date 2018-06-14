@@ -65,7 +65,7 @@ export default class My extends Component {
         }
       },
       (err) => {
-        alert(err);
+        Alert.alert('提示',err);
       }
     );
   }

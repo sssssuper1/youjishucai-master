@@ -37,12 +37,6 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class NewPassword extends Component {
   constructor(props) {
@@ -50,16 +44,15 @@ export default class NewPassword extends Component {
     const { params } = this.props.navigation.state;
 
     this.state={
-      modelVistibal:true,
-      name: '',
+      modelVistibal: true,
+      code: '',
+      password: '',
+      confirmPassword: '',
       isInput: false,
       codeText: '获取验证码',
       phoneNumber: params.phoneNumber,
     }
     
-  }
-  show(){
-    this.refs.toast.show('hello world!');
   }
   getCode(){
     clearInterval(this.state.timer)
@@ -79,9 +72,27 @@ export default class NewPassword extends Component {
   componentWillMount() {
     this.getCode();
   }
+  submit() {
+    if (this.state.code == '') {
+      this.refs.toast.show('请输入验证码!');
+      return;
+    }
+
+    if (this.state.password == '') {
+      this.refs.toast.show('请输入密码!');
+      return;
+    }
+
+    if (this.state.confirmPassword !== this.state.password) {
+      this.refs.toast.show('两次输入密码不一致!');
+      return;
+    }
+
+    this.props.navigation.navigate('SignIn');
+
+  }
   render() {
     const { codeText, isInput } = this.state;
-    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="修改密码"></Header1>
@@ -90,10 +101,9 @@ export default class NewPassword extends Component {
           <TextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
-            maxLength={11}
             placeholder={'请输入验证码'}
-            onChangeText={(text) => this.setState({phone:text})}
-            value={this.state.phone}
+            onChangeText={(text) => this.setState({code:text})}
+            value={this.state.code}
           />
           <TouchableOpacity style={isInput?styles.getCode1:styles.getCode} onPress={this.getCode.bind(this)} disabled={isInput}>
             <Text style={isInput?styles.getCodeText1:styles.getCodeText}>{codeText}</Text>
@@ -103,25 +113,28 @@ export default class NewPassword extends Component {
           <TextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
-            maxLength={11}
+            maxLength={20}
+            secureTextEntry={true}
             placeholder={'输入密码（6-20字符，包含字母、数字）'}
-            onChangeText={(text) => this.setState({phone:text})}
-            value={this.state.phone}
+            onChangeText={(text) => this.setState({password:text})}
+            value={this.state.password}
           />
         </View>
         <View style={styles.PickerWrap}>  
           <TextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
-            maxLength={11}
+            maxLength={20}
+            secureTextEntry={true}
             placeholder={'再次输入密码'}
-            onChangeText={(text) => this.setState({phone:text})}
-            value={this.state.phone}
+            onChangeText={(text) => this.setState({confirmPassword:text})}
+            value={this.state.confirmPassword}
           />
         </View>
         <View style={styles.fonter}>
-          <Fonter name="提交" onPress={() => {navigate('Home')}}></Fonter>
+          <Fonter name="提交" onPress={this.submit.bind(this)}></Fonter>
         </View>
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -215,5 +228,8 @@ const styles = StyleSheet.create({
   },
   getCodeText1:{
     fontSize: pxToDp(24),
+  },
+  toast:{
+    backgroundColor: '#626262'
   },
 });

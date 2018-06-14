@@ -33,7 +33,9 @@ import {
   Modal,
   Button,
   FlatList,
-  Picker
+  Picker,
+  DatePickerAndroid,
+  DatePickerIOS
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -44,7 +46,10 @@ export default class Person extends Component {
       modelVistibal: true,
       sex: global.data.user.sex,
       name: global.data.user.name,
-      showPicker : false
+      birthday: '1993-05-05',
+      date: new Date(),
+      showPicker: false,
+      showDatePicker: false
     }
   }
 
@@ -62,7 +67,7 @@ export default class Person extends Component {
           }
         },
         (err) => {
-          alert(err);
+          Alert.alert('提示',err);
         });
       }
     });
@@ -80,7 +85,7 @@ export default class Person extends Component {
         }
       },
       (err) => {
-        alert(err);
+        Alert.alert('提示',err);
       });
     }
   }
@@ -94,42 +99,87 @@ export default class Person extends Component {
   show(){
     this.refs.toast.show('修改成功!');
   }
+
+  async datePicker() {
+    if (Platform.OS == 'android') {
+      try {
+        const {action, year, month, day} = await DatePickerAndroid.open({
+          date: new Date()
+        });
+
+        if (action !== DatePickerAndroid.dismissedAction) {
+          let m = (month + 1).toString();
+          let d = day;
+          (d.length == 1) && (d = '0' + d);
+          (m.length == 1) && (m = '0' + m);
+          this.setState({
+            birthday: `${year}-${m}-${d}`
+          });
+        }
+      } catch ({code, message}) {
+        Alert.alert('提示', message);
+      }
+    } else {
+      this.setState({
+        showDatePicker: !this.state.showDatePicker
+      })
+    }
+  }
+
+  onDateChange(date) {
+    let y = date.getFullYear().toString();
+    let m = (date.getMonth() + 1).toString();
+    let d = date.getDate().toString();
+    (d.length == 1) && (d = '0' + d);
+    (m.length == 1) && (m = '0' + m);
+    this.setState({
+      date: date,
+      birthday: `${y}-${m}-${d}`
+    })
+  }
   
   render() {
     const { navigate } = this.props.navigation;
     let picker;
+    let datePicker;
 
     if (Platform.OS == 'android') {
-      picker = 
-      <View style={styles.set}>
-        <Text style={styles.text}>性别</Text>
-        <Picker
-          style={styles.Picker}
-          selectedValue={this.state.sex}
-          itemStyle={styles.itempicker}
-          onValueChange={(value) => this.changeSex(value)}>
-          <Picker.Item label='男' value={0} />
-          <Picker.Item label='女' value={1} />
-        </Picker>
-        <Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
-      </View>
-    } else {
-      picker = 
-      <View>
-        <TouchableOpacity style={styles.set} onPress={()=>this.togglePicker()}>
+      picker =
+        <View style={styles.set}>
           <Text style={styles.text}>性别</Text>
-          <Text style={styles.warn}>{!this.state.sex?'男':'女'}</Text>
+          <Picker
+            style={styles.Picker}
+            selectedValue={this.state.sex}
+            itemStyle={styles.itempicker}
+            onValueChange={(value) => this.changeSex(value)}>
+            <Picker.Item label='男' value={0} />
+            <Picker.Item label='女' value={1} />
+          </Picker>
           <Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
-        </TouchableOpacity>
-        <Picker
-          style={this.state.showPicker?styles.Picker2:styles.hidden}
-          selectedValue={this.state.sex}
-          itemStyle={styles.itempicker}
-          onValueChange={(value) => this.changeSex(value)}>
-          <Picker.Item label='男' value={0} />
-          <Picker.Item label='女' value={1} />
-        </Picker>
-      </View>
+        </View>;
+    } else {
+      picker =
+        <View>
+          <TouchableOpacity style={styles.set} onPress={() => this.togglePicker()}>
+            <Text style={styles.text}>性别</Text>
+            <Text style={styles.warn}>{!this.state.sex ? '男' : '女'}</Text>
+            <Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+          </TouchableOpacity>
+          <Picker
+            style={this.state.showPicker ? styles.Picker2 : styles.hidden}
+            selectedValue={this.state.sex}
+            itemStyle={styles.itempicker}
+            onValueChange={(value) => this.changeSex(value)}>
+            <Picker.Item label='男' value={0} />
+            <Picker.Item label='女' value={1} />
+          </Picker>
+        </View>;
+      datePicker =
+        <DatePickerIOS
+          date={this.state.date}
+          mode="date"
+          onDateChange={this.onDateChange.bind(this)}
+        />;
     }
     return (
       <View style={styles.contenier}>
@@ -139,9 +189,12 @@ export default class Person extends Component {
             <Text style={styles.text}>昵称</Text><Text style={styles.warn}>{this.state.name}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
           {picker}
-          <TouchableOpacity style={styles.set}>
-            <Text style={styles.text}>生日</Text><Text style={styles.warn}>1993-05-05</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+          <TouchableOpacity style={styles.set} onPress={this.datePicker.bind(this)}>
+            <Text style={styles.text}>生日</Text><Text style={styles.warn}>{this.state.birthday}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
+          <View style={this.state.showDatePicker ? styles.iosDatePicker : styles.hidden}>
+            {datePicker}
+          </View>
         </View>
         <Toast ref="toast" style={styles.toast} position="top" positionValue={290}/>
       </View>
@@ -222,6 +275,9 @@ const styles = StyleSheet.create({
   saveText:{
     fontSize: pxToDp(32),
     color: 'white'
+  },
+  iosDatePicker: {
+    height: pxToDp(300)
   },
   toast:{
     backgroundColor: '#626262'

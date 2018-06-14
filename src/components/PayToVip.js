@@ -12,6 +12,7 @@ import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
+import Toast from 'react-native-easy-toast';
 import {
   Platform,
   StyleSheet,
@@ -50,7 +51,12 @@ export default class PayToVip extends Component {
     }
   }
   
-  getCode(){
+  getCode() {
+    if (this.state.phone == '') {
+      this.refs.toast.show('请输入手机号!');
+      return;
+    }
+    
     clearInterval(this.state.timer)
     let num=60
     this.setState({isInput:true})
@@ -71,12 +77,32 @@ export default class PayToVip extends Component {
     });
   }
 
+  submit() {
+    if (this.state.phone == '') {
+      this.refs.toast.show('请输入手机号!');
+      return;
+    }
+
+    if (this.state.code == '') {
+      this.refs.toast.show('请输入验证码!');
+      return;
+    }
+
+    if (this.state.password == '') {
+      this.refs.toast.show('请输入密码!');
+      return;
+    }
+
+    this.props.navigation.navigate('PayFun');
+  }
+
   render() {
     const { codeText, isInput } = this.state;
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="vip会员购买付费"></Header1>
+        <ScrollView keyboardShouldPersistTaps={'handled'}>
           <View style={styles.user}>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>手机号：</Text>
@@ -137,9 +163,11 @@ export default class PayToVip extends Component {
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.save} onPress={()=>navigate('PayFun')}>
-            <Text style={styles.saveText}>立即支付</Text>
-          </TouchableOpacity>
+        </ScrollView>
+        <TouchableOpacity style={styles.save} onPress={this.submit.bind(this)}>
+          <Text style={styles.saveText}>立即支付</Text>
+        </TouchableOpacity>
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -288,5 +316,8 @@ const styles = StyleSheet.create({
     right: 0,
     width: pxToDp(40),
     height: pxToDp(40)
+  },
+  toast:{
+    backgroundColor: '#626262'
   },
 });

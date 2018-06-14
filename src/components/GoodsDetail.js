@@ -79,7 +79,7 @@ export default class GoodsDetail extends Component {
       }
     },
     (err) => {
-      alert(err);
+      Alert.alert('提示',err);
     });
   }
 
@@ -101,7 +101,7 @@ export default class GoodsDetail extends Component {
       }
     },
     (err) => {
-      alert(err);
+      Alert.alert('提示',err);
     });
   }
 

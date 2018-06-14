@@ -33,13 +33,6 @@ import {
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
-
 
 export default class Vip extends Component {
   constructor(props) {

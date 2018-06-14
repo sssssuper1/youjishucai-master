@@ -72,7 +72,7 @@ export default class AllOrder extends Component {
         }
       },
       (err) => {
-        alert(err);
+        Alert.alert('提示',err);
       }
     );
   }
@@ -89,7 +89,7 @@ export default class AllOrder extends Component {
       }
     },
     (err) => {
-      alert(err);
+      Alert.alert('提示',err);
     });
   }
 

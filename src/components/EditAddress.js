@@ -12,6 +12,7 @@ import Fetch from '../js/fetch'
 import Header1 from './Header1'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
+import Toast from 'react-native-easy-toast';
 import {
   Platform,
   StyleSheet,
@@ -36,8 +37,6 @@ import {
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import citysWrap from '../json/citys.json'
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
 
 export default class EditAddress extends Component {
   constructor(props) {
@@ -64,9 +63,9 @@ export default class EditAddress extends Component {
         provinces: this.provinces(citysWrap),
         citys: this.citys(citysWrap,this.provinces(citysWrap)[0]),
         area: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0]),
-        selectedProvinces: '',
-        selectedCitys: '',
-        selectedArea: '',
+        selectedProvinces: citysWrap.provinces[0].name,
+        selectedCitys: citysWrap.provinces[0].City[0].name,
+        selectedArea: citysWrap.provinces[0].City[0].Area[0].name,
         detailAddress:'',
         name:'',
         phoneNumber:'',
@@ -88,7 +87,7 @@ export default class EditAddress extends Component {
   }
   provinces(citysWrap){
     if(!citysWrap){
-      Alert.alert('请传入地区数据')
+      Alert.alert('提示','请传入地区数据')
     }
     let provinces=[]
     for(let i=0;i<citysWrap.provinces.length;i++){
@@ -98,10 +97,10 @@ export default class EditAddress extends Component {
   }
   citys(citysWrap,provinces){
      if(!citysWrap){
-      Alert.alert('请传入地区数据')
+      Alert.alert('提示','请传入地区数据')
     }
     if(!provinces){
-      Alert.alert('请传入显示的省份')
+      Alert.alert('提示','请传入显示的省份')
     }
     let citys=[]
       for(let i=0;i<citysWrap.provinces.length;i++){
@@ -115,13 +114,13 @@ export default class EditAddress extends Component {
   }
   area(citysWrap,provinces,citys){
       if(!citysWrap){
-        Alert.alert('请传入地区数据')
+        Alert.alert('提示','请传入地区数据')
       }
       if(!provinces){
-        Alert.alert('请传入显示的省份')
+        Alert.alert('提示','请传入显示的省份')
       }
       if(!citys){
-        Alert.alert('请传入显示的城市')
+        Alert.alert('提示','请传入显示的城市')
       }
      let area=[]
       for(let i=0;i<citysWrap.provinces.length;i++){
@@ -150,6 +149,37 @@ export default class EditAddress extends Component {
       isDefault: 1,
       isDeleted: 0
     }
+
+    if (this.state.name == '') {
+      this.refs.toast.show('请输入收货人!');
+      return;
+    }
+
+    if (this.state.phoneNumber == '') {
+      this.refs.toast.show('请输入手机号码!');
+      return;
+    }
+
+    if (this.state.selectedProvinces == '') {
+      this.refs.toast.show('请选择所在省!');
+      return;
+    }
+
+    if (this.state.selectedCitys == '') {
+      this.refs.toast.show('请选择所在市!');
+      return;
+    }
+
+    if (this.state.selectedArea == '') {
+      this.refs.toast.show('请选择所在区!');
+      return;
+    }
+
+    if (this.state.detailAddress == '') {
+      this.refs.toast.show('请输入详细地址!');
+      return;
+    }
+
     
     Fetch(global.url + '/API/user/updateAddress', 'post', params, (responseData) => {
       if (responseData.success) {
@@ -158,10 +188,12 @@ export default class EditAddress extends Component {
           state.params.callBack();
         }
         navigate('UserAddress');
+      } else {
+        Alert.alert('提示',responseData.message);
       }
     },
     (err) => {
-      alert(err);
+      Alert.alert('提示',err);
     });
   }
   render() {
@@ -329,12 +361,13 @@ export default class EditAddress extends Component {
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="编辑收货地址"></Header1>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={'handled'}>
           {view}
         </ScrollView>
         <TouchableOpacity style={styles.save} onPress={() => this.submit()}>
             <Text style={styles.saveText}>保存</Text>
         </TouchableOpacity>
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -415,5 +448,8 @@ const styles = StyleSheet.create({
   saveText:{
     fontSize: pxToDp(32),
     color: 'white'
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });

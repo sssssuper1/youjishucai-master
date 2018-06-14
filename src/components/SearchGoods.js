@@ -87,7 +87,7 @@ export default class SearchGoods extends Component {
       }
     },
     (err) => {
-      alert(err);
+      Alert.alert('提示',err);
     });
   }
 
@@ -348,17 +348,17 @@ const styles = StyleSheet.create({
   goods3: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    // justifyContent: 'space-around',
   },
   rowGoods: {
-    width: pxToDp(350),
+    width: pxToDp(375),
     borderWidth: pxToDp(2),
     backgroundColor: '#ffffff',
     borderColor: '#f4f4f4',
   },
   rowGoodsImg: {
-    width: pxToDp(350),
-    height: pxToDp(350),
+    width: pxToDp(375),
+    height: pxToDp(375),
     marginBottom: pxToDp(18)
   },
   rowGoodsName: {

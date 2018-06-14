@@ -12,6 +12,7 @@ import Fetch from '../js/fetch'
 import Header1 from './Header1'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
+import Toast from 'react-native-easy-toast';
 import {
   Platform,
   StyleSheet,
@@ -45,9 +46,9 @@ export default class VipRegister extends Component {
       provinces: this.provinces(citysWrap),
       citys: this.citys(citysWrap,this.provinces(citysWrap)[0]),
       area: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0]),
-      selectedProvinces: '',
-      selectedCitys: '',
-      selectedArea: '',
+      selectedProvinces: citysWrap.provinces[0].name,
+      selectedCitys: citysWrap.provinces[0].City[0].name,
+      selectedArea: citysWrap.provinces[0].City[0].Area[0].name,
       detailAddress: '',
       name: '',
       ID: '',
@@ -67,7 +68,7 @@ export default class VipRegister extends Component {
   }
   provinces(citysWrap){
     if(!citysWrap){
-      Alert.alert('请传入地区数据')
+      Alert.alert('提示','请传入地区数据')
     }
     let provinces=[]
     for(let i=0;i<citysWrap.provinces.length;i++){
@@ -77,10 +78,10 @@ export default class VipRegister extends Component {
   }
   citys(citysWrap,provinces){
      if(!citysWrap){
-      Alert.alert('请传入地区数据')
+      Alert.alert('提示','请传入地区数据')
     }
     if(!provinces){
-      Alert.alert('请传入显示的省份')
+      Alert.alert('提示','请传入显示的省份')
     }
     let citys=[]
       for(let i=0;i<citysWrap.provinces.length;i++){
@@ -94,13 +95,13 @@ export default class VipRegister extends Component {
   }
   area(citysWrap,provinces,citys){
       if(!citysWrap){
-        Alert.alert('请传入地区数据')
+        Alert.alert('提示','请传入地区数据')
       }
       if(!provinces){
-        Alert.alert('请传入显示的省份')
+        Alert.alert('提示','请传入显示的省份')
       }
       if(!citys){
-        Alert.alert('请传入显示的城市')
+        Alert.alert('提示','请传入显示的城市')
       }
      let area=[]
       for(let i=0;i<citysWrap.provinces.length;i++){
@@ -115,6 +116,40 @@ export default class VipRegister extends Component {
         }
       }
       return area
+  }
+  submit() {
+    // check input
+    if (this.state.name == '') {
+      this.refs.toast.show('请输入姓名!');
+      return;
+    }
+
+    if (this.state.ID == '') {
+      this.refs.toast.show('请输入身份证号!');
+      return;
+    }
+
+    if (this.state.selectedProvinces == '') {
+      this.refs.toast.show('请选择所在省!');
+      return;
+    }
+
+    if (this.state.selectedCitys == '') {
+      this.refs.toast.show('请选择所在市!');
+      return;
+    }
+
+    if (this.state.selectedArea == '') {
+      this.refs.toast.show('请选择所在区!');
+      return;
+    }
+
+    if (this.state.detailAddress == '') {
+      this.refs.toast.show('请输入详细地址!');
+      return;
+    }
+    
+    this.props.navigation.navigate('PayToVip');
   }
   render() {
     let pickers;
@@ -236,11 +271,11 @@ export default class VipRegister extends Component {
         </View>
       </View> 
     }
-    const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="vip会员注册"></Header1>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={'handled'}>
           <View style={styles.user}>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>姓名：</Text>
@@ -265,9 +300,10 @@ export default class VipRegister extends Component {
           </View>
           {pickers}
         </ScrollView>
-        <TouchableOpacity style={styles.save} onPress={() => { navigate('PayToVip') }}>
+        <TouchableOpacity style={styles.save} onPress={this.submit.bind(this)}>
             <Text style={styles.saveText}>保存</Text>
         </TouchableOpacity>
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -344,5 +380,8 @@ const styles = StyleSheet.create({
   saveText:{
     fontSize: pxToDp(32),
     color: 'white'
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });

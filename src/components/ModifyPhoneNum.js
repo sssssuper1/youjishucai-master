@@ -12,7 +12,7 @@ import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
+import Toast from 'react-native-easy-toast';
 import {
   Platform,
   StyleSheet,
@@ -36,25 +36,25 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class ModifyPhoneNum extends Component {
   constructor(props) {
     super(props);
     this.state={
       phone: '',
+      code: '',
       isInput: false,
       codeText: '获取验证码',
       timer:null
     }
   }
 
-  getCode(){
+  getCode() {
+    if (this.state.phone == '') {
+      this.refs.toast.show('请输入新手机号!');
+      return;
+    }
+
     clearInterval(this.state.timer)
     let num=60
     this.setState({isInput:true})
@@ -67,6 +67,18 @@ export default class ModifyPhoneNum extends Component {
         this.setState({isInput:false,codeText: '获取验证码'})
       }
     },1000)
+  }
+
+  submit() {
+    if (this.state.phone == '') {
+      this.refs.toast.show('请输入新手机号!');
+      return;
+    }
+
+    if (this.state.code == '') {
+      this.refs.toast.show('请输入验证码!');
+      return;
+    }
   }
   
   render() {
@@ -92,15 +104,16 @@ export default class ModifyPhoneNum extends Component {
             <TextInput
               style={styles.setCode}
               underlineColorAndroid={'transparent'}
-              onChangeText={(text) => this.setState({name:text})}
+              onChangeText={(text) => this.setState({code:text})}
               placeholder={'请输入验证码'}
               placeholderTextColor={'#a6a6a6'}
             />
           </View>
         </View>
         <View style={styles.fonter}> 
-         <Fonter  name='绑定' ></Fonter> 
-        </View>  
+         <Fonter onPress={this.submit.bind(this)} name='绑定' ></Fonter> 
+        </View>
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -168,5 +181,8 @@ const styles = StyleSheet.create({
   },
   fonter:{
     margin: pxToDp(34),
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });

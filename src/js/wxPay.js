@@ -42,15 +42,15 @@ function wxPay(params, navigate, uri) {
         totalCardPayment: responseData.data.totalCardPayment
       })
     } else if (result.errCode == -1) {
-      Alert.alert('签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。')
+      Alert.alert('提示','签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。')
     } else if (result.errCode == -2) {
-      Alert.alert('用户取消')
+      Alert.alert('提示','用户取消')
     } else {
-      Alert.alert('未知错误')
+      Alert.alert('提示','未知错误')
       console.error(result)
     }
   }, (error) => {
-    Alert.alert(JSON.stringify(error))
+    Alert.alert('提示',JSON.stringify(error))
   })
 }
 

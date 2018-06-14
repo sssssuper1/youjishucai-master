@@ -37,12 +37,6 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class SignIn extends Component {
   constructor(props) {
@@ -100,7 +94,6 @@ export default class SignIn extends Component {
           <View style={styles.Item}>
             <Text>账户</Text>
             <TextInput
-              maxLength={11}
               style={styles.account}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) =>this.phoneInput(text) }
@@ -111,7 +104,6 @@ export default class SignIn extends Component {
           <View style={styles.Item}>
             <Text>密码</Text>
             <TextInput
-              maxLength={11}
               style={styles.account}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.passwordInput(text)}

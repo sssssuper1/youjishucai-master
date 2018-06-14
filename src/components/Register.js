@@ -37,12 +37,6 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-const deviceHeightDp = Dimensions.get('window').height;
-const deviceWidthDp = Dimensions.get('window').width;
-function scrrollHeight(uiElementHeight) {
-  alert(deviceHeightDp-uiElementHeight)  
-  return deviceHeightDp-uiElementHeight;
-}
 
 export default class Register extends Component {
   constructor(props) {
@@ -62,29 +56,36 @@ export default class Register extends Component {
     this.state={
       modelVistibal:true,
       name: name,
-      link: link
+      link: link,
+      phone: ''
     }
   }
-  
-  show(){
-    this.refs.toast.show('hello world!');
+
+  submit() {
+    if (this.state.phone == '') {
+      this.refs.toast.show('请输入手机号码');
+      return;
+    }
+
+    this.props.navigation.navigate(this.state.link, { phoneNumber: this.state.phone });
   }
+
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name={this.state.name}></Header1>
-          <TextInput
-            maxLength={11}
-            style={styles.phoneNumber}
-            underlineColorAndroid={'transparent'}
-            onChangeText={(text) => this.setState({phone:text}) }
-            placeholder={'请输入手机号'}
-            placeholderTextColor={'#a6a6a6'}
-          />
-          <View style={styles.fonter}>
-            <Fonter name="发送验证码" onPress={() => {navigate(this.state.link,{phoneNumber: this.state.phone})}}></Fonter>
-          </View>
+        <TextInput
+          maxLength={11}
+          style={styles.phoneNumber}
+          underlineColorAndroid={'transparent'}
+          onChangeText={(text) => this.setState({phone:text}) }
+          placeholder={'请输入手机号'}
+          placeholderTextColor={'#a6a6a6'}
+        />
+        <View style={styles.fonter}>
+          <Fonter name="发送验证码" onPress={this.submit.bind(this)}></Fonter>
+        </View>
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -104,5 +105,8 @@ const styles = StyleSheet.create({
   fonter: {
     paddingLeft: pxToDp(34),
     paddingRight: pxToDp(34)
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });
