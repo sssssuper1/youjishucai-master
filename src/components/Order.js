@@ -44,25 +44,30 @@ export default class Order extends Component {
       address: {},
       dataSource: [],
       totalAmount: 0,
-      shippingFee: 0
+      shippingFee: 0,
+      count: 0
     };
 
     this.loadData();
   }
 
   loadData() {
-    Fetch(global.url + '/API/MyCart/checkout', 'post', {
-      addressId: 0,
-      defaultDeliveryType: '0'
-    }, (responseData) => {
+    Fetch(global.url + '/API/MyCart/checkout', 'post', {defaultDeliveryType: '0'}, (responseData) => {
       if (responseData.success) {
+        let count = 0;
+        for (let i = 0; i < responseData.data.shopCartListDt.length; i++) {
+          count += responseData.data.shopCartListDt[i].count;
+        }
         this.setState({
           dataSource: responseData.data.shopCartListDt,
           address: responseData.data.address,
           totalAmount: responseData.data.totalAmount,
           shippingFee: responseData.data.shippingFee,
-          enterpriseAccountPayment: responseData.data.enterpriseAccountPayment
+          enterpriseAccountPayment: responseData.data.enterpriseAccountPayment,
+          count: count
         });
+      } else {
+        Alert.alert('提示',responseData.message);
       }
     },
     (err) => {
@@ -86,6 +91,8 @@ export default class Order extends Component {
       remark: '',
       isApp:true
     }
+
+    store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: 1 });
     wxPay(params, navigate, '/API/Order/Add');
     // this.props.navigation.navigate('PaySuccess', {amount: this.state.totalAmount + this.state.shippingFee});
   }
@@ -178,7 +185,7 @@ export default class Order extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.goods}>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共三件</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共{this.state.count}件</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥{this.state.totalAmount}</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥{this.state.shippingFee}</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥0</Text></View>

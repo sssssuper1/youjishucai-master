@@ -6,13 +6,9 @@
 
 import React, { Component } from 'react';
 
-import pxToDp from './src/js/pxToDp';
-import Community from './src/components/Community';
-import Vip from './src/components/Vip';
 import PayToVip from './src/components/PayToVip';
 import Message from './src/components/Message';
 import SearchGoods from './src/components/SearchGoods';
-import My from './src/components/My';
 import Person from './src/components/Person';
 import Name from './src/components/Name';
 import Index from './src/components/Index';
@@ -36,8 +32,6 @@ import AllOrder from './src/components/AllOrder';
 import UserAddress from './src/components/UserAddress';
 import EditAddress from './src/components/EditAddress';
 import VipRegister from './src/components/VipRegister';
-import TabNavigator from 'react-native-tab-navigator';
-import SplashScreen from 'react-native-splash-screen';
 import { StackNavigator } from 'react-navigation';
 import store from './src/store/index';
 import { storage } from './src/js/StorageUtil';
@@ -436,7 +430,7 @@ export default class App extends React.Component {
       this.setState({
         checkedLogin: true
       });
-      if (ret.userId == 'TestUser') {
+      if (!!ret && !!ret.userId) {
         this.setState({
           isLoggedIn: true
         });

@@ -62,6 +62,21 @@ export default class ModifyPassword extends Component {
       this.refs.toast.show('两次输入密码不一致!');
       return;
     }
+
+    let params = {
+      oldPassword: this.state.nowPassword,
+      newPassword: this.state.confirmPassword
+    }
+
+    Fetch(global.url + '/api/User/ResetPassword', 'post', params, (res) => {
+      if (res.result) {
+        this.refs.toast.show('修改成功！');
+      } else {
+        this.refs.toast.show(res.errMsg);
+      }
+    }, (err) => {
+      this.refs.toast.show(err);
+    });
   }
   
   render() {

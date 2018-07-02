@@ -62,19 +62,30 @@ export default class Register1 extends Component {
   popupClose() {
     this.popupDialog.dismiss();
   }
-  getCode(){
+  getCode() {
     clearInterval(this.state.timer)
     let num=60
-    this.setState({isInput:true})
-    this.state.timer=setInterval(()=>{
-      num--;
-      let codeText=`重新获取(${num})`
-      this.setState({codeText:codeText})
-      if(num<=0){
-        clearInterval(this.state.timer)
-        this.setState({isInput:false,codeText: '获取验证码'})
+    let params = {
+      mobileNo: this.state.phoneNumber
+    };
+    Fetch(global.url + '/api/User/GetSMScode', 'post', params, (res) => {
+      if (res.result) {
+        this.setState({ isInput: true });
+        this.state.timer=setInterval(()=>{
+          num--;
+          let codeText=`重新获取(${num})`
+          this.setState({codeText:codeText})
+          if(num<=0){
+            clearInterval(this.state.timer)
+            this.setState({isInput:false,codeText: '获取验证码'})
+          }
+        },1000)
+      } else {
+        this.refs.toast.show(res.errMsg);
       }
-    },1000)
+    }, (err) => {
+      this.refs.toast.show(err);
+    })
   }
   componentWillMount() {
     this.getCode();
@@ -95,7 +106,27 @@ export default class Register1 extends Component {
       return;
     }
 
-    this.props.navigation.navigate('SignIn');
+    let params = {
+      mobileNo: this.state.phoneNumber,
+      smsCode: this.state.code,
+      password: this.state.password
+    }
+
+    Fetch(global.url + '/api/User/Register', 'post', params, (res) => {
+      if (res.result) {
+        global.storage.save({
+          key: 'Cookie',
+          data: {
+            userId: 'TestUser'
+          }
+        });
+        this.props.navigation.replace('Home');
+      } else {
+        this.refs.toast.show(res.errMsg);
+      }
+    }, (err) => {
+      this.refs.toast.show(err);
+    });
   }
   render() {
     const { codeText, isInput } = this.state;

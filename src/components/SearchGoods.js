@@ -5,11 +5,10 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header1 from './Header1.js'
+import Toast from 'react-native-easy-toast';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import {
   Platform,
@@ -69,6 +68,23 @@ export default class SearchGoods extends Component {
 
   search() {
     this.loadData(this.state.searchText);
+  }
+
+  addToCart(id) {
+    Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
+      count: 1,
+      goodspecifications: id
+    }, (responseData) => {
+      if (responseData.success) {
+        this.refs.toast.show('加入成功!');
+        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
+      } else {
+        this.refs.toast.show('库存不足!');
+      }
+    },
+    (err) => {
+      Alert.alert('提示',err);
+    });
   }
 
   loadData(keyword) {
@@ -178,7 +194,7 @@ export default class SearchGoods extends Component {
         <View ><Text style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
-          <View style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}><Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/></View>
+          <TouchableOpacity onPress={() => {this.addToCart(item.specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}><Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/></TouchableOpacity>
         </View>
       </View>
     );
@@ -253,6 +269,7 @@ export default class SearchGoods extends Component {
           progressSize='small'
           progressColor='gray'
         />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={410}/>
       </View>
     );
   }
@@ -415,5 +432,8 @@ const styles = StyleSheet.create({
   },
   stateShow: {
     marginTop:pxToDp(50),
+  },
+  toast:{
+    backgroundColor: '#626262'
   },
 });

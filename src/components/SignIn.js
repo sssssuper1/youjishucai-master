@@ -76,13 +76,28 @@ export default class SignIn extends Component {
   }
 
   login() {
-    global.storage.save({
-      key: 'Cookie',
-      data: {
-        userId: 'TestUser'
+    
+
+    let params = {
+      mobileNo: this.state.phone,
+      password: this.state.password
+    }
+
+    Fetch(global.url + '/api/User/UserLogin', 'post', params, (res) => {
+      if (res.result) {
+        global.storage.save({
+          key: 'Cookie',
+          data: {
+            userId: 'TestUser'
+          }
+        });
+        this.props.navigation.replace('Home');
+      } else {
+        this.refs.toast.show(res.errMsg);
       }
-    });
-    this.props.navigation.replace('Home');
+    }, (err) => {
+      this.refs.toast.show(err);
+    })
   }
   
   render() {
@@ -126,6 +141,7 @@ export default class SignIn extends Component {
             </TouchableOpacity>
           </View> 
         </View>
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -204,5 +220,8 @@ const styles = StyleSheet.create({
   forgotPassword: {
     position: 'absolute',
     right:0
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });

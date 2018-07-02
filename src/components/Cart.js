@@ -247,6 +247,23 @@ export default class Cart extends Component {
     );
   }
 
+  submit() {
+    Fetch(global.url + '/API/user/getUserAddressList', 'get', '',
+      (responseData) => {
+        if (responseData.success) {
+          if (responseData.data.length > 0) {
+            this.props.navigation.navigate('Order');
+          } else {
+            this.props.navigation.navigate('UserAddress');
+          }
+        }
+      },
+      (err) => {
+        Alert.alert('提示',err);
+      }
+    );
+  }
+
   render() {
     const { navigate, goBack } = this.props.navigation;
     let view;
@@ -304,7 +321,7 @@ export default class Cart extends Component {
             <View style={styles.reducePrice}><Text style={styles.reducePriceText}>已优惠：</Text><Text style={styles.reducePriceNum}>￥{this.state.reducePrice}</Text></View> 
           </View>
           <TouchableOpacity style={!this.state.isEdit && this.state.sumNum > 0 ? styles.goPay : styles.hidden}
-            onPress={() => {navigate('Order')}}>
+            onPress={this.submit.bind(this)}>
             <Text style={styles.goPayText}>去结算({this.state.sumNum})</Text>  
           </TouchableOpacity>
           <View style={!this.state.isEdit && this.state.sumNum<=0?styles.payDisable:styles.hidden}>

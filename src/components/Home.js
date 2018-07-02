@@ -11,6 +11,7 @@ import store from '../store/index'
 import Fetch from '../js/fetch'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
+import Toast from 'react-native-easy-toast';
 import {
   Platform,
   StyleSheet,
@@ -59,56 +60,53 @@ export default class Home extends Component {
       fadeAnim: new Animated.Value(0),
       message: 'error',
       announce: '',
-      rightGoods: [],
-      count: store.getState().count
+      count: 0
     }
+
+    this.getNotify();
     //菜单获取
-    let manuUrl=global.url + '/api/home/initSgHome'
-    Fetch(manuUrl, "post", {}, (responseData) => { 
+    Fetch(global.url + '/api/home/initSgHome', 'post', {}, (responseData) => {
       if (typeof responseData == 'object') {
         let LeftdataSource = responseData.data.map((item, index) => {
           let json = {
             active: false,
-            name: item.name
+            name: item.name,
+            id: item.id
           }
           if (index === 0) {
             json.active = true;
           }
           return json
         })
-        let rightGoods = responseData.data.map((item, index) => {
-          let array = [];
-          let i = 0;
-          for (i = 0; i < item.categorys.length;i++) { 
-            let json = {
-              id:item.categorys[i].id,
-              img: item.categorys[i].img,
-              name:item.categorys[i].name,
-              money: item.categorys[i].id,
-              company: '袋',
-              isNull:false
-            }
-            array[i] = json;
-          }
-          return array;
-        })
-        this.setState({
-          LeftdataSource: type1.cloneWithRows(LeftdataSource),
-          rightGoods: rightGoods,
-          RightdataSource: type2.cloneWithRows(rightGoods[0]),
-          selectName: LeftdataSource[0].name,
-          announce: '为了让公司员工过一个欢乐祥和的五一劳动节，现将我司放假时间通知如下：2018年4月29日至2018年5月1日放假，共3天（届时3天内订单将统一在2018年5月2日正式上班安排发出，敬请谅解.'
-        }, () => { 
-          // this.popupDialog.show();
-        })
+
+        this.rightGoods = [];
+
+        for (let i = 0; i < responseData.data.length; i++) {
+          this.rightGoods.push([]);
+        }
+
+        this.getGoodsList(responseData.data[0].id, 0, () => {
+          this.setState({
+            LeftdataSource: type1.cloneWithRows(LeftdataSource),
+            selectName: LeftdataSource[0].name,
+          })
+        });
       } else { 
         this.setState({ message: "数据格式不对或者出错" });
         this.showAlert()
       }
     }, (err) => { 
-      this.setState({message: error.toString()})
+      this.setState({message: err.toString()})
       this.showAlert()
     })
+    
+    Fetch(global.url + '/api/Mycart/GetMiniCartNum', 'get', null, (res) => {
+      if (res.result) {
+        this.setState({
+          count: res.data
+        })
+      }
+    }, (err) => {})
 
     this.unsubscribe = store.subscribe(() => {
       this.setState({
@@ -116,6 +114,47 @@ export default class Home extends Component {
       })
     })
   }
+
+  getGoodsList = (categoryId, index, callBack) => {
+    if (this.rightGoods[index].length == 0) {
+      let params = {
+        categoryId: categoryId,
+        pageIndex: 0,
+      }
+      Fetch(global.url + '/api/home/getGoodsList', 'post', params, (res) => {
+        if (typeof res == 'object' && res.success) { 
+          this.rightGoods[index] = res.data.goods;
+          callBack();
+        } else { 
+          this.setState({ message: "数据格式不对或者出错" });
+          this.showAlert()
+        }
+      }, (err) => { 
+        this.setState({message: err.toString()})
+        this.showAlert()
+      })
+    } else {
+      callBack();
+    }
+  }
+
+  addToCart(id) {
+    Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
+      count: 1,
+      goodspecifications: id
+    }, (responseData) => {
+      if (responseData.success) {
+        this.refs.toast.show('加入成功!');
+        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
+      } else {
+        this.refs.toast.show('库存不足!');
+      }
+    },
+    (err) => {
+      Alert.alert('提示',err);
+    });
+  }
+
   showAlert = () => {
     this.setState({
       showAlert: true
@@ -126,6 +165,20 @@ export default class Home extends Component {
       showAlert: false
     });
   }
+
+  getNotify() {
+    Fetch(global.url + '/api/Home/GetNotify', 'get', null, (res) => {
+      if (typeof res == 'object' && res.result) { 
+        this.setState({
+          announce: res.data.notify.text
+        }, () => {
+          this.popupDialog.show();
+        });
+      }
+    }, (err) => { 
+    })
+  }
+
   onButtonPress() {
     this.popupDialog.dismiss();
   }
@@ -137,7 +190,6 @@ export default class Home extends Component {
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
-        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1})
         this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
           this.animate();
         })
@@ -218,8 +270,15 @@ export default class Home extends Component {
           dataSource._dataBlob.s1[i].active=false
         }
     }
-    var newTabs = JSON.parse(JSON.stringify(dataSource._dataBlob.s1));
-    this.setState({LeftdataSource:this.state.LeftdataSource.cloneWithRows(newTabs),selectName:name,RightdataSource:type2.cloneWithRows(this.state.rightGoods[rowID])})
+
+    this.getGoodsList(dataSource._dataBlob.s1[rowID].id, rowID, () => {
+      let newTabs = JSON.parse(JSON.stringify(dataSource._dataBlob.s1));
+      this.setState({
+        LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
+        selectName: name,
+        RightdataSource: type2.cloneWithRows(this.rightGoods[rowID])
+      })
+    });
   }
   //一级菜单的list渲染
   _renderRow1(rowData, sectionID, rowID) {
@@ -238,12 +297,14 @@ export default class Home extends Component {
     return (
       <View style={styles.rowGoods}>
         <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: rowData.id})}}>
-          <Image style={styles.rowGoodsImg} source={{uri:rowData.img}}/>
+          <Image style={styles.rowGoodsImg} source={{uri:rowData.goodImg}}/>
         </TouchableOpacity>
-        <View ><Text style={styles.rowGoodsName}>{rowData.name}</Text></View>
+        <View ><Text style={styles.rowGoodsName}>{rowData.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
-          <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{rowData.money}</Text><Text style={styles.rowGoodsCompany}>/{rowData.company}</Text></View>
-          <View style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}><Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/></View>
+          <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{rowData.price}</Text><Text style={styles.rowGoodsCompany}>/{rowData.specs[0].spec}</Text></View>
+          <TouchableOpacity onPress={() => {this.addToCart(rowData.specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
+            <Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -335,6 +396,7 @@ export default class Home extends Component {
         <PopupDialog
           width={pxToDp(600)} 
           height={pxToDp(692)} 
+          containerStyle={{zIndex: 1000}}
             ref={(popupDialog) => { this.popupDialog = popupDialog; }}
           >
             <View>
@@ -351,6 +413,7 @@ export default class Home extends Component {
             </TouchableOpacity>
           </View>
         </PopupDialog>
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={410}/>
       </View>
     );
   }
@@ -590,6 +653,7 @@ const styles = StyleSheet.create({
     height: pxToDp(45)
   },
   bullet: {
+    height: pxToDp(570),
     alignItems: 'center'
   },
   bulletImage: {
@@ -606,6 +670,7 @@ const styles = StyleSheet.create({
     color: "#333335"
   },
   bulletContent: {
+    marginTop: pxToDp(20),
     width: pxToDp(430)
   },
   bulletContentText: {
@@ -613,8 +678,8 @@ const styles = StyleSheet.create({
     color: '#99979a'
   },
   button: {
-    marginTop: pxToDp(60),
-    marginBottom: pxToDp(50),
+    position: 'absolute',
+    bottom: pxToDp(80),
     width: pxToDp(334),
     height: pxToDp(84),
     borderRadius: pxToDp(30),
@@ -624,5 +689,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white"
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });

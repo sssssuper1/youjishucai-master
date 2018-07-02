@@ -57,16 +57,27 @@ export default class ModifyPhoneNum extends Component {
 
     clearInterval(this.state.timer)
     let num=60
-    this.setState({isInput:true})
-    this.state.timer=setInterval(()=>{
-      num--;
-      let codeText=`重新获取(${num})`
-      this.setState({codeText:codeText})
-      if(num<=0){
-        clearInterval(this.state.timer)
-        this.setState({isInput:false,codeText: '获取验证码'})
+    let params = {
+      mobileNo: this.state.phone
+    };
+    Fetch(global.url + '/api/User/GetSMScode', 'post', params, (res) => {
+      if (res.result) {
+        this.setState({ isInput: true });
+        this.state.timer=setInterval(()=>{
+          num--;
+          let codeText=`重新获取(${num})`
+          this.setState({codeText:codeText})
+          if(num<=0){
+            clearInterval(this.state.timer)
+            this.setState({isInput:false,codeText: '获取验证码'})
+          }
+        },1000)
+      } else {
+        this.refs.toast.show(res.errMsg);
       }
-    },1000)
+    }, (err) => {
+      this.refs.toast.show(err);
+    })
   }
 
   submit() {

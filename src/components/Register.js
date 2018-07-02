@@ -67,7 +67,19 @@ export default class Register extends Component {
       return;
     }
 
-    this.props.navigation.navigate(this.state.link, { phoneNumber: this.state.phone });
+    let params = {
+      mobileNo: this.state.phone
+    };
+
+    Fetch(global.url + '/api/User/GetSMScode', 'post', params, (res) => {
+      if (res.result) {
+        this.props.navigation.navigate(this.state.link, { phoneNumber: this.state.phone });
+      } else {
+        this.refs.toast.show(res.errMsg);
+      }
+    }, (err) => {
+      this.refs.toast.show(err);
+    })
   }
 
   render() {

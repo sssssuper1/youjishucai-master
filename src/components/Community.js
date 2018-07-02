@@ -40,12 +40,22 @@ export default class Community extends Component {
 
     this.state = {
       menuNum: 0,
-      list1: {
+      list: [{
         img: '',
         name: '汤一点(南京山西路店)',
         address: '南京市鼓楼区山西路1号乐购仕5F',
         distance: '10km'
-      }
+      },{
+        img: '',
+        name: '汤一点(南京山西路店)',
+        address: '南京市鼓楼区山西路1号乐购仕5F',
+        distance: '10km'
+      },{
+        img: '',
+        name: '汤一点(南京山西路店)',
+        address: '南京市鼓楼区山西路1号乐购仕5F',
+        distance: '10km'
+      }]
     }
   }
   swipeMenu(num) { 
@@ -53,7 +63,6 @@ export default class Community extends Component {
   }
 
   render() {
-    let {menuNum, list1 } = this.state
     return (
       <View style={styles.contenier}>  
         <Header name="正弘新社群"></Header>
@@ -62,39 +71,39 @@ export default class Community extends Component {
             this.swipeMenu(0)
           }}>
             <View style={styles.menuImgWrap}>
-              <Image style={styles.menuImg} source={menuNum===0?require("../images/tangyidian-2.png"):require("../images/tangyidian-1.png")}></Image>
+              <Image style={styles.menuImg} source={this.state.menuNum===0?require("../images/tangyidian-2.png"):require("../images/tangyidian-1.png")}></Image>
             </View>
             <View style={styles.menuNameWrap}>
-              <Text style={menuNum===0?styles.menuName1:styles.menuName}>汤一点</Text>
+              <Text style={this.state.menuNum===0?styles.menuName1:styles.menuName}>汤一点</Text>
             </View>
-            <View style={menuNum===0?styles.line:styles.line1}></View>
+            <View style={this.state.menuNum===0?styles.line:styles.line1}></View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => { 
             this.swipeMenu(1)
           }}>
             <View style={styles.menuImgWrap}>
-              <Image style={styles.menuImg} source={menuNum===1?require("../images/kangyangzhongxin-2.png"):require("../images/kangyangzhongxin-1.png")}></Image>
+              <Image style={styles.menuImg} source={this.state.menuNum===1?require("../images/kangyangzhongxin-2.png"):require("../images/kangyangzhongxin-1.png")}></Image>
             </View>
             <View style={styles.menuNameWrap}>
-              <Text style={menuNum===1?styles.menuName1:styles.menuName}>康养中心</Text>
+              <Text style={this.state.menuNum===1?styles.menuName1:styles.menuName}>康养中心</Text>
             </View>
-            <View style={menuNum===1?styles.line:styles.line1}></View>
+            <View style={this.state.menuNum===1?styles.line:styles.line1}></View>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.menuItem,styles.menuItem3]} onPress={() => { 
             this.swipeMenu(2)
           }}>
             <View style={styles.menuImgWrap}>
-              <Image style={styles.menuImg} source={menuNum===2?require("../images/gongxiangzhijia-2.png"):require("../images/gongxiangzhijia-1.png")}></Image>
+              <Image style={styles.menuImg} source={this.state.menuNum===2?require("../images/gongxiangzhijia-2.png"):require("../images/gongxiangzhijia-1.png")}></Image>
             </View>
             <View style={styles.menuNameWrap}>
-              <Text style={menuNum===2?styles.menuName1:styles.menuName}>共享商家</Text>
+              <Text style={this.state.menuNum===2?styles.menuName1:styles.menuName}>共享商家</Text>
             </View>
-            <View style={menuNum===2?styles.line:styles.line1}></View>
+            <View style={this.state.menuNum===2?styles.line:styles.line1}></View>
           </TouchableOpacity>
         </View>
         <FlatList
-          data={[list1,list1,list1]}
-          style={menuNum===0?styles.list1:styles.list2}
+          data={this.state.list}
+          style={this.state.menuNum===0?styles.list1:styles.list2}
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
               <View style={styles.list1ContentImgLeft}>
@@ -108,8 +117,8 @@ export default class Community extends Component {
           }
         /> 
         <FlatList
-          data={[list1,list1,list1]}
-          style={menuNum===1?styles.list1:styles.list2}
+          data={this.state.list}
+          style={this.state.menuNum===1?styles.list1:styles.list2}
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
               <View style={styles.list1ContentImgLeft}>
@@ -123,8 +132,8 @@ export default class Community extends Component {
           }
         /> 
         <FlatList
-          data={[list1,list1,list1]}
-          style={menuNum===2?styles.list1:styles.list2}
+          data={this.state.list}
+          style={this.state.menuNum===2?styles.list1:styles.list2}
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
               <View style={styles.list1ContentImgLeft}>

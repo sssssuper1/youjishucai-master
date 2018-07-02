@@ -138,17 +138,6 @@ export default class EditAddress extends Component {
   }
   submit() {
     const { navigate } = this.props.navigation;
-    
-    let params = {
-      consignee: this.state.name,
-      consigneePhone: this.state.phoneNumber,
-      area: this.state.selectedProvinces + ' ' + this.state.selectedCitys + ' ' + this.state.selectedArea,
-      detailedAddress: this.state.detailAddress,
-      customerId: this.state.customerId,
-      id: this.state.id,
-      isDefault: 1,
-      isDeleted: 0
-    }
 
     if (this.state.name == '') {
       this.refs.toast.show('请输入收货人!');
@@ -180,21 +169,53 @@ export default class EditAddress extends Component {
       return;
     }
 
-    
-    Fetch(global.url + '/API/user/updateAddress', 'post', params, (responseData) => {
-      if (responseData.success) {
-        const { state } = this.props.navigation;
-        if (state.params != undefined && state.params.callBack != undefined) {
-          state.params.callBack();
-        }
-        navigate('UserAddress');
-      } else {
-        Alert.alert('提示',responseData.message);
+    if (!this.state.id) {
+      let params = {
+        consignee: this.state.name,
+        consigneePhone: this.state.phoneNumber,
+        area: this.state.selectedProvinces + ' ' + this.state.selectedCitys + ' ' + this.state.selectedArea,
+        detailedAddress: this.state.detailAddress
       }
-    },
-    (err) => {
-      Alert.alert('提示',err);
-    });
+      Fetch(global.url + '/API/user/addAddress', 'post', params, (responseData) => {
+        if (responseData.success) {
+          const { state } = this.props.navigation;
+          if (state.params != undefined && state.params.callBack != undefined) {
+            state.params.callBack();
+          }
+          navigate('UserAddress');
+        } else {
+          Alert.alert('提示',responseData.message);
+        }
+      },
+      (err) => {
+        Alert.alert('提示',err);
+      });
+    } else {
+      let params = {
+        consignee: this.state.name,
+        consigneePhone: this.state.phoneNumber,
+        area: this.state.selectedProvinces + ' ' + this.state.selectedCitys + ' ' + this.state.selectedArea,
+        detailedAddress: this.state.detailAddress,
+        customerId: this.state.customerId,
+        id: this.state.id,
+        isDefault: 1,
+        isDeleted: 0
+      }
+      Fetch(global.url + '/API/user/updateAddress', 'post', params, (responseData) => {
+        if (responseData.success) {
+          const { state } = this.props.navigation;
+          if (state.params != undefined && state.params.callBack != undefined) {
+            state.params.callBack();
+          }
+          navigate('UserAddress');
+        } else {
+          Alert.alert('提示',responseData.message);
+        }
+      },
+      (err) => {
+        Alert.alert('提示',err);
+      });
+    }
   }
   render() {
     let view;
