@@ -10,8 +10,7 @@ import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
+import Cookie from 'react-native-cookie';
 import { StackActions, NavigationActions } from 'react-navigation';
 import {
   Platform,
@@ -49,6 +48,8 @@ export default class Set extends Component {
     global.storage.remove({
       key: 'Cookie'
     });
+
+    Cookie.clear();
 
     const resetAction = StackActions.reset({
       index: 0,

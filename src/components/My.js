@@ -100,7 +100,7 @@ export default class My extends Component {
           </View>
         </ImageBackground>
         <View style={styles.cartInfo}>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart', {callBack: ()=>this.loadData()})}}>
             <View style={[styles.cartImg,styles.cart1Img]}>
               <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
             </View>
@@ -111,7 +111,7 @@ export default class My extends Component {
               <Text style={styles.cartName}>购物车</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 1})}}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 1, callBack: ()=>this.loadData()})}}>
             <View style={[styles.cartImg,styles.cart2Img]}>
               <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
             </View>
@@ -120,7 +120,7 @@ export default class My extends Component {
               <Text style={styles.cartName}>待付款</Text>
             </View>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 2})}}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 2, callBack: ()=>this.loadData()})}}>
             <View style={[styles.cartImg,styles.cart3Img]}>
               <Image style={styles.cart3Img} source={require('../images/sendGoods.png')}></Image>
             </View>
@@ -129,7 +129,7 @@ export default class My extends Component {
               <Text style={styles.cartName}>待发货</Text>
             </View>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn}  onPress={() => {navigate('AllOrder', {state: 3})}}>
+          <TouchableOpacity style={styles.cartBtn}  onPress={() => {navigate('AllOrder', {state: 3, callBack: ()=>this.loadData()})}}>
             <View style={[styles.cartImg,styles.cart4Img]}>
               <Image style={styles.cart4Img} source={require('../images/getGoods.png')}></Image>
             </View>
@@ -140,7 +140,7 @@ export default class My extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.detail}>
-          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('AllOrder')}}>
+          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('AllOrder', {callBack: ()=>this.loadData()})}}>
             <Image style={styles.detailBtnImg} source={require('../images/order.png')}></Image>
             <Text style={styles.detailBtnText}>全部订单</Text> 
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>

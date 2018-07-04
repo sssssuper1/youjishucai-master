@@ -24,9 +24,13 @@ import Vip from './Vip';
 import My from './My';
 import TabNavigator from 'react-native-tab-navigator';
 import SplashScreen from 'react-native-splash-screen';
-import { StackNavigator } from 'react-navigation';
 
 global.url = "http://xsq.ngrok.sws168.com";
+
+global.data = {
+  user: {}
+}
+
 let firstClick = 0;
 
 export default class Index extends Component {
@@ -56,7 +60,7 @@ export default class Index extends Component {
 
   loadData() {
     Fetch(global.url + '/api/home/GetInitData', 'get', '', (responseData) => {
-      global.data = responseData;
+      global.data.user = responseData.user;
       store.dispatch({
         type: types.getShopingNum.GETNUM,
         num: responseData.cartNum
