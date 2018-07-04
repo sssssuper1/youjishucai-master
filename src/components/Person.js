@@ -189,10 +189,10 @@ export default class Person extends Component {
             <Text style={styles.text}>昵称</Text><Text style={styles.warn}>{this.state.name}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
           {picker}
-          <TouchableOpacity style={styles.set} onPress={this.datePicker.bind(this)}>
+          <TouchableOpacity style={styles.hidden} onPress={this.datePicker.bind(this)}>
             <Text style={styles.text}>生日</Text><Text style={styles.warn}>{this.state.birthday}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
-          <View style={this.state.showDatePicker ? styles.iosDatePicker : styles.hidden}>
+          <View style={styles.hidden}>
             {datePicker}
           </View>
         </View>

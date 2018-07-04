@@ -29,7 +29,8 @@ import {
   Easing,
   ImageBackground,
   Alert,
-  Button
+  Button,
+  FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 const deviceHeightDp = Dimensions.get('window').height;
@@ -53,21 +54,26 @@ export default class Home extends Component {
     this.state = {
       showAlert: false,
       LeftdataSource: type1.cloneWithRows([]),
-      RightdataSource: type2.cloneWithRows([]),
+      RightdataSource: [],
       selectName: '',
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
       message: 'error',
       announce: '',
-      count: 0
+      count: 0,
+      banners: []
     }
 
     this.getNotify();
     //菜单获取
-    Fetch(global.url + '/api/home/initSgHome', 'post', {}, (responseData) => {
-      if (typeof responseData == 'object') {
-        let LeftdataSource = responseData.data.map((item, index) => {
+    Fetch(global.url + '/api/home/initSgHome', 'get', null, (responseData) => {
+      if (responseData.result) {
+        this.setState({
+          banners: responseData.data.banners
+        })
+
+        let LeftdataSource = responseData.data.categorys.map((item, index) => {
           let json = {
             active: false,
             name: item.name,
@@ -81,32 +87,25 @@ export default class Home extends Component {
 
         this.rightGoods = [];
 
-        for (let i = 0; i < responseData.data.length; i++) {
+        for (let i = 0; i < responseData.data.categorys.length; i++) {
           this.rightGoods.push([]);
         }
 
-        this.getGoodsList(responseData.data[0].id, 0, () => {
+        this.getGoodsList(responseData.data.categorys[0].id, 0, () => {
           this.setState({
             LeftdataSource: type1.cloneWithRows(LeftdataSource),
             selectName: LeftdataSource[0].name,
+            RightdataSource: this.rightGoods[0]
           })
         });
       } else { 
-        this.setState({ message: "数据格式不对或者出错" });
+        this.setState({ message: responseData.errMsg });
         this.showAlert()
       }
     }, (err) => { 
       this.setState({message: err.toString()})
       this.showAlert()
     })
-    
-    Fetch(global.url + '/api/Mycart/GetMiniCartNum', 'get', null, (res) => {
-      if (res.result) {
-        this.setState({
-          count: res.data
-        })
-      }
-    }, (err) => {})
 
     this.unsubscribe = store.subscribe(() => {
       this.setState({
@@ -120,6 +119,7 @@ export default class Home extends Component {
       let params = {
         categoryId: categoryId,
         pageIndex: 0,
+        loadAll: true
       }
       Fetch(global.url + '/api/home/getGoodsList', 'post', params, (res) => {
         if (typeof res == 'object' && res.success) { 
@@ -147,7 +147,7 @@ export default class Home extends Component {
         this.refs.toast.show('加入成功!');
         store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
       } else {
-        this.refs.toast.show('库存不足!');
+        this.refs.toast.show(responseData.message);
       }
     },
     (err) => {
@@ -166,13 +166,38 @@ export default class Home extends Component {
     });
   }
 
+  // 获取通知
   getNotify() {
     Fetch(global.url + '/api/Home/GetNotify', 'get', null, (res) => {
-      if (typeof res == 'object' && res.result) { 
-        this.setState({
-          announce: res.data.notify.text
-        }, () => {
-          this.popupDialog.show();
+      if (typeof res == 'object' && res.result) {
+        global.storage.load({
+          key: 'notify'
+        }).then(ret => {
+          if (!ret || !ret.text || ret.text != res.data.notify.text) {
+            this.setState({
+              announce: res.data.notify.text
+            }, () => {
+              this.popupDialog.show();
+              global.storage.save({
+                key: 'notify',
+                data: {
+                  text: res.data.notify.text
+                }
+              });
+            });
+          }
+        }).catch(err => {
+          this.setState({
+            announce: res.data.notify.text
+          }, () => {
+            this.popupDialog.show();
+            global.storage.save({
+              key: 'notify',
+              data: {
+                text: res.data.notify.text
+              }
+            });
+          });
         });
       }
     }, (err) => { 
@@ -276,7 +301,7 @@ export default class Home extends Component {
       this.setState({
         LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
         selectName: name,
-        RightdataSource: type2.cloneWithRows(this.rightGoods[rowID])
+        RightdataSource: this.rightGoods[rowID]
       })
     });
   }
@@ -292,26 +317,36 @@ export default class Home extends Component {
     );
   }
   //二级菜单的list渲染
-  _renderRow2(rowData, sectionID, rowID) {
+  _renderRow2(item, index) {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.rowGoods}>
-        <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: rowData.id})}}>
-          <Image style={styles.rowGoodsImg} source={{uri:rowData.goodImg}}/>
+        <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
+          <Image style={styles.rowGoodsImg} source={{uri:item.goodImg}}/>
         </TouchableOpacity>
-        <View ><Text style={styles.rowGoodsName}>{rowData.goodName}</Text></View>
+        <View ><Text style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
-          <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{rowData.price}</Text><Text style={styles.rowGoodsCompany}>/{rowData.specs[0].spec}</Text></View>
-          <TouchableOpacity onPress={() => {this.addToCart(rowData.specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
+          <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
+          <TouchableOpacity onPress={() => {this.addToCart(item.specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
             <Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/>
           </TouchableOpacity>
         </View>
       </View>
     );
   }
+
+  _renderBanner(list) {
+    return list.map(item => {
+      return (
+        <Image style={styles.banner} source={{ uri: item.imgUrl }}></Image>
+      );
+    });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     const { showAlert, message } = this.state;
+
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.headerBackground} source={require('../images/headerBackground.png')} resizeMode='cover'>
@@ -338,18 +373,10 @@ export default class Home extends Component {
           </View>
         </ImageBackground>
         <View style={styles.wrapperWrap}>
-          <Swiper style={styles.wrapper}  activeDot={<View style={{backgroundColor:'#007aff', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />} dot={<View style={{backgroundColor:'white', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}  autoplay={true} >
-            <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
-            </View>
-            <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
-            </View>
-            <View style={styles.slide}>
-              <Image style={styles.banner} source={require("../images/banner1.png")}></Image>
-            </View>
+          <Swiper style={styles.wrapper} activeDot={<View style={{backgroundColor:'#007aff', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />} dot={<View style={{backgroundColor:'white', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}  autoplay={true} >
+            {this._renderBanner(this.state.banners)}
           </Swiper>
-        </View>  
+        </View>
         <View style={styles.goodsWrap} >
           <ListView 
             style={styles.goods1}  
@@ -358,10 +385,10 @@ export default class Home extends Component {
           />
           <View style={styles.goods2}>
             <View style={styles.goods2Header}><Image style={styles.goods2HeaderImg1} source={require("../images/bubbleLeft.png")}></Image><Text style={styles.goods2HeaderText}>{this.state.selectName}</Text><Image style={styles.goods2HeaderImg2}  source={require("../images/bubbleRight.png")}></Image></View>  
-              <ListView 
+              <FlatList 
                 contentContainerStyle={styles.goods3}
-                dataSource={this.state.RightdataSource}
-                renderRow={this._renderRow2.bind(this)}
+                data={this.state.RightdataSource}
+                renderItem={({ item, index }) => this._renderRow2(item, index)}
               />
           </View>  
         </View>
@@ -600,7 +627,8 @@ const styles = StyleSheet.create({
   },
   goods3: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    paddingBottom: pxToDp(250)
   },
   rowGoods: {
     marginRight: pxToDp(8),

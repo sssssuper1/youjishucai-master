@@ -92,9 +92,8 @@ export default class Order extends Component {
       isApp:true
     }
 
-    store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: 1 });
+    store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: this.state.count });
     wxPay(params, navigate, '/API/Order/Add');
-    // this.props.navigation.navigate('PaySuccess', {amount: this.state.totalAmount + this.state.shippingFee});
   }
 
   changePaymentMethod(payNum) {

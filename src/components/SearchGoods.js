@@ -79,7 +79,7 @@ export default class SearchGoods extends Component {
         this.refs.toast.show('加入成功!');
         store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
       } else {
-        this.refs.toast.show('库存不足!');
+        this.refs.toast.show(responseData.message);
       }
     },
     (err) => {

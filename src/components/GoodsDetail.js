@@ -31,7 +31,8 @@ import {
   Modal,
   Button,
   FlatList,
-  Picker
+  Picker,
+  WebView
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -55,7 +56,9 @@ export default class GoodsDetail extends Component {
     this.state={
       selectionModelVisible: false,
       detailModelVisible: false,
-      productDetailDt: [{}],
+      productDetailDt: [{
+        goodDetailImgs: []
+      }],
       specDt: [{}],
       productIndex: 0,
       specIndex: 0,
@@ -98,6 +101,8 @@ export default class GoodsDetail extends Component {
         this.refs.toast.show('加入成功!');
         store.dispatch({ type: types.addShopingNum.ADDNUM, num: this.state.count })
         this.closeselectionModel();
+      } else {
+        this.refs.toast.show(responseData.message);
       }
     },
     (err) => {
@@ -156,6 +161,16 @@ export default class GoodsDetail extends Component {
     );
   }
 
+  _renderDetailList(list) {
+    return list.map(item => this._renderDetailImg(item));
+  }
+
+  _renderDetailImg(item) {
+    return (
+      <NetImage source={item}/>
+    )
+  }
+
   _renderSpecifications(list) {
     return list.map((item, index) => {
       return (
@@ -174,27 +189,32 @@ export default class GoodsDetail extends Component {
     return (
       <View style={styles.contenier}>
         <Header1 navigation={this.props.navigation} name="商品详情"></Header1>
-        <View style={styles.wrapperWrap}>
-        <Swiper style={styles.wrapper}  renderPagination={renderPagination} autoplay={true} >
-          {this._renderSwiper(this.state.productDetailDt)}
-        </Swiper>
-        </View>
-        <View style={styles.goodsName}>
-          <Text style={styles.goodsNameText}>{productDetailDt[productIndex].goodName}</Text>
-        </View>
-        <View style={styles.goodsPrice}>
-          <Text style={styles.nowPrice}>￥{specDt[specIndex].price}</Text>
-          <Text style={styles.spec}>/{specDt[specIndex].spec}</Text>
-          <Text style={styles.originalPrice}>￥{specDt[specIndex].preSellPrice}</Text>
-        </View>
-        <View style={styles.goodsDetail}>
-          <TouchableOpacity style={styles.goodsInfo} onPress={this.showselectionModel.bind(this)}>
-            <Text style={styles.title}>选择规格、数量</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.goodsInfo} onPress={this.showDetailModel.bind(this)}>
-            <Text style={styles.title}>产品参数</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
-          </TouchableOpacity>    
-        </View>
+        <ScrollView>
+          <View style={styles.wrapperWrap}>
+            <Swiper style={styles.wrapper}  renderPagination={renderPagination} autoplay={true} >
+              {this._renderSwiper(this.state.productDetailDt)}
+            </Swiper>
+          </View>
+          <View style={styles.goodsName}>
+            <Text style={styles.goodsNameText}>{productDetailDt[productIndex].goodName}</Text>
+          </View>
+          <View style={styles.goodsPrice}>
+            <Text style={styles.nowPrice}>￥{specDt[specIndex].price}</Text>
+            <Text style={styles.spec}>/{specDt[specIndex].spec}</Text>
+            <Text style={styles.originalPrice}>￥{specDt[specIndex].preSellPrice}</Text>
+          </View>
+          <View style={styles.goodsDetail}>
+            <TouchableOpacity style={styles.goodsInfo} onPress={this.showselectionModel.bind(this)}>
+              <Text style={styles.title}>选择规格、数量</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.goodsInfo} onPress={this.showDetailModel.bind(this)}>
+              <Text style={styles.title}>产品参数</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.goodDetailImg}>
+            {this._renderDetailList(productDetailDt[productIndex].goodDetailImgs)}
+          </View>
+        </ScrollView>
         <View style={styles.btns}>
           <TouchableOpacity style={styles.goGoods} onPress={()=>{navigate('Home', {selectedTab: 'home'})}}>
             <View><Image style={styles.goGoodsImg} source={require('../images/menu1-2.png')}></Image></View>
@@ -291,9 +311,38 @@ export default class GoodsDetail extends Component {
               </View> 
             </View> 
           </View>
-        </Modal>  
+        </Modal>
         <Toast ref="toast" style={styles.toast} position="top" positionValue={410}/>
       </View>
+    );
+  }
+}
+
+class NetImage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      width: pxToDp(750),
+      height: 0,
+    }
+  }
+
+  componentWillMount() {
+    let uri = this.props.source;
+    Image.getSize(uri, (width, height) => {
+      let h = pxToDp(height / width * 750);
+      this.setState({
+        height: h,
+      })
+    })
+  }
+
+  render() {
+    return (
+      <Image
+        style={{ width: this.state.width, height: this.state.height }}
+        source={{ uri: this.props.source }}
+      />
     );
   }
 }
@@ -363,6 +412,10 @@ const styles = StyleSheet.create({
   goodsDetail:{
     marginTop: pxToDp(14),
     backgroundColor: 'white'
+  },
+  goodDetailImg: {
+    marginTop: pxToDp(14),
+    paddingBottom: pxToDp(100)
   },
   goodsInfo:{
     position: 'relative',

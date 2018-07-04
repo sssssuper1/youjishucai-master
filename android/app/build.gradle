@@ -139,6 +139,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-cookie')
     compile project(':react-native-splash-screen')
     compile project(':RCTWeChat')
     compile fileTree(dir: "libs", include: ["*.jar"])

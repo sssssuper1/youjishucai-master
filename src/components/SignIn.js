@@ -76,8 +76,6 @@ export default class SignIn extends Component {
   }
 
   login() {
-    
-
     let params = {
       mobileNo: this.state.phone,
       password: this.state.password

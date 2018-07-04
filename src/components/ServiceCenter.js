@@ -41,9 +41,30 @@ export default class ServiceCenter extends Component {
   constructor(props) {
     super(props);
     this.state={
-      modelVistibal:true,
-      name: ''
+      tel: '',
+      content0: '',
+      content1: '',
+      address: ''
     }
+    this.loadData();
+  }
+
+  loadData() {
+    Fetch(global.url + '/api/home/CustomerServiceInfo', 'get', null, (res) => {
+      if (res.result) {
+        let contents = res.data.hoursOfService.split('\r\n');
+        this.setState({
+          tel: res.data.tel,
+          content0: contents[0],
+          content1: contents[1],
+          address: res.data.address
+        })
+      } else {
+        Alert.alert('提示', res.errMsg);
+      }
+    }, (err) => {
+      Alert.alert('提示', '网络错误!');
+    })
   }
   show(){
     this.refs.toast.show('hello world!');
@@ -53,10 +74,9 @@ export default class ServiceCenter extends Component {
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="客服中心"></Header1>
         <View style={styles.margin}>
-          <View style={styles.Item}><Image style={styles.itemImg}  source={require('../images/serverPhone.png')}></Image><Text style={styles.title}>客服电话</Text><Text style={styles.phone}>0518-88888888</Text></View>
-          <View style={styles.Item}><Image style={styles.itemImg}  source={require('../images/serverTime.png')}></Image><Text style={styles.title}>工作时间</Text><View><View><Text>9:00~17:30(周一至周五）</Text></View><View><Text>*除国家法定节假日</Text></View></View></View>
-          <View style={styles.Item}><Image style={styles.itemImg}  source={require('../images/getAddress.png')}></Image><Text style={styles.title}>联系地址</Text><Text style={styles.address}>南京市鼓楼区中央门街道389号凤凰国
-际大厦1101</Text></View>
+          <View style={styles.Item}><Image style={styles.itemImg} source={require('../images/serverPhone.png')}></Image><Text style={styles.title}>客服电话</Text><Text style={styles.phone}>{this.state.tel}</Text></View>
+          <View style={styles.Item}><Image style={styles.itemImg} source={require('../images/serverTime.png')}></Image><Text style={styles.title}>工作时间</Text><View><View><Text>{this.state.content0}</Text></View><View><Text>{this.state.content1}</Text></View></View></View>
+          <View style={styles.Item}><Image style={styles.itemImg} source={require('../images/getAddress.png')}></Image><Text style={styles.title}>联系地址</Text><Text style={styles.address}>{this.state.address}</Text></View>
         </View>
       </View>
     );

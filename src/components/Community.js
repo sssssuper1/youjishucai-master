@@ -40,26 +40,36 @@ export default class Community extends Component {
 
     this.state = {
       menuNum: 0,
-      list: [{
-        img: '',
-        name: '汤一点(南京山西路店)',
-        address: '南京市鼓楼区山西路1号乐购仕5F',
-        distance: '10km'
-      },{
-        img: '',
-        name: '汤一点(南京山西路店)',
-        address: '南京市鼓楼区山西路1号乐购仕5F',
-        distance: '10km'
-      },{
-        img: '',
-        name: '汤一点(南京山西路店)',
-        address: '南京市鼓楼区山西路1号乐购仕5F',
-        distance: '10km'
-      }]
+      lists: [[], [], []],
+      detailList: []
     }
+
+    this.loadData(0);
   }
-  swipeMenu(num) { 
-    this.setState({ menuNum:num})
+
+  loadData(id) {
+    let lists = this.state.lists;
+    if (lists[id].length == 0) {
+      Fetch(global.url + '/api/home/GetShopList?categoryName=' + id, 'get', null, (res) => {
+        if (res.result) {
+          lists[id] = res.data;
+          this.setState({
+            lists: lists,
+            detailList: lists[id],
+            menuNum: id
+          });
+        } else {
+          alert(res.errMsg)
+        }
+      }, (err) => {
+        Alert.alert('提示', '网路错误!');
+      })
+    } else {
+      this.setState({
+        menuNum: id,
+        detailList: lists[id],
+      })
+    }
   }
 
   render() {
@@ -68,7 +78,7 @@ export default class Community extends Component {
         <Header name="正弘新社群"></Header>
         <View style={styles.menuTypes}>
           <TouchableOpacity style={styles.menuItem} onPress={() => { 
-            this.swipeMenu(0)
+            this.loadData(0)
           }}>
             <View style={styles.menuImgWrap}>
               <Image style={styles.menuImg} source={this.state.menuNum===0?require("../images/tangyidian-2.png"):require("../images/tangyidian-1.png")}></Image>
@@ -79,7 +89,7 @@ export default class Community extends Component {
             <View style={this.state.menuNum===0?styles.line:styles.line1}></View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => { 
-            this.swipeMenu(1)
+            this.loadData(1)
           }}>
             <View style={styles.menuImgWrap}>
               <Image style={styles.menuImg} source={this.state.menuNum===1?require("../images/kangyangzhongxin-2.png"):require("../images/kangyangzhongxin-1.png")}></Image>
@@ -90,7 +100,7 @@ export default class Community extends Component {
             <View style={this.state.menuNum===1?styles.line:styles.line1}></View>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.menuItem,styles.menuItem3]} onPress={() => { 
-            this.swipeMenu(2)
+            this.loadData(2)
           }}>
             <View style={styles.menuImgWrap}>
               <Image style={styles.menuImg} source={this.state.menuNum===2?require("../images/gongxiangzhijia-2.png"):require("../images/gongxiangzhijia-1.png")}></Image>
@@ -102,46 +112,16 @@ export default class Community extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={this.state.list}
-          style={this.state.menuNum===0?styles.list1:styles.list2}
+          data={this.state.detailList}
+          style={styles.list1}
           renderItem={({ item }) =>
             <View style={styles.list1Content}>
               <View style={styles.list1ContentImgLeft}>
-                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
+                <Image style={styles.list1ContentImg} source={{uri: item.image}}></Image>
               </View>
               <View style={styles.list1ContentRIght}>
                 <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>{item.name}</Text></View>
-                <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
-              </View>
-            </View>
-          }
-        /> 
-        <FlatList
-          data={this.state.list}
-          style={this.state.menuNum===1?styles.list1:styles.list2}
-          renderItem={({ item }) =>
-            <View style={styles.list1Content}>
-              <View style={styles.list1ContentImgLeft}>
-                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
-              </View>
-              <View style={styles.list1ContentRIght}>
-              <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>{item.name}</Text></View>
-              <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
-              </View>
-            </View>
-          }
-        /> 
-        <FlatList
-          data={this.state.list}
-          style={this.state.menuNum===2?styles.list1:styles.list2}
-          renderItem={({ item }) =>
-            <View style={styles.list1Content}>
-              <View style={styles.list1ContentImgLeft}>
-                <Image style={styles.list1ContentImg} source={require("../images/kangyangzhongxin-2.png")}></Image>
-              </View>
-              <View style={styles.list1ContentRIght}>
-              <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>{item.name}</Text></View>
-              <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.list1ContentDistanceWrap}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
+                <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.hidden}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
               </View>
             </View>
           }
@@ -155,6 +135,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none'
   },
   header: {
     height: pxToDp(96),
@@ -237,13 +220,13 @@ const styles = StyleSheet.create({
   list1ContentImgLeft: {
     marginLeft: pxToDp(10),
     marginRight: pxToDp(10),
-    width: pxToDp(90),
-    height: pxToDp(90),
+    width: pxToDp(140),
+    height: pxToDp(100),
     overflow: 'hidden'
   },
   list1ContentImg: {
-    width: pxToDp(90),
-    height: pxToDp(90),
+    width: pxToDp(140),
+    height: pxToDp(100),
   },
   list1ContentRIght: {
     flex: 1,

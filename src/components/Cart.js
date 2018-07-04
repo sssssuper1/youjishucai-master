@@ -9,8 +9,8 @@ import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header from './Header'
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Toast from 'react-native-easy-toast';
 import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
@@ -141,32 +141,32 @@ export default class Cart extends Component {
   // 删除所选
   deleteSelected() {
     let newData = this.state.dataSource;
+    let ids = [];
+    let count = 0;
 
     for (let i = 0; i < newData.length; i++) {
       if (newData[i].isChecked) {
-        Fetch(global.url + '/API/MyCart/getShopCartList', 'post',
-          {
-            id: newData[i].id,
-            isDeleted: 1
-          }, (responseData) => {
-          if (responseData.success) {
-            this.setState({
-              dataSource: responseData.data.shopCartListDt
-            });
-            this.changeTotal();
-            store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: newData[i].count });
-          }
-        },
-        (err) => {
-          Alert.alert('提示',err);
-        });
-        // newData.splice(i, 1);
-        // i--;
+        count += newData[i].count;
+        ids.push(newData[i].id);
+        newData.splice(i, 1);
+        i--;
       }
     }
 
-    this.setState({ dataSource: newData });
-    this.changeTotal();
+    if (ids.length > 0) {
+      Fetch(global.url + '/api/MyCart/Delete', 'post', { ids: ids }, (res) => {
+        if (res.result) {
+          this.setState({ dataSource: newData });
+          this.changeTotal();
+          store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: count });
+          this.refs.toast.show('删除成功!');
+        } else {
+          this.refs.toast.show(res.errMsg);
+        }
+      }, (err) => {
+        Alert.alert('提示','网络错误');
+      })
+    }
   }
   isCheckedFu(index) { 
     this.state.dataSource[index].isChecked = Number(!this.state.dataSource[index].isChecked);
@@ -318,7 +318,6 @@ export default class Cart extends Component {
           </TouchableOpacity>
           <View style={this.state.isEdit?styles.hidden:styles.totalPrice}>
             <View style={styles.total}><Text style={styles.totalText}>合计（不含运费）：</Text><Text style={styles.totalNum}>￥{this.state.totalPrice}</Text></View> 
-            <View style={styles.reducePrice}><Text style={styles.reducePriceText}>已优惠：</Text><Text style={styles.reducePriceNum}>￥{this.state.reducePrice}</Text></View> 
           </View>
           <TouchableOpacity style={!this.state.isEdit && this.state.sumNum > 0 ? styles.goPay : styles.hidden}
             onPress={this.submit.bind(this)}>
@@ -344,6 +343,7 @@ export default class Cart extends Component {
           progressSize='small'
           progressColor='gray'
         />
+        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
       </View>
     );
   }
@@ -624,5 +624,8 @@ const styles = StyleSheet.create({
   },
   hidden: {
     display:'none'
-  }
+  },
+  toast:{
+    backgroundColor: '#626262'
+  },
 });
