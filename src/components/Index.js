@@ -24,11 +24,16 @@ import Vip from './Vip';
 import My from './My';
 import TabNavigator from 'react-native-tab-navigator';
 import SplashScreen from 'react-native-splash-screen';
+import Cookie from 'react-native-cookie';
 
-global.url = "http://xsq.ngrok.sws168.com";
+// global.url = "http://xsq.ngrok.sws168.com";
+global.url = "http://192.168.0.97:100";
 
 global.data = {
-  user: {}
+  user: {
+    vip: 0,
+    name: '未登录',
+  }
 }
 
 let firstClick = 0;
@@ -94,6 +99,18 @@ export default class Index extends Component {
     }
   }
 
+  toMy() {
+    Cookie.get(global.url).then(cookie => {
+      if (!!cookie) {
+        this.setState({
+          selectedTab: 'my'
+        });
+      } else {
+        this.props.navigation.navigate('SignIn');
+      }
+    })
+  }
+
   render() {
     return (
         <TabNavigator tabBarStyle={{backgroundColor:'white',height: pxToDp(114),alignItems: 'center'}}>
@@ -134,7 +151,7 @@ export default class Index extends Component {
               titleStyle={{color:'#999'}}
               renderIcon={() => <Image style={styles.menuImg4} source={require('../images/menu4-1.png')} />}
               renderSelectedIcon={() => <Image style={styles.menuImg4} source={require('../images/menu4-2.png')} />}
-              onPress={() => this.setState({ selectedTab: 'my' })}>
+              onPress={() => this.toMy()}>
               <My  navigation={this.props.navigation} />
           </TabNavigator.Item>
         </TabNavigator>
