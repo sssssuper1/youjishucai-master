@@ -12,6 +12,7 @@ import Fetch from '../js/fetch'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
+import Cookie from 'react-native-cookie';
 import {
   Platform,
   StyleSheet,
@@ -30,7 +31,7 @@ import {
   ImageBackground,
   Alert,
   Button,
-  FlatList
+  FlatList,
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 const deviceHeightDp = Dimensions.get('window').height;
@@ -59,7 +60,7 @@ export default class Home extends Component {
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
-      message: 'error',
+      message: '网络错误!',
       announce: '',
       count: 0,
       banners: []
@@ -139,20 +140,26 @@ export default class Home extends Component {
   }
 
   addToCart(id) {
-    Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
-      count: 1,
-      goodspecifications: id
-    }, (responseData) => {
-      if (responseData.success) {
-        this.refs.toast.show('加入成功!');
-        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
+    Cookie.get(global.url).then(cookie => {
+      if (!!cookie) {
+        Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
+          count: 1,
+          goodspecifications: id
+        }, (responseData) => {
+          if (responseData.success) {
+            this.refs.toast.show('加入成功!');
+            store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
+          } else {
+            this.refs.toast.show(responseData.message);
+          }
+        },
+        (err) => {
+          Alert.alert('提示',err);
+        });
       } else {
-        this.refs.toast.show(responseData.message);
+        this.props.navigation.navigate('SignIn');
       }
-    },
-    (err) => {
-      Alert.alert('提示',err);
-    });
+    })
   }
 
   showAlert = () => {
@@ -160,10 +167,25 @@ export default class Home extends Component {
       showAlert: true
     });
   }
+
+
   hideAlert = () => {
     this.setState({
       showAlert: false
     });
+  }
+
+  getScreenXY(i, id) {
+    // this.refs[i].measure((x, y, width, height, pageX, pageY) => {
+    //   this.setState({
+    //     right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
+    //     top: new Animated.Value(pageY - pxToDp(45 / 2))
+    //   }, () => { 
+    //     this.animate();
+    //     this.addToCart(id);
+    //   })
+    // })
+    this.addToCart(id);
   }
 
   // 获取通知
@@ -320,14 +342,16 @@ export default class Home extends Component {
   _renderRow2(item, index) {
     const { navigate } = this.props.navigation;
     return (
-      <View style={styles.rowGoods}>
+      <View style={styles.rowGoods} key={index}>
         <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
           <Image style={styles.rowGoodsImg} source={{uri:item.goodImg}}/>
         </TouchableOpacity>
-        <View ><Text style={styles.rowGoodsName}>{item.goodName}</Text></View>
+        <View ><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
-          <TouchableOpacity onPress={() => {this.addToCart(item.specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
+          <TouchableOpacity
+            onPress={() => { this.getScreenXY(index, this.state.RightdataSource[index].specs[0].id) }}
+            style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
             <Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/>
           </TouchableOpacity>
         </View>
@@ -517,6 +541,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#eeeeee",
     height: "100%",
     paddingLeft: pxToDp(74),
+    paddingBottom: 0,
+    paddingTop: 0
   },
   cartBtn: {
     position: 'relative',
@@ -538,7 +564,6 @@ const styles = StyleSheet.create({
     height: pxToDp(24),
     backgroundColor: "#fd4448",
     borderRadius: 36,
-    fontSize: pxToDp(20),
     alignItems: "center",
     justifyContent: "center"
   },
@@ -627,7 +652,6 @@ const styles = StyleSheet.create({
   },
   goods3: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     paddingBottom: pxToDp(250)
   },
   rowGoods: {

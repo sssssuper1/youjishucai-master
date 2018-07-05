@@ -1,7 +1,9 @@
 import {Alert, DeviceEventEmitter} from 'react-native';
 import Fetch from './fetch';
+import store from '../store/index';
+import types from '../actions/shopingCart';
 import * as WeChat from 'react-native-wechat';
-function wxPay(params, navigate, uri) {
+function wxPay(params, navigate, uri, count) {
   WeChat.registerApp('wx552eb71ba49e52ad');
 
   Fetch(global.url + uri, 'post', params, async (responseData) => {
@@ -10,12 +12,13 @@ function wxPay(params, navigate, uri) {
     }
     if (responseData.data.wxAmount == 0) {
       navigate('PaySuccess', {
-        payAmount: responseData.data.wxAmount,
-        totalCardPayment: responseData.data.totalCardPayment
+        payAmount: responseData.data.wxAmount
       })
       return
     }
-    DeviceEventEmitter.emit('num', 0);
+
+    store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: count });
+    // DeviceEventEmitter.emit('num', 0);
     const result = await WeChat.pay({
       partnerId: responseData.data.wxOrderModel.Partnerid, // 商家向财付通申请的商家id
       prepayId: responseData.data.wxOrderModel.Prepayid, // 预支付订单
@@ -25,10 +28,11 @@ function wxPay(params, navigate, uri) {
       sign: responseData.data.wxOrderModel.Sign // 商家根据微信开放平台文档对数据做的签名
     });
 
+    Alert.alert(result.errStr);
+
     if (result.errCode == 0) {
       navigate('PaySuccess', {
         payAmount: responseData.data.wxAmount,
-        totalCardPayment: responseData.data.totalCardPayment
       })
     } else if (result.errCode == -1) {
       Alert.alert('提示','签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。')

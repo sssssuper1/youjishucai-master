@@ -424,22 +424,27 @@ export default class App extends React.Component {
 
   componentDidMount() {
     // SplashScreen.hide();
-    global.storage.load({
-      key: 'Cookie'
-    }).then(ret => {
-      this.setState({
-        checkedLogin: true
-      });
-      if (!!ret && !!ret.userId) {
-        this.setState({
-          isLoggedIn: true
-        });
-      }
-    }).catch(err => {
-      this.setState({
-        checkedLogin: true
-      });
-    });
+    // global.storage.load({
+    //   key: 'Cookie'
+    // }).then(ret => {
+    //   this.setState({
+    //     checkedLogin: true
+    //   });
+    //   if (!!ret && !!ret.userId) {
+    //     this.setState({
+    //       isLoggedIn: true
+    //     });
+    //   }
+    // }).catch(err => {
+    //   this.setState({
+    //     checkedLogin: true
+    //   });
+    // });
+
+    this.setState({
+      checkedLogin: true,
+      isLoggedIn: true
+    })
   }
 
   render() {

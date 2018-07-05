@@ -71,7 +71,7 @@ export default class Set extends Component {
             <Image style={styles.Img} source={require('../images/save.png')}></Image><Text style={styles.text}>账户安全</Text><Text style={styles.warn}>更换手机号/改密码</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
         </View> 
-        <TouchableOpacity style={[styles.set,styles.margin]}>
+        <TouchableOpacity style={[styles.set,styles.margin,styles.hidden]}>
           <Image style={styles.Img} source={require('../images/about.png')}></Image><Text style={styles.text}>关于我们</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
         </TouchableOpacity> 
         <TouchableOpacity style={styles.save} onPress={this.logout.bind(this)}>
@@ -86,6 +86,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none'
   },
   margin:{
     marginTop: pxToDp(14)

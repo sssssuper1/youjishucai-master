@@ -10,7 +10,8 @@ import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import Toast, {DURATION} from 'react-native-easy-toast';
+import Toast, { DURATION } from 'react-native-easy-toast';
+import Cookie from 'react-native-cookie';
 import {
   Platform,
   StyleSheet,
@@ -93,21 +94,27 @@ export default class GoodsDetail extends Component {
   }
 
   addToCart() {
-    Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
-      count: this.state.count,
-      goodspecifications: this.state.specDt[this.state.specIndex].id
-    }, (responseData) => {
-      if (responseData.success) {
-        this.refs.toast.show('加入成功!');
-        store.dispatch({ type: types.addShopingNum.ADDNUM, num: this.state.count })
-        this.closeselectionModel();
+    Cookie.get(global.url).then(cookie => {
+      if (!!cookie) {
+        Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
+          count: this.state.count,
+          goodspecifications: this.state.specDt[this.state.specIndex].id
+        }, (responseData) => {
+          if (responseData.success) {
+            this.refs.toast.show('加入成功!');
+            store.dispatch({ type: types.addShopingNum.ADDNUM, num: this.state.count })
+            this.closeselectionModel();
+          } else {
+            this.refs.toast.show(responseData.message);
+          }
+        },
+        (err) => {
+          Alert.alert('提示',err);
+        });
       } else {
-        this.refs.toast.show(responseData.message);
+        this.props.navigation.navigate('SignIn');
       }
-    },
-    (err) => {
-      Alert.alert('提示',err);
-    });
+    })
   }
 
   reduceGoodsNum() {

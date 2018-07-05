@@ -10,6 +10,7 @@ import store from '../store/index'
 import Fetch from '../js/fetch'
 import Toast from 'react-native-easy-toast';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Cookie from 'react-native-cookie';
 import {
   Platform,
   StyleSheet,
@@ -71,20 +72,26 @@ export default class SearchGoods extends Component {
   }
 
   addToCart(id) {
-    Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
-      count: 1,
-      goodspecifications: id
-    }, (responseData) => {
-      if (responseData.success) {
-        this.refs.toast.show('加入成功!');
-        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
+    Cookie.get(global.url).then(cookie => {
+      if (!!cookie) {
+        Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
+          count: 1,
+          goodspecifications: id
+        }, (responseData) => {
+          if (responseData.success) {
+            this.refs.toast.show('加入成功!');
+            store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
+          } else {
+            this.refs.toast.show(responseData.message);
+          }
+        },
+        (err) => {
+          Alert.alert('提示',err);
+        });
       } else {
-        this.refs.toast.show(responseData.message);
+        this.props.navigation.navigate('SignIn');
       }
-    },
-    (err) => {
-      Alert.alert('提示',err);
-    });
+    })
   }
 
   loadData(keyword) {
@@ -191,10 +198,10 @@ export default class SearchGoods extends Component {
         <TouchableOpacity onPress={()=>navigate('GoodsDetail',{id: item.id})}>
           <Image style={styles.rowGoodsImg} source={{uri: item.cover}}/>
         </TouchableOpacity>
-        <View ><Text style={styles.rowGoodsName}>{item.goodName}</Text></View>
+        <View ><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
-          <TouchableOpacity onPress={() => {this.addToCart(item.specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}><Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/></TouchableOpacity>
+          <TouchableOpacity onPress={() => {this.addToCart(this.state.dataSource[index].specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}><Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/></TouchableOpacity>
         </View>
       </View>
     );
@@ -334,6 +341,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#eeeeee",
     height: "100%",
     paddingLeft: pxToDp(74),
+    paddingBottom: 0,
+    paddingTop: 0
   },
   cart:{
     position: 'relative',

@@ -252,7 +252,7 @@ export default class Cart extends Component {
       (responseData) => {
         if (responseData.success) {
           if (responseData.data.length > 0) {
-            this.props.navigation.navigate('Order');
+            this.props.navigation.navigate('Order', {callBack: () => {this.loadData()}});
           } else {
             this.props.navigation.navigate('UserAddress');
           }
