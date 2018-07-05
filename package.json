@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "bundle-ios":"node node_modules/react-native/local-cli/cli.js bundle --entry-file index.js --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle"
+    "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.js --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle"
   },
   "dependencies": {
     "@types/prop-types": "^15.5.2",
@@ -20,7 +20,7 @@
     "react": "16.3.1",
     "react-native": "0.55.2",
     "react-native-awesome-alerts": "^1.0.7",
-    "react-native-cookie": "^0.2.0",
+    "react-native-cookies": "^3.3.0",
     "react-native-easy-toast": "^1.1.0",
     "react-native-popup-dialog": "^0.11.46",
     "react-native-splash-screen": "^3.0.6",

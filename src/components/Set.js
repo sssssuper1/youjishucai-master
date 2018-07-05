@@ -10,7 +10,7 @@ import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import Cookie from 'react-native-cookie';
+import CookieManager from 'react-native-cookies';
 import { StackActions, NavigationActions } from 'react-navigation';
 import {
   Platform,
@@ -49,7 +49,7 @@ export default class Set extends Component {
       key: 'Cookie'
     });
 
-    Cookie.clear();
+    CookieManager.clearAll();
 
     const resetAction = StackActions.reset({
       index: 0,
