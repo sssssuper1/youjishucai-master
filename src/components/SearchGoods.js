@@ -10,7 +10,7 @@ import store from '../store/index'
 import Fetch from '../js/fetch'
 import Toast from 'react-native-easy-toast';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import Cookie from 'react-native-cookie';
+import CookieManager from 'react-native-cookies';
 import {
   Platform,
   StyleSheet,
@@ -72,7 +72,7 @@ export default class SearchGoods extends Component {
   }
 
   addToCart(id) {
-    Cookie.get(global.url).then(cookie => {
+    CookieManager.get(global.url).then(cookie => {
       if (!!cookie) {
         Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
           count: 1,

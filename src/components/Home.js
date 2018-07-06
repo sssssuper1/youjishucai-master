@@ -12,7 +12,7 @@ import Fetch from '../js/fetch'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
-import Cookie from 'react-native-cookie';
+import CookieManager from 'react-native-cookies';
 import {
   Platform,
   StyleSheet,
@@ -150,7 +150,7 @@ export default class Home extends Component {
   }
 
   addToCart(id) {
-    Cookie.get(global.url).then(cookie => {
+    CookieManager.get(global.url).then(cookie => {
       if (!!cookie) {
         Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
           count: 1,

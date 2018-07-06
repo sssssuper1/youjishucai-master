@@ -24,7 +24,7 @@ import Vip from './Vip';
 import My from './My';
 import TabNavigator from 'react-native-tab-navigator';
 import SplashScreen from 'react-native-splash-screen';
-import Cookie from 'react-native-cookie';
+import CookieManager from 'react-native-cookies';
 
 // global.url = "http://xsq.ngrok.sws168.com";
 global.url = "http://192.168.0.97:100";
@@ -103,7 +103,11 @@ export default class Index extends Component {
   }
 
   toMy() {
+<<<<<<< HEAD
     Cookie.get(global.url).then(cookie => {
+=======
+    CookieManager.get(global.url).then(cookie => {
+>>>>>>> android_assets
       if (!!cookie) {
         this.setState({
           selectedTab: 'my'
