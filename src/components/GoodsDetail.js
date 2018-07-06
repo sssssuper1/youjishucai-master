@@ -57,13 +57,14 @@ export default class GoodsDetail extends Component {
     this.state={
       selectionModelVisible: false,
       detailModelVisible: false,
-      productDetailDt: [{
+      productDetailDt: {
+        goodImg: [],
         goodDetailImgs: []
-      }],
+      },
       specDt: [{}],
-      productIndex: 0,
       specIndex: 0,
       count: 1,
+      noStock: true
     }
 
     if (!!params && !!params.id) {
@@ -76,9 +77,14 @@ export default class GoodsDetail extends Component {
       id: id
     }, (responseData) => {
       if (responseData.success) {
+        let count = 0;
+        for (let spec of responseData.data.specDt) {
+          count += spec.stock;
+        }
         this.setState({
           productDetailDt: responseData.data.productDetailDt,
           specDt: responseData.data.specDt,
+          noStock: count > 0 ? false : true
         });
       }
     },
@@ -163,7 +169,7 @@ export default class GoodsDetail extends Component {
   _renderSwiperImg(item) {
     return (
       <View style={styles.slide}>
-        <Image style={styles.banner} source={{uri: item.goodImg}}></Image>
+        <Image style={styles.banner} source={{uri: item}}></Image>
       </View>
     );
   }
@@ -191,7 +197,7 @@ export default class GoodsDetail extends Component {
   
   render() {
     const { navigate } = this.props.navigation;
-    const { specIndex, productIndex, productDetailDt, specDt } = this.state;
+    const { specIndex, productDetailDt, specDt } = this.state;
 
     return (
       <View style={styles.contenier}>
@@ -199,11 +205,11 @@ export default class GoodsDetail extends Component {
         <ScrollView>
           <View style={styles.wrapperWrap}>
             <Swiper style={styles.wrapper}  renderPagination={renderPagination} autoplay={true} >
-              {this._renderSwiper(this.state.productDetailDt)}
+              {this._renderSwiper(this.state.productDetailDt.goodImg)}
             </Swiper>
           </View>
           <View style={styles.goodsName}>
-            <Text style={styles.goodsNameText}>{productDetailDt[productIndex].goodName}</Text>
+            <Text style={styles.goodsNameText}>{productDetailDt.goodName}</Text>
           </View>
           <View style={styles.goodsPrice}>
             <Text style={styles.nowPrice}>￥{specDt[specIndex].price}</Text>
@@ -219,7 +225,7 @@ export default class GoodsDetail extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.goodDetailImg}>
-            {this._renderDetailList(productDetailDt[productIndex].goodDetailImgs)}
+            {this._renderDetailList(productDetailDt.goodDetailImgs)}
           </View>
         </ScrollView>
         <View style={styles.btns}>
@@ -236,7 +242,7 @@ export default class GoodsDetail extends Component {
             <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
             <View><Text style={styles.cartText}>购物车</Text></View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addGoods} onPress={this.addToCart.bind(this)}>
+          <TouchableOpacity disabled={this.state.noStock} style={this.state.noStock?styles.noGoods:styles.addGoods} onPress={this.addToCart.bind(this)}>
             <Text style={styles.addGoodsText}>加入购物车</Text>
           </TouchableOpacity>
         </View>
@@ -248,12 +254,12 @@ export default class GoodsDetail extends Component {
           <View style={{backgroundColor:"rgba(0,0,0,0.3)",height:"100%"}}>
             <View style={styles.modalWrap}>
               <View style={styles.modalGoods}>
-                <Image style={styles.modalGoodsImg} source={{uri: productDetailDt[productIndex].cover}}></Image>
+                <Image style={styles.modalGoodsImg} source={{uri: productDetailDt.cover}}></Image>
               </View>
               <View style={styles.modal}>
-                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNowPrice}>￥{specDt[specIndex].price}</Text><Text style={styles.modalSymble}>/盒</Text></View>
+                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNowPrice}>￥{specDt[specIndex].price}</Text><Text style={styles.modalSymble}>/{specDt[specIndex].spec}</Text></View>
                 <View style={styles.modalGoodsPriceNum}><Text style={styles.modalOricalPrice}>￥{specDt[specIndex].preSellPrice}</Text></View>
-                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNum}>库存：500</Text></View>
+                <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNum}>库存：{specDt[specIndex].stock}</Text></View>
                 <View style={styles.modalGoodsSpecWrap}>
                   <View style={styles.modalGoodsSpec}>
                     <Text>规格</Text>
@@ -275,7 +281,7 @@ export default class GoodsDetail extends Component {
                 <TouchableOpacity style={styles.closeModel} onPress={this.closeselectionModel.bind(this)}>
                   <Image style={styles.closeImg} source={require('../images/close.png')}></Image>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.save} onPress={this.addToCart.bind(this)}>
+                <TouchableOpacity disabled={this.state.noStock} style={this.state.noStock?styles.cannotSave:styles.save} onPress={this.addToCart.bind(this)}>
                   <Text style={styles.saveText}>加入购物车</Text>
                 </TouchableOpacity>
               </View> 
@@ -295,19 +301,19 @@ export default class GoodsDetail extends Component {
                 </View>
                 <View style={styles.detailList}>
                   <Text style={styles.detailListTitle}>产地</Text>
-                  <Text style={styles.detailListInfo}>江苏省南京市</Text>
+                  <Text style={styles.detailListInfo}>{productDetailDt.placeOfOrigin}</Text>
                 </View>
                 <View style={styles.detailList}>
                   <Text style={styles.detailListTitle}>规格</Text>
-                  <Text style={styles.detailListInfo}>100g*1</Text>
+                  <Text style={styles.detailListInfo}>{specDt[specIndex].spec}</Text>
                 </View>
                 <View style={styles.detailList}>
                   <Text style={styles.detailListTitle}>储存方式</Text>
-                  <Text style={styles.detailListInfo}>保鲜</Text>
+                  <Text style={styles.detailListInfo}>{productDetailDt.storageMode}</Text>
                 </View>
                 <View style={styles.detailList}>
                   <Text style={styles.detailListTitle}>品牌</Text>
-                  <Text style={styles.detailListInfo}>XXXXXXXXXX</Text>
+                  <Text style={styles.detailListInfo}>{productDetailDt.brand}</Text>
                 </View>
                 <TouchableOpacity style={styles.closeModel} onPress={this.closeDetailModel.bind(this)}>
                   <Image style={styles.closeImg} source={require('../images/close.png')}></Image>
@@ -365,6 +371,8 @@ const styles = StyleSheet.create({
     paddingBottom: pxToDp(28),
     backgroundColor: 'white',
     height: pxToDp(600),
+    borderTopWidth: pxToDp(2),
+    borderTopColor: '#eeeeee',
   },
   slide: {
     justifyContent: 'center',
@@ -405,6 +413,7 @@ const styles = StyleSheet.create({
   nowPrice:{
     paddingLeft: pxToDp(26),
     fontSize:pxToDp(32),
+    fontWeight: 'bold',
     color:'#ff0036'
   },
   spec: {
@@ -415,6 +424,7 @@ const styles = StyleSheet.create({
   },
   originalPrice:{
     textDecorationLine: 'line-through',
+    color: '#d0d0d0'
   },
   goodsDetail:{
     marginTop: pxToDp(14),
@@ -429,7 +439,7 @@ const styles = StyleSheet.create({
     height: pxToDp(89),
     flexDirection: 'row',
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
     alignItems: 'center'
   },
   title:{
@@ -519,6 +529,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  noGoods: {
+    backgroundColor: '#d0d0d0',
+    flex: 1,
+    height: pxToDp(100),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   addGoodsText:{
     fontSize: pxToDp(32),
     color:'white'
@@ -528,7 +545,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingTop: pxToDp(35),
     width: '100%',
-    height: pxToDp(630),
+    height: pxToDp(650),
   },
   modal:{
     paddingTop: pxToDp(20),
@@ -581,7 +598,7 @@ const styles = StyleSheet.create({
     height: pxToDp(117),
     alignItems: 'center',
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   modalGoodsSpecWrap:{
     marginTop: pxToDp(66),
@@ -621,12 +638,14 @@ const styles = StyleSheet.create({
     height: pxToDp(117),
     alignItems: 'center',
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   closeModel: {
     position: 'absolute',
-    right: pxToDp(50),
-    top: pxToDp(50)
+    right: pxToDp(30),
+    top: pxToDp(50),
+    width: pxToDp(50),
+    height: pxToDp(50),
   },
   closeImg: {
     width: pxToDp(30),
@@ -680,6 +699,15 @@ const styles = StyleSheet.create({
     height: pxToDp(100),
     backgroundColor: '#2abd89'
   },
+  cannotSave: {
+    position: "absolute",
+    bottom: 0,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: pxToDp(100),
+    backgroundColor: '#d0d0d0'
+  },
   saveText:{
     fontSize: pxToDp(32),
     color: 'white'
@@ -687,8 +715,8 @@ const styles = StyleSheet.create({
   detailTitle:{
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: pxToDp(25),
-    height: pxToDp(90)
+    height: pxToDp(90),
+    backgroundColor: '#fafafa'
   },
   detailTitleText: {
     fontSize: pxToDp(34),
@@ -698,9 +726,10 @@ const styles = StyleSheet.create({
     marginLeft: pxToDp(34),
     marginRight: pxToDp(34),
     flexDirection: 'row',
+    alignItems: 'center',
     height: pxToDp(90),
-    borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1'
+    borderBottomWidth: pxToDp(2),
+    borderBottomColor: '#eeeeee'
   },
   detailListTitle: {
     width: pxToDp(170),

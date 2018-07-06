@@ -66,6 +66,9 @@ export default class Index extends Component {
   loadData() {
     Fetch(global.url + '/api/home/GetInitData', 'get', '', (responseData) => {
       global.data.user = responseData.user;
+      if (global.data.user.name == '' && global.data.user.name.trim() == '') {
+        global.data.user.name = global.data.user.phone;
+      }
       store.dispatch({
         type: types.getShopingNum.GETNUM,
         num: responseData.cartNum

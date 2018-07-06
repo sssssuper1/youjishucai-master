@@ -5,12 +5,8 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
@@ -46,8 +42,8 @@ export default class MyOrder extends Component {
       state: 0,
       order: {
         details: [],
-        showConfirm: false,
-      }
+      },
+      warning: '确认要取消订单吗？'
     }
 
     this.loadData();
@@ -69,7 +65,7 @@ export default class MyOrder extends Component {
 
   // 取消订单
   cancelOrder() {
-    this.hideConfirm();
+    this.popupClose();
 
     Fetch(global.url + '/API/order/Cancel', 'post', {
       orderId: this.orderId
@@ -84,16 +80,12 @@ export default class MyOrder extends Component {
     });
   }
 
-  showConfirm() {
-    this.setState({
-      showConfirm: true
-    });
+  popupShow() {
+    this.popupDialog.show();
   }
 
-  hideConfirm() {
-    this.setState({
-      showConfirm: false
-    });
+  popupClose() {
+    this.popupDialog.dismiss();
   }
 
   //list渲染
@@ -185,7 +177,7 @@ export default class MyOrder extends Component {
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥{order.orderAmount}</Text></View>
           </View>
           <View style={styles.btns}>
-            <TouchableOpacity style={state === 0 ? styles.cacelOrder : styles.hidden} onPress={()=>this.showConfirm()}>
+            <TouchableOpacity style={state === 0 ? styles.cacelOrder : styles.hidden} onPress={()=>this.popupShow()}>
               <Text>取消订单</Text>
             </TouchableOpacity>
             <TouchableOpacity style={state===0?styles.goPay:styles.hidden}>
@@ -199,25 +191,26 @@ export default class MyOrder extends Component {
             </TouchableOpacity>   
           </View>
         </ScrollView>
-        <AwesomeAlert
-          show={this.state.showConfirm}
-          showProgress={false}
-          title="提示"
-          message="确认要取消订单吗？"
-          closeOnTouchOutside={false}
-          closeOnHardwareBackPress={false}
-          showCancelButton={true}
-          showConfirmButton={true}
-          cancelText="取消"
-          confirmText="确认"
-          confirmButtonColor="#29be87"
-          onCancelPressed={() => {
-            this.hideConfirm();
-          }}
-          onConfirmPressed={() => {
-            this.cancelOrder();
-          }}
-        />
+        <PopupDialog
+          width={pxToDp(600)} 
+          height={pxToDp(385)} 
+          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+          >
+          <View style={styles.bullet}>
+            <View style={styles.bulletTitle}><Text style={styles.bulletTitleText}>提示</Text></View>  
+            <View style={styles.bulletContent}>
+              <Text style={styles.bulletContentText}>{this.state.warning}</Text>
+            </View>
+            <View style={styles.buttonContent}>
+              <TouchableOpacity style={styles.button} onPress={this.popupClose.bind(this)}>
+                <Text style={styles.buttonCancle}>返回</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.buttonCut]} onPress={this.cancelOrder.bind(this)}>
+                <Text style={styles.buttonConfirm}>取消订单</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </PopupDialog>
       </View>
     );
   }
@@ -243,7 +236,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
     backgroundColor: 'white',
   },
   orderText: {
@@ -349,7 +342,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
     height: pxToDp(240)
   },
   unchecked: {
@@ -466,7 +459,7 @@ const styles = StyleSheet.create({
   },
   goodsInfo1: {
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
   },
   goodsInfoTitle: {
     fontSize: pxToDp(28),
@@ -532,5 +525,53 @@ const styles = StyleSheet.create({
   },
   goPayText: {
     color: 'white'
+  },
+  bullet: {
+    alignItems: 'center',
+    padding: 0
+  },
+  bulletTitle: {
+    marginTop: pxToDp(55),
+    marginBottom: pxToDp(25),
+    width: pxToDp(480)
+  },
+  bulletTitleText: {
+    fontSize: pxToDp(40),
+    color: "#333335",
+  },
+  bulletContent: {
+    width: pxToDp(480)
+  },
+  bulletContentText: {
+    fontSize: pxToDp(33),
+    color: '#99979a'
+  },
+  buttonContent: {
+    marginTop: pxToDp(90),
+    marginBottom: pxToDp(50),
+    height: pxToDp(100),
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: "white",
+    borderTopWidth: pxToDp(1),
+    borderTopColor: '#d9ddde',
+  },
+  button: {
+    width: '50%',
+    height: pxToDp(100),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonCut: {
+    borderLeftWidth: pxToDp(1),
+    borderLeftColor: '#d9ddde',
+  },
+  buttonConfirm: {
+    color: "#2abd89",
+    fontSize: pxToDp(33),
+  },
+  buttonCancle: {
+    color: "#000000",
+    fontSize: pxToDp(33),
   }
 });

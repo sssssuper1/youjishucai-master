@@ -119,7 +119,7 @@ export default class Order extends Component {
           <View style={styles.goodPresentPriceWrap}>
             <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}></Text>
             <View style={styles.goodsNum}>
-              <Text>{item.count}</Text>
+              <Text>X {item.count}</Text>
             </View>
           </View>
         </View>
@@ -162,7 +162,6 @@ export default class Order extends Component {
           <View style={styles.remarks}>
             <Text style={styles.remarksText}>备注：</Text>
             <TextInput
-              returnKeyType={"search"}
               underlineColorAndroid={'transparent'}
               style={styles.remarksInput}
               placeholder={'选填，本次交易说明'}
@@ -425,7 +424,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   payment1Img: {
     marginRight: pxToDp(20),
@@ -454,7 +453,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: pxToDp(90),
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
   },
   goodsInfoTitle: {
     fontSize: pxToDp(28),

@@ -97,7 +97,7 @@ export default class Register extends Component {
         <View style={styles.fonter}>
           <Fonter name="发送验证码" onPress={this.submit.bind(this)}></Fonter>
         </View>
-        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     );
   }

@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   message: {
     flexDirection: 'row',
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   messageImgWrap: {
     width: pxToDp(140),

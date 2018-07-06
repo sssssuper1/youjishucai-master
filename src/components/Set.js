@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     paddingLeft: pxToDp(34),
     height: pxToDp(107),
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
     backgroundColor: "white",
   },
   text:{

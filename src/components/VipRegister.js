@@ -303,7 +303,7 @@ export default class VipRegister extends Component {
         <TouchableOpacity style={styles.save} onPress={this.submit.bind(this)}>
             <Text style={styles.saveText}>保存</Text>
         </TouchableOpacity>
-        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     );
   }

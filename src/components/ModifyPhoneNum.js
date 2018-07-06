@@ -90,6 +90,30 @@ export default class ModifyPhoneNum extends Component {
       this.refs.toast.show('请输入验证码!');
       return;
     }
+
+    let params = {
+      mobileNo: this.state.phone,
+      smsCode: this.state.code
+    }
+
+    const { state } = this.props.navigation;
+
+    Fetch(global.url + '/api/User/UpdateMobile', 'post', params, (res) => {
+      if (res.result) {
+        if (global.data.user.name == global.data.user.phone) {
+          global.data.user.name = this.state.phone;
+        }
+        global.data.user.phone = this.state.phone;
+        this.refs.toast.show('修改成功！', 500, () => {
+          if (state.params != undefined && state.params.callBack != undefined) {
+            state.params.callBack();
+          }
+          this.props.navigation.goBack();
+        });
+      } else {
+        this.refs.toast.show(res.errMsg);
+      }
+    })
   }
   
   render() {
@@ -124,7 +148,7 @@ export default class ModifyPhoneNum extends Component {
         <View style={styles.fonter}> 
          <Fonter onPress={this.submit.bind(this)} name='绑定' ></Fonter> 
         </View>
-        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     );
   }
@@ -147,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'relative',
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   detailAddress:{
     flex: 1,
@@ -187,7 +211,7 @@ const styles = StyleSheet.create({
     paddingLeft: pxToDp(30),
     height: pxToDp(109),
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
     backgroundColor:'white'
   },
   fonter:{

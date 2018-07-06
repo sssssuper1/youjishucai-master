@@ -40,7 +40,7 @@ export default class PayFun extends Component {
     super(props);
     this.state={
       payNum:0,
-      message: 'XZCXZCxzcxzcsdfdsafds',
+      message: '网络错误！',
       showAlert: false,
       warning: '订单支付尚未完成，是否继续完成支付操作~'
     }
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   payment1Img: {
     marginRight: pxToDp(20),
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   goodsInfo1: {
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
   },
   goodsInfoTitle: {
     fontSize: pxToDp(28),

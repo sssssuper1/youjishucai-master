@@ -58,6 +58,20 @@ export default class ModifyPassword extends Component {
       return;
     }
 
+    if (this.state.newPassword.length < 6) {
+      this.refs.toast.show('请确认密码长度在6位及以上!');
+      return;
+    }
+
+    let digit = /^[0-9]{1,20}$/;
+    let alpha = /^[a-zA-Z]{1,20}$/;
+
+    if (digit.exec(this.state.newPassword) || alpha.exec(this.state.newPassword)) {
+      this.refs.toast.show('请确认密码包含字母和数字!');
+      return;
+    }
+    
+
     if (this.state.newPassword !== this.state.confirmPassword) {
       this.refs.toast.show('两次输入密码不一致!');
       return;
@@ -70,7 +84,9 @@ export default class ModifyPassword extends Component {
 
     Fetch(global.url + '/api/User/ResetPassword', 'post', params, (res) => {
       if (res.result) {
-        this.refs.toast.show('修改成功！');
+        this.refs.toast.show('修改成功！', 500, () => {
+          this.props.navigation.goBack();
+        });
       } else {
         this.refs.toast.show(res.errMsg);
       }
@@ -123,7 +139,7 @@ export default class ModifyPassword extends Component {
         <View style={styles.fonter}> 
          <Fonter onPress={this.submit.bind(this)} name='修改' ></Fonter> 
         </View>
-        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     );
   }
@@ -141,7 +157,7 @@ const styles = StyleSheet.create({
     height: pxToDp(109),
     borderBottomWidth: pxToDp(1),
     paddingLeft: pxToDp(30),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
     backgroundColor:'white'
   },
   textWrap: {

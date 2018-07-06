@@ -139,7 +139,7 @@ export default class SignIn extends Component {
             </TouchableOpacity>
           </View> 
         </View>
-        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     );
   }
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     height: pxToDp(104),
     alignItems: 'center',
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   account: {
     flex:1,

@@ -32,6 +32,7 @@ import {
   Alert,
   Button,
   FlatList,
+  ToastAndroid
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 const deviceHeightDp = Dimensions.get('window').height;
@@ -46,11 +47,6 @@ export default class Home extends Component {
     super(props);
     //左边菜单
     let type1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //右边菜单  
-    let type2 = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
-    });
     //初始化
     this.state = {
       showAlert: false,
@@ -70,10 +66,6 @@ export default class Home extends Component {
     //菜单获取
     Fetch(global.url + '/api/home/initSgHome', 'get', null, (responseData) => {
       if (responseData.result) {
-        this.setState({
-          banners: responseData.data.banners
-        })
-
         let LeftdataSource = responseData.data.categorys.map((item, index) => {
           let json = {
             active: false,
@@ -86,26 +78,29 @@ export default class Home extends Component {
           return json
         })
 
+        this.setState({
+          // banners: responseData.data.banners
+          banners: [
+            { imgUrl: 'http://192.168.0.97:94/web/img/021.png' },
+            { imgUrl: 'http://192.168.0.97:94/web/img/021.png' }
+          ],
+          LeftdataSource: type1.cloneWithRows(LeftdataSource),
+          selectName: LeftdataSource[0].name,
+        })
+
         this.rightGoods = [];
+        this.menuType = 0;
 
         for (let i = 0; i < responseData.data.categorys.length; i++) {
           this.rightGoods.push([]);
         }
 
-        this.getGoodsList(responseData.data.categorys[0].id, 0, () => {
-          this.setState({
-            LeftdataSource: type1.cloneWithRows(LeftdataSource),
-            selectName: LeftdataSource[0].name,
-            RightdataSource: this.rightGoods[0]
-          })
-        });
+        this.getGoodsList(responseData.data.categorys[0].id, 0);
       } else { 
-        this.setState({ message: responseData.errMsg });
-        this.showAlert()
+        Alert.alert('提示', responseData.errMsg);
       }
     }, (err) => { 
-      this.setState({message: err.toString()})
-      this.showAlert()
+      Alert.alert('提示', '网络错误！');
     })
 
     this.unsubscribe = store.subscribe(() => {
@@ -115,7 +110,20 @@ export default class Home extends Component {
     })
   }
 
-  getGoodsList = (categoryId, index, callBack) => {
+  hasStock(good) {
+    let count = 0;
+    for (let spec of good.specs) {
+      count += spec.stock;
+    }
+    if (count > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getGoodsList = (categoryId, index) => {
+    this.menuType = index;
     if (this.rightGoods[index].length == 0) {
       let params = {
         categoryId: categoryId,
@@ -124,18 +132,20 @@ export default class Home extends Component {
       }
       Fetch(global.url + '/api/home/getGoodsList', 'post', params, (res) => {
         if (typeof res == 'object' && res.success) { 
-          this.rightGoods[index] = res.data.goods;
-          callBack();
+          this.rightGoods[index] = res.data.goods.slice(0);
+          this.setState({
+            RightdataSource: this.rightGoods[index]
+          })
         } else { 
-          this.setState({ message: "数据格式不对或者出错" });
-          this.showAlert()
+          Alert.alert('提示', res.errMsg);
         }
       }, (err) => { 
-        this.setState({message: err.toString()})
-        this.showAlert()
+        Alert.alert('提示', '网络错误！');
       })
     } else {
-      callBack();
+      this.setState({
+        RightdataSource: this.rightGoods[index]
+      })
     }
   }
 
@@ -147,10 +157,14 @@ export default class Home extends Component {
           goodspecifications: id
         }, (responseData) => {
           if (responseData.success) {
-            this.refs.toast.show('加入成功!');
-            store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 })
+            store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 });
+            if (Platform.OS == 'android') {
+              ToastAndroid.show('加入成功!', ToastAndroid.SHORT);
+            } else {
+              this.toast.show('加入成功!');
+            }
           } else {
-            this.refs.toast.show(responseData.message);
+            this.toast.show(responseData.message);
           }
         },
         (err) => {
@@ -176,6 +190,7 @@ export default class Home extends Component {
   }
 
   getScreenXY(i, id) {
+    // alert(id);
     // this.refs[i].measure((x, y, width, height, pageX, pageY) => {
     //   this.setState({
     //     right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
@@ -304,10 +319,6 @@ export default class Home extends Component {
   }
   //点击1级菜单
   goods1NameFn(dataSource, rowID) {
-    let type2 = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged:(s1,s2)=>r1 !== r2,
-    });
     let name=""
     for(let i=0;i<dataSource._dataBlob.s1.length;i++){
         if (i == rowID) {
@@ -318,14 +329,12 @@ export default class Home extends Component {
         }
     }
 
-    this.getGoodsList(dataSource._dataBlob.s1[rowID].id, rowID, () => {
-      let newTabs = JSON.parse(JSON.stringify(dataSource._dataBlob.s1));
+    let newTabs = JSON.parse(JSON.stringify(dataSource._dataBlob.s1));
       this.setState({
         LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
-        selectName: name,
-        RightdataSource: this.rightGoods[rowID]
+        selectName: name
       })
-    });
+    this.getGoodsList(dataSource._dataBlob.s1[rowID].id, rowID);
   }
   //一级菜单的list渲染
   _renderRow1(rowData, sectionID, rowID) {
@@ -341,18 +350,23 @@ export default class Home extends Component {
   //二级菜单的list渲染
   _renderRow2(item, index) {
     const { navigate } = this.props.navigation;
+    let hasStock = this.hasStock(item)
     return (
-      <View style={styles.rowGoods} key={index}>
+      <View style={styles.rowGoods}>
         <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
-          <Image style={styles.rowGoodsImg} source={{uri:item.goodImg}}/>
+          <Image style={styles.rowGoodsImg} source={{ uri: item.goodImg }} />
+          <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
+            <Text style={styles.rowGoodsNoStockText}>售空</Text>
+          </View>
         </TouchableOpacity>
         <View ><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
           <TouchableOpacity
-            onPress={() => { this.getScreenXY(index, this.state.RightdataSource[index].specs[0].id) }}
+            disabled={!hasStock}
+            onPress={() => { this.getScreenXY(index, this.rightGoods[this.menuType][index].specs[0].id) }}
             style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
-            <Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/>
+            <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
           </TouchableOpacity>
         </View>
       </View>
@@ -464,7 +478,7 @@ export default class Home extends Component {
             </TouchableOpacity>
           </View>
         </PopupDialog>
-        <Toast ref="toast" style={styles.toast} position="top" positionValue={410}/>
+        <Toast ref={toast => {this.toast = toast;}} style={styles.toast} position="top" positionValue={410}/>
       </View>
     );
   }
@@ -485,6 +499,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none'
   },
   text: {
     color: '#fff',
@@ -652,6 +669,7 @@ const styles = StyleSheet.create({
   },
   goods3: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     paddingBottom: pxToDp(250)
   },
   rowGoods: {
@@ -664,6 +682,16 @@ const styles = StyleSheet.create({
     width: '100%',
     height: pxToDp(236),
     marginBottom: pxToDp(18)
+  },
+  rowGoodsNoStock: {
+    position: 'absolute',
+    padding: pxToDp(10),
+    right: 0,
+    top: 0,
+  },
+  rowGoodsNoStockText: {
+    fontSize: pxToDp(20),
+    color: '#ffae00'
   },
   rowGoodsName: {
     marginTop: pxToDp(10),

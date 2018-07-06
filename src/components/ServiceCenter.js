@@ -5,35 +5,14 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import Toast, {DURATION} from 'react-native-easy-toast';
-import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
   Alert,
-  Modal,
-  Button,
-  FlatList,
-  Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -53,6 +32,7 @@ export default class ServiceCenter extends Component {
     Fetch(global.url + '/api/home/CustomerServiceInfo', 'get', null, (res) => {
       if (res.result) {
         let contents = res.data.hoursOfService.split('\r\n');
+        contents.push('');
         this.setState({
           tel: res.data.tel,
           content0: contents[0],
@@ -74,9 +54,24 @@ export default class ServiceCenter extends Component {
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="客服中心"></Header1>
         <View style={styles.margin}>
-          <View style={styles.Item}><Image style={styles.itemImg} source={require('../images/serverPhone.png')}></Image><Text style={styles.title}>客服电话</Text><Text style={styles.phone}>{this.state.tel}</Text></View>
-          <View style={styles.Item}><Image style={styles.itemImg} source={require('../images/serverTime.png')}></Image><Text style={styles.title}>工作时间</Text><View><View><Text>{this.state.content0}</Text></View><View><Text>{this.state.content1}</Text></View></View></View>
-          <View style={styles.Item}><Image style={styles.itemImg} source={require('../images/getAddress.png')}></Image><Text style={styles.title}>联系地址</Text><Text style={styles.address}>{this.state.address}</Text></View>
+          <View style={styles.Item}>
+            <Image style={styles.itemImg} source={require('../images/serverPhone.png')}></Image>
+            <Text style={styles.title}>客服电话</Text>
+            <Text style={styles.phone}>{this.state.tel}</Text>
+          </View>
+          <View style={styles.Item}>
+            <Image style={styles.itemImg} source={require('../images/serverTime.png')}></Image>
+            <Text style={styles.title}>工作时间</Text>
+            <View>
+              <View><Text style={styles.workTime}>{this.state.content0}</Text></View>
+              <View><Text style={styles.workTime}>{this.state.content1}</Text></View>
+            </View>
+          </View>
+          <View style={styles.Item}>
+            <Image style={styles.itemImg} source={require('../images/getAddress.png')}></Image>
+            <Text style={styles.title}>联系地址</Text>
+            <Text style={styles.address}>{this.state.address}</Text>
+          </View>
         </View>
       </View>
     );
@@ -89,17 +84,17 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   margin: {
-    marginTop: pxToDp(15)
+    marginTop: pxToDp(15),
+    backgroundColor: 'white',
   },
   Item:{
-    height: pxToDp(107),
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: pxToDp(34),
-    paddingRight: pxToDp(34),
-    backgroundColor: 'white',
+    marginLeft: pxToDp(34),
+    marginRight: pxToDp(34),
+    paddingTop: pxToDp(30),
+    paddingBottom: pxToDp(30),
     borderBottomWidth: pxToDp(2),
-    borderBottomColor: '#f1f1f1'
+    borderBottomColor: '#eeeeee'
   },
   itemImg: {
     marginRight: pxToDp(28),
@@ -109,15 +104,23 @@ const styles = StyleSheet.create({
   title:{
     marginRight: pxToDp(24),
     fontSize: pxToDp(32),
+    lineHeight: pxToDp(34),
     color: '#2b2b2b'
   },
   phone: {
     fontSize: pxToDp(28),
+    lineHeight: pxToDp(34),
     color:'#2bbd89'
+  },
+  workTime: {
+    fontSize: pxToDp(28),
+    lineHeight: pxToDp(34),
+    color: '#a9a9a9',
   },
   address: {
     flex: 1,
     fontSize: pxToDp(28),
+    lineHeight: pxToDp(34),
     color: '#a9a9a9',
     flexWrap: 'wrap'
   }

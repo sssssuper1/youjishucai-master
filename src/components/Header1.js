@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   headerGoBack: {
     position: 'absolute',
-    left: pxToDp(34),
+    left: pxToDp(16),
     width: pxToDp(50),
     height: '100%',
     alignItems: 'center',

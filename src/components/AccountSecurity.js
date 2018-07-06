@@ -41,9 +41,15 @@ export default class AccountSecurity extends Component {
     super(props);
     let phoneNumber = global.data.user.phone
     this.state={
-      modelVistibal: true,
       phone: phoneNumber.slice(0,3) + '****' + phoneNumber.slice(7),
     }
+  }
+
+  callBack() {
+    let phoneNumber = global.data.user.phone
+    this.setState({
+      phone: phoneNumber.slice(0, 3) + '****' + phoneNumber.slice(7),
+    });
   }
   
   render() {
@@ -55,7 +61,7 @@ export default class AccountSecurity extends Component {
           <TouchableOpacity style={styles.set} onPress={() => {navigate('ModifyPhoneNum')}}>
             <Text style={styles.text}>修改手机号码</Text><Text style={styles.warn}>{this.state.phone}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.set} onPress={() => {navigate('ModifyPassword')}}>
+          <TouchableOpacity style={styles.set} onPress={() => { navigate('ModifyPassword', {callBack: () => this.callBack()})}}>
             <Text style={styles.text}>修改密码</Text><Text style={styles.warn}>修改</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
         </View> 
@@ -79,7 +85,7 @@ const styles = StyleSheet.create({
     paddingLeft: pxToDp(34),
     height: pxToDp(107),
     borderBottomWidth: pxToDp(1),
-    borderBottomColor: '#f1f1f1',
+    borderBottomColor: '#eeeeee',
     backgroundColor: "white",
   },
   text:{

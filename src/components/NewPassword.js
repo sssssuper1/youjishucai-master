@@ -93,6 +93,19 @@ export default class NewPassword extends Component {
       return;
     }
 
+    if (this.state.password.length < 6) {
+      this.refs.toast.show('请确认密码长度在6位及以上!');
+      return;
+    }
+
+    let digit = /^[0-9]{1,20}$/;
+    let alpha = /^[a-zA-Z]{1,20}$/;
+
+    if (digit.exec(this.state.password) || alpha.exec(this.state.password)) {
+      this.refs.toast.show('请确认密码包含字母和数字!');
+      return;
+    }
+
     if (this.state.confirmPassword !== this.state.password) {
       this.refs.toast.show('两次输入密码不一致!');
       return;
@@ -157,7 +170,7 @@ export default class NewPassword extends Component {
         <View style={styles.fonter}>
           <Fonter name="提交" onPress={this.submit.bind(this)}></Fonter>
         </View>
-        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     );
   }

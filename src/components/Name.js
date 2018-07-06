@@ -52,6 +52,11 @@ export default class Person extends Component {
       this.refs.toast.show('请输入昵称!');
       return;
     }
+
+    if (this.state.name.length > 12) {
+      this.refs.toast.show('请输入12字以内的昵称!');
+      return;
+    }
     
     Fetch(global.url + '/API/user/editUserInfo', 'post', {
       name: this.state.name
@@ -86,9 +91,10 @@ export default class Person extends Component {
           <TextInput
             style={styles.name}
             underlineColorAndroid={'transparent'}
-            onChangeText={(text) => this.setState({name:text})}
+            onChangeText={(text) => this.setState({ name: text })}
             placeholder={'请输入昵称'}
             placeholderTextColor={'#a6a6a6'}
+            maxLength={12}
           />
           <View style={styles.btnWrap}>
             <View style={styles.warn}><Text style={styles.warnText}>昵称由中文、英文、数字、组成。</Text></View>

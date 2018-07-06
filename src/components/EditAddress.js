@@ -246,6 +246,7 @@ export default class EditAddress extends Component {
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在省：</Text>
           <Picker
+            mode={'dropdown'}
             style={styles.Picker}
             itemStyle={styles.itempicker} 
             selectedValue={this.state.selectedProvinces}
@@ -258,6 +259,7 @@ export default class EditAddress extends Component {
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在市：</Text>
           <Picker
+            mode={'dropdown'}
             style={styles.Picker}
             selectedValue={this.state.selectedCitys}
             itemStyle={styles.itempicker} 
@@ -270,6 +272,7 @@ export default class EditAddress extends Component {
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在区：</Text>
           <Picker
+            mode={'dropdown'}
             style={styles.Picker}
             selectedValue={this.state.selectedArea}
             itemStyle={styles.itempicker}
@@ -388,7 +391,7 @@ export default class EditAddress extends Component {
         <TouchableOpacity style={styles.save} onPress={() => this.submit()}>
             <Text style={styles.saveText}>保存</Text>
         </TouchableOpacity>
-        <Toast ref="toast" style={styles.toast} position="bottom" positionValue={pxToDp(300)} />
+        <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     );
   }
