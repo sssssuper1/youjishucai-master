@@ -101,7 +101,7 @@ export default class GoodsDetail extends Component {
 
   addToCart() {
     CookieManager.get(global.url).then(cookie => {
-      if (!!cookie) {
+      if (!!cookie.userId) {
         Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
           count: this.state.count,
           goodspecifications: this.state.specDt[this.state.specIndex].id

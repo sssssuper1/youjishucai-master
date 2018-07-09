@@ -151,7 +151,7 @@ export default class Home extends Component {
 
   addToCart(id) {
     CookieManager.get(global.url).then(cookie => {
-      if (!!cookie) {
+      if (!!cookie.userId) {
         Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
           count: 1,
           goodspecifications: id

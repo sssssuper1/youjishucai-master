@@ -103,12 +103,8 @@ export default class Index extends Component {
   }
 
   toMy() {
-<<<<<<< HEAD
-    Cookie.get(global.url).then(cookie => {
-=======
     CookieManager.get(global.url).then(cookie => {
->>>>>>> android_assets
-      if (!!cookie) {
+      if (!!cookie.userId) {
         this.setState({
           selectedTab: 'my'
         });
