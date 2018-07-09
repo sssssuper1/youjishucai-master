@@ -43,12 +43,11 @@ export default class SearchGoods extends Component {
   constructor(props) {
     super(props);
     const { params } = this.props.navigation.state;
-    let showAlert = true;
+
+    this.isLoad = false;
 
     if (!!params && !!params.keyword) {
       this.loadData(params.keyword);
-    } else {
-      showAlert = false;
     }
 
     this.state={
@@ -56,7 +55,6 @@ export default class SearchGoods extends Component {
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
-      showAlert: showAlert,
       count: store.getState().count
     }
 
@@ -95,6 +93,7 @@ export default class SearchGoods extends Component {
   }
 
   loadData(keyword) {
+    this.isLoad = true;
     Fetch(global.url + '/API/home/getGoodsList', 'post', {
       addressLabel: '',
       categoryId: 0,
@@ -102,6 +101,7 @@ export default class SearchGoods extends Component {
       loadAll: true,
       pageIndex: '0'
     }, (responseData) => {
+      this.isLoad = false;
       if (responseData.success) {
         this.setState({
           dataSource: responseData.data.goods,
@@ -112,6 +112,14 @@ export default class SearchGoods extends Component {
     (err) => {
       Alert.alert('提示',err);
     });
+    
+    setTimeout(() => {
+      if (this.isLoad) {
+        this.setState({
+          showAlert: true
+        })
+      }
+    }, 1500);
   }
 
   componentWillMount() {
@@ -219,7 +227,7 @@ export default class SearchGoods extends Component {
         data={this.state.dataSource}
         renderItem={({ item, index }) =>this._renderRow1(item, index)}
       />
-    } else if (!this.state.showAlert) {
+    } else if (!this.state.showAlert && !this.isLoad) {
       view = 
       <View style={styles.state}>
         <View style={styles.stateImgWrap}>

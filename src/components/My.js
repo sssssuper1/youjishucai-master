@@ -5,13 +5,8 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
-import Header from './Header'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
   StyleSheet,
@@ -37,16 +32,16 @@ import pxToDp from '../js/pxToDp';
 export default class My extends Component {
   constructor(props) {
     super(props);
-    this.loadData();
     this.state = {
       paymentDt: 0,
       shipmentDt: 0,
       goodsReceiptDt: 0,
       name: global.data.user.name,
       vip: global.data.user.vip,
-      count: store.getState().count
+      count: store.getState().count,
+      qrCode: ''
     }
-
+    this.loadData();
     this.unsubscribe = store.subscribe(() => {
       this.setState({
         count: store.getState().count
@@ -155,6 +150,12 @@ export default class My extends Component {
             <Text style={styles.detailBtnText}>客服中心</Text> 
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
+        </View>
+        <View style={styles.detail}>
+          <View style={styles.qrCodeContainer}>
+            <Image style={styles.qrCode} source={{uri: global.url + '/api/user/GetMyRecommendQrCode'}}></Image>
+            <Text style={styles.qrCodeText}>我的二维码</Text>
+          </View>
         </View>
         <View style={styles.hidden}>
           <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('Message')}}>
@@ -327,6 +328,20 @@ const styles = StyleSheet.create({
   detailBtnNewText: {
     fontSize: pxToDp(20),
     color: "white", 
+  },
+  qrCodeContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: pxToDp(38),
+    paddingBottom: pxToDp(38)
+  },
+  qrCode: {
+    width: pxToDp(200),
+    height: pxToDp(200),
+  },
+  qrCodeText: {
+    color: '#000000',
+    lineHeight: pxToDp(60)
   },
   hidden: {
     display:'none'

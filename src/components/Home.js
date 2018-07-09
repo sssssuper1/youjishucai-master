@@ -59,7 +59,8 @@ export default class Home extends Component {
       message: '网络错误!',
       announce: '',
       count: 0,
-      banners: []
+      banners: [],
+      refreshing: false
     }
 
     this.getNotify();
@@ -79,17 +80,14 @@ export default class Home extends Component {
         })
 
         this.setState({
-          // banners: responseData.data.banners
-          banners: [
-            { imgUrl: 'http://192.168.0.97:94/web/img/021.png' },
-            { imgUrl: 'http://192.168.0.97:94/web/img/021.png' }
-          ],
+          banners: responseData.data.banners,
           LeftdataSource: type1.cloneWithRows(LeftdataSource),
           selectName: LeftdataSource[0].name,
         })
 
         this.rightGoods = [];
-        this.menuType = 0;
+        this.menuIndex = 0;
+        this.menuType = responseData.data.categorys[0].id;
 
         for (let i = 0; i < responseData.data.categorys.length; i++) {
           this.rightGoods.push([]);
@@ -122,9 +120,13 @@ export default class Home extends Component {
     }
   }
 
-  getGoodsList = (categoryId, index) => {
-    this.menuType = index;
-    if (this.rightGoods[index].length == 0) {
+  getGoodsList(categoryId, index, isRresh = false) {
+    if (isRresh) {
+      this.setState({
+        refreshing: true
+      })
+    }
+    if (this.rightGoods[index].length == 0 || isRresh) {
       let params = {
         categoryId: categoryId,
         pageIndex: 0,
@@ -134,10 +136,16 @@ export default class Home extends Component {
         if (typeof res == 'object' && res.success) { 
           this.rightGoods[index] = res.data.goods.slice(0);
           this.setState({
-            RightdataSource: this.rightGoods[index]
+            RightdataSource: this.rightGoods[index],
           })
         } else { 
           Alert.alert('提示', res.errMsg);
+        }
+
+        if (isRresh) {
+          this.setState({
+            refreshing: false
+          })
         }
       }, (err) => { 
         Alert.alert('提示', '网络错误！');
@@ -181,7 +189,6 @@ export default class Home extends Component {
       showAlert: true
     });
   }
-
 
   hideAlert = () => {
     this.setState({
@@ -330,10 +337,12 @@ export default class Home extends Component {
     }
 
     let newTabs = JSON.parse(JSON.stringify(dataSource._dataBlob.s1));
-      this.setState({
-        LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
-        selectName: name
-      })
+    this.setState({
+      LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
+      selectName: name
+    });
+    this.menuIndex = rowID;
+    this.menuType = dataSource._dataBlob.s1[rowID].id;
     this.getGoodsList(dataSource._dataBlob.s1[rowID].id, rowID);
   }
   //一级菜单的list渲染
@@ -353,18 +362,18 @@ export default class Home extends Component {
     let hasStock = this.hasStock(item)
     return (
       <View style={styles.rowGoods}>
-        <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
+        <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
           <Image style={styles.rowGoodsImg} source={{ uri: item.goodImg }} />
           <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
             <Text style={styles.rowGoodsNoStockText}>售空</Text>
           </View>
         </TouchableOpacity>
-        <View ><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
+        <View><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
           <TouchableOpacity
             disabled={!hasStock}
-            onPress={() => { this.getScreenXY(index, this.rightGoods[this.menuType][index].specs[0].id) }}
+            onPress={() => { this.getScreenXY(index, item.specs[0].id) }}
             style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
             <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
           </TouchableOpacity>
@@ -424,9 +433,11 @@ export default class Home extends Component {
           <View style={styles.goods2}>
             <View style={styles.goods2Header}><Image style={styles.goods2HeaderImg1} source={require("../images/bubbleLeft.png")}></Image><Text style={styles.goods2HeaderText}>{this.state.selectName}</Text><Image style={styles.goods2HeaderImg2}  source={require("../images/bubbleRight.png")}></Image></View>  
               <FlatList 
-                contentContainerStyle={styles.goods3}
-                data={this.state.RightdataSource}
-                renderItem={({ item, index }) => this._renderRow2(item, index)}
+              contentContainerStyle={styles.goods3}
+              data={this.state.RightdataSource}
+              renderItem={({ item, index }) => this._renderRow2(item, index)}
+              refreshing={this.state.refreshing}
+              onRefresh={this.getGoodsList.bind(this, this.menuType, this.menuIndex, true)}
               />
           </View>  
         </View>
@@ -677,6 +688,10 @@ const styles = StyleSheet.create({
     width: pxToDp(268),
     borderWidth: pxToDp(2),
     borderColor: '#f4f4f4',
+  },
+  rowGoodsImgContainer: {
+    width: '100%',
+    height: pxToDp(236)
   },
   rowGoodsImg: {
     width: '100%',

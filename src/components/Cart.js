@@ -37,6 +37,8 @@ import pxToDp from '../js/pxToDp';
 export default class Cart extends Component {
   constructor(props) {
     super(props);
+
+    this.isLoad = false;
     
     this.state = {
       dataSource: [],
@@ -45,14 +47,16 @@ export default class Cart extends Component {
       sumNum: 0,
       totalPrice: 0,
       reducePrice: 0,
-      showAlert: true
+      showAlert: false
     };
 
     this.loadData();
   }
 
   loadData() {
+    this.isLoad = true;
     Fetch(global.url + '/API/MyCart/getShopCartList', 'post', {}, (responseData) => {
+      this.isLoad = false;
       if (responseData.success) {
         this.setState({
           dataSource: responseData.data.shopCartListDt
@@ -64,6 +68,14 @@ export default class Cart extends Component {
     (err) => {
       Alert.alert('提示',err);
     });
+    
+    setTimeout(() => {
+      if (this.isLoad) {
+        this.setState({
+          showAlert: true
+        })
+      }
+    }, 1500);
   }
 
   hideAlert(){
@@ -275,7 +287,7 @@ export default class Cart extends Component {
           data={this.state.dataSource}
           renderItem={({ item, index }) =>this._renderRow1(item, index)}
         />;
-    } else if(!this.state.showAlert) {
+    } else if(!this.state.showAlert && !this.isLoad) {
       view =
         <View style={styles.state}>
           <View style={styles.stateImgWrap}>
