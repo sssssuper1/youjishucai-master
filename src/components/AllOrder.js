@@ -38,6 +38,8 @@ export default class AllOrder extends Component {
     const { params } = this.props.navigation.state;
     let now = 0;
 
+    this.isLoad = false;
+
     if (!!params&&!!params.state) {
       now = params.state;
     }
@@ -48,7 +50,7 @@ export default class AllOrder extends Component {
     this.state = {
       state: now,
       dataSource: [],
-      showAlert: true,
+      showAlert: false,
       cancelId: NaN,
       warning: '确认要取消订单吗？'
     };
@@ -57,12 +59,14 @@ export default class AllOrder extends Component {
   }
 
   loadData() {
+    this.isLoad = true;
     let params = {
       pageIndex: 0,
       state: ''
     }
     Fetch(global.url + '/API/order/getMyOrderList', 'post', params,
       (responseData) => {
+        this.isLoad = false;
         if (responseData.success) {
           this.data = responseData.data.orderList;
           this.changeListData(this.state.state);
@@ -73,6 +77,14 @@ export default class AllOrder extends Component {
         Alert.alert('提示',err);
       }
     );
+
+    setTimeout(() => {
+      if (this.isLoad) {
+        this.setState({
+          showAlert: true
+        })
+      }
+    }, 1500);
   }
 
   cancelOrder() {
@@ -213,7 +225,7 @@ export default class AllOrder extends Component {
         data={this.state.dataSource}
         renderItem={({ item, index }) =>this._renderRow(item, index)}
       />
-    } else if(!this.state.showAlert) {
+    } else if(!this.state.showAlert && !this.isLoad) {
       view =
         <View style={styles.stateBlank}>
           <View style={styles.stateImgWrap}>

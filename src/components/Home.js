@@ -59,8 +59,11 @@ export default class Home extends Component {
       message: '网络错误!',
       announce: '',
       count: 0,
-      banners: []
+      banners: [],
+      refreshing: false
     }
+
+    this._refs = {}
 
     this.getNotify();
     //菜单获取
@@ -79,17 +82,14 @@ export default class Home extends Component {
         })
 
         this.setState({
-          // banners: responseData.data.banners
-          banners: [
-            { imgUrl: 'http://192.168.0.97:94/web/img/021.png' },
-            { imgUrl: 'http://192.168.0.97:94/web/img/021.png' }
-          ],
+          banners: responseData.data.banners,
           LeftdataSource: type1.cloneWithRows(LeftdataSource),
           selectName: LeftdataSource[0].name,
         })
 
         this.rightGoods = [];
-        this.menuType = 0;
+        this.menuIndex = 0;
+        this.menuType = responseData.data.categorys[0].id;
 
         for (let i = 0; i < responseData.data.categorys.length; i++) {
           this.rightGoods.push([]);
@@ -122,9 +122,13 @@ export default class Home extends Component {
     }
   }
 
-  getGoodsList = (categoryId, index) => {
-    this.menuType = index;
-    if (this.rightGoods[index].length == 0) {
+  getGoodsList(categoryId, index, isRresh = false) {
+    if (isRresh) {
+      this.setState({
+        refreshing: true
+      })
+    }
+    if (this.rightGoods[index].length == 0 || isRresh) {
       let params = {
         categoryId: categoryId,
         pageIndex: 0,
@@ -134,10 +138,16 @@ export default class Home extends Component {
         if (typeof res == 'object' && res.success) { 
           this.rightGoods[index] = res.data.goods.slice(0);
           this.setState({
-            RightdataSource: this.rightGoods[index]
+            RightdataSource: this.rightGoods[index],
           })
         } else { 
           Alert.alert('提示', res.errMsg);
+        }
+
+        if (isRresh) {
+          this.setState({
+            refreshing: false
+          })
         }
       }, (err) => { 
         Alert.alert('提示', '网络错误！');
@@ -164,7 +174,11 @@ export default class Home extends Component {
               this.toast.show('加入成功!');
             }
           } else {
-            this.toast.show(responseData.message);
+            if (Platform.OS == 'android') {
+              ToastAndroid.show(responseData.message, ToastAndroid.SHORT);
+            } else {
+              this.toast.show(responseData.message);
+            }
           }
         },
         (err) => {
@@ -182,7 +196,6 @@ export default class Home extends Component {
     });
   }
 
-
   hideAlert = () => {
     this.setState({
       showAlert: false
@@ -190,17 +203,15 @@ export default class Home extends Component {
   }
 
   getScreenXY(i, id) {
-    // alert(id);
-    // this.refs[i].measure((x, y, width, height, pageX, pageY) => {
-    //   this.setState({
-    //     right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
-    //     top: new Animated.Value(pageY - pxToDp(45 / 2))
-    //   }, () => { 
-    //     this.animate();
-    //     this.addToCart(id);
-    //   })
-    // })
     this.addToCart(id);
+    this._refs[i].measure((x, y, width, height, pageX, pageY) => {
+      this.setState({
+        right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
+        top: new Animated.Value(pageY - pxToDp(45 / 2))
+      }, () => { 
+        this.animate();
+      })
+    })
   }
 
   // 获取通知
@@ -244,38 +255,6 @@ export default class Home extends Component {
   onButtonPress() {
     this.popupDialog.dismiss();
   }
-  componentWillMount() {
-    this._panResponder = PanResponder.create({
-      // 要求成为响应者：
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
-          this.animate();
-        })
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        // 最近一次的移动距离为gestureState.move{X,Y}
-
-        // 从成为响应者开始时的累计手势移动距离为gestureState.d{x,y}
-      },
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-      onPanResponderRelease: (evt, gestureState) => {
-        // 用户放开了所有的触摸点，且此时视图已经成为了响应者。
-        // 一般来说这意味着一个手势操作已经成功完成。
-      },
-      onPanResponderTerminate: (evt, gestureState) => {
-        // 另一个组件已经成为了新的响应者，所以当前手势将被取消。
-      },
-      onShouldBlockNativeResponder: (evt, gestureState) => {
-        // 返回一个布尔值，决定当前组件是否应该阻止原生组件成为JS响应者
-        // 默认返回true。目前暂时只支持android。
-        return true;
-      },
-    });
-  }
 
   componentWillUnmount() {
     this.unsubscribe();
@@ -294,12 +273,12 @@ export default class Home extends Component {
             [
               Animated.timing(this.state.right, {
                   toValue: pxToDp(10),
-              duration: 500,
+              duration: 300,
               easing: Easing.quad
               }),
               Animated.timing(this.state.top, {
                   toValue: pxToDp(10),
-                  duration: 500,
+                  duration: 300,
                   easing: Easing.quad
               })
             ]
@@ -313,6 +292,7 @@ export default class Home extends Component {
       ),
     ]).start();
   }
+
   search() {
     const { navigate } = this.props.navigation;
     navigate('SearchGoods', { keyword: this.state.searchText });
@@ -330,10 +310,12 @@ export default class Home extends Component {
     }
 
     let newTabs = JSON.parse(JSON.stringify(dataSource._dataBlob.s1));
-      this.setState({
-        LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
-        selectName: name
-      })
+    this.setState({
+      LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
+      selectName: name
+    });
+    this.menuIndex = rowID;
+    this.menuType = dataSource._dataBlob.s1[rowID].id;
     this.getGoodsList(dataSource._dataBlob.s1[rowID].id, rowID);
   }
   //一级菜单的list渲染
@@ -353,19 +335,20 @@ export default class Home extends Component {
     let hasStock = this.hasStock(item)
     return (
       <View style={styles.rowGoods}>
-        <TouchableOpacity onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
+        <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
           <Image style={styles.rowGoodsImg} source={{ uri: item.goodImg }} />
           <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
             <Text style={styles.rowGoodsNoStockText}>售空</Text>
           </View>
         </TouchableOpacity>
-        <View ><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
+        <View><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
           <TouchableOpacity
             disabled={!hasStock}
-            onPress={() => { this.getScreenXY(index, this.rightGoods[this.menuType][index].specs[0].id) }}
-            style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
+            ref={(r) => this._refs[index] = r}
+            onPress={() => { this.getScreenXY(index, item.specs[0].id) }}
+            style={styles.rowGoodsAdd}>
             <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
           </TouchableOpacity>
         </View>
@@ -424,9 +407,11 @@ export default class Home extends Component {
           <View style={styles.goods2}>
             <View style={styles.goods2Header}><Image style={styles.goods2HeaderImg1} source={require("../images/bubbleLeft.png")}></Image><Text style={styles.goods2HeaderText}>{this.state.selectName}</Text><Image style={styles.goods2HeaderImg2}  source={require("../images/bubbleRight.png")}></Image></View>  
               <FlatList 
-                contentContainerStyle={styles.goods3}
-                data={this.state.RightdataSource}
-                renderItem={({ item, index }) => this._renderRow2(item, index)}
+              contentContainerStyle={styles.goods3}
+              data={this.state.RightdataSource}
+              renderItem={({ item, index }) => this._renderRow2(item, index)}
+              refreshing={this.state.refreshing}
+              onRefresh={this.getGoodsList.bind(this, this.menuType, this.menuIndex, true)}
               />
           </View>  
         </View>
@@ -677,6 +662,10 @@ const styles = StyleSheet.create({
     width: pxToDp(268),
     borderWidth: pxToDp(2),
     borderColor: '#f4f4f4',
+  },
+  rowGoodsImgContainer: {
+    width: '100%',
+    height: pxToDp(236)
   },
   rowGoodsImg: {
     width: '100%',

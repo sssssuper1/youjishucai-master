@@ -26,8 +26,7 @@ import TabNavigator from 'react-native-tab-navigator';
 import SplashScreen from 'react-native-splash-screen';
 import CookieManager from 'react-native-cookies';
 
-// global.url = "http://xsq.ngrok.sws168.com";
-global.url = "http://192.168.0.97:100";
+global.url = "http://xsq.ngrok.sws168.com";
 
 global.data = {
   user: {

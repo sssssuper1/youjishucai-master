@@ -21,8 +21,7 @@ export default class ServiceCenter extends Component {
     super(props);
     this.state={
       tel: '',
-      content0: '',
-      content1: '',
+      contents: [],
       address: ''
     }
     this.loadData();
@@ -32,11 +31,9 @@ export default class ServiceCenter extends Component {
     Fetch(global.url + '/api/home/CustomerServiceInfo', 'get', null, (res) => {
       if (res.result) {
         let contents = res.data.hoursOfService.split('\r\n');
-        contents.push('');
         this.setState({
           tel: res.data.tel,
-          content0: contents[0],
-          content1: contents[1],
+          contents: contents,
           address: res.data.address
         })
       } else {
@@ -46,9 +43,11 @@ export default class ServiceCenter extends Component {
       Alert.alert('提示', '网络错误!');
     })
   }
-  show(){
-    this.refs.toast.show('hello world!');
+
+  _renderContent(list) {
+    return list.map(item => <View><Text style={styles.workTime}>{item}</Text></View>)
   }
+
   render() {
     return (
       <View style={styles.contenier} >
@@ -63,8 +62,7 @@ export default class ServiceCenter extends Component {
             <Image style={styles.itemImg} source={require('../images/serverTime.png')}></Image>
             <Text style={styles.title}>工作时间</Text>
             <View>
-              <View><Text style={styles.workTime}>{this.state.content0}</Text></View>
-              <View><Text style={styles.workTime}>{this.state.content1}</Text></View>
+              {this._renderContent(this.state.contents)}
             </View>
           </View>
           <View style={styles.Item}>

@@ -52,6 +52,7 @@ export default class VipRegister extends Component {
       detailAddress: '',
       name: '',
       ID: '',
+      referee: '',
       pickerNum: 0
     }
   }
@@ -155,7 +156,7 @@ export default class VipRegister extends Component {
     let pickers;
     if (Platform.OS == 'android') {
       pickers = 
-      <View style={styles.pickers}>
+      <View style={styles.user}>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在省：</Text>
           <Picker
@@ -205,7 +206,7 @@ export default class VipRegister extends Component {
       </View>  
     } else {
       pickers = 
-      <View style={styles.pickers}>
+      <View style={styles.user}>
         <TouchableHighlight onPress={()=>this.togglePicker(1)}>  
           <View style={styles.PickerWrap}>
             <Text style={styles.PickerTitle}>所在省：</Text>
@@ -299,6 +300,19 @@ export default class VipRegister extends Component {
             </View>
           </View>
           {pickers}
+          <View style={styles.userBm}>
+            <View style={styles.PickerWrap}>
+              <Text style={styles.PickerTitle}>推荐人：</Text>
+              <TextInput
+                underlineColorAndroid={'transparent'}
+                style={styles.detailAddress}
+                placeholder={'选填'}
+                onChangeText={(text) => this.setState({referee:text})}
+                value={this.state.referee}
+                editable={true}
+              />
+            </View>
+          </View>
         </ScrollView>
         <TouchableOpacity style={styles.save} onPress={this.submit.bind(this)}>
             <Text style={styles.saveText}>保存</Text>
@@ -329,7 +343,7 @@ const styles = StyleSheet.create({
   user:{
     marginTop: pxToDp(14),
   },
-  pickers:{
+  userBm:{
     marginTop: pxToDp(14),
     marginBottom: pxToDp(100)
   },

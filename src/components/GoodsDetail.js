@@ -78,13 +78,18 @@ export default class GoodsDetail extends Component {
     }, (responseData) => {
       if (responseData.success) {
         let count = 0;
-        for (let spec of responseData.data.specDt) {
-          count += spec.stock;
+        let specIndex = 0;
+        for (let i = 0; i < responseData.data.specDt.length; i++) {
+          if (count === 0 && responseData.data.specDt[i].stock > 0) {
+            specIndex = i;
+          }
+          count += responseData.data.specDt[i].stock;
         }
         this.setState({
           productDetailDt: responseData.data.productDetailDt,
           specDt: responseData.data.specDt,
-          noStock: count > 0 ? false : true
+          noStock: count > 0 ? false : true,
+          specIndex: specIndex
         });
       }
     },
@@ -243,7 +248,7 @@ export default class GoodsDetail extends Component {
             <View><Text style={styles.cartText}>购物车</Text></View>
           </TouchableOpacity>
           <TouchableOpacity disabled={this.state.noStock} style={this.state.noStock?styles.noGoods:styles.addGoods} onPress={this.addToCart.bind(this)}>
-            <Text style={styles.addGoodsText}>加入购物车</Text>
+            <Text style={styles.addGoodsText}>{this.state.noStock ? '已售空' : '加入购物车'}</Text>
           </TouchableOpacity>
         </View>
         <Modal
@@ -281,8 +286,8 @@ export default class GoodsDetail extends Component {
                 <TouchableOpacity style={styles.closeModel} onPress={this.closeselectionModel.bind(this)}>
                   <Image style={styles.closeImg} source={require('../images/close.png')}></Image>
                 </TouchableOpacity>
-                <TouchableOpacity disabled={this.state.noStock} style={this.state.noStock?styles.cannotSave:styles.save} onPress={this.addToCart.bind(this)}>
-                  <Text style={styles.saveText}>加入购物车</Text>
+                <TouchableOpacity disabled={!(specDt[specIndex].stock > 0)} style={specDt[specIndex].stock > 0?styles.save:styles.cannotSave} onPress={this.addToCart.bind(this)}>
+                  <Text style={styles.saveText}>{specDt[specIndex].stock > 0 ? '加入购物车' : '已售空'}</Text>
                 </TouchableOpacity>
               </View> 
             </View> 
