@@ -58,6 +58,8 @@ export default class SearchGoods extends Component {
       count: store.getState().count
     }
 
+    this._refs = {}
+
     this.unsubscribe = store.subscribe(() => {
       this.setState({
         count: store.getState().count
@@ -67,6 +69,18 @@ export default class SearchGoods extends Component {
 
   search() {
     this.loadData(this.state.searchText);
+  }
+
+  getScreenXY(i, id) {
+    this.addToCart(id);
+    this._refs[i].measure((x, y, width, height, pageX, pageY) => {
+      this.setState({
+        right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
+        top: new Animated.Value(pageY - pxToDp(45 / 2))
+      }, () => { 
+        this.animate();
+      })
+    })
   }
 
   addToCart(id) {
@@ -90,6 +104,18 @@ export default class SearchGoods extends Component {
         this.props.navigation.navigate('SignIn');
       }
     })
+  }
+
+  hasStock(good) {
+    let count = 0;
+    for (let spec of good.specs) {
+      count += spec.stock;
+    }
+    if (count > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   loadData(keyword) {
@@ -122,40 +148,6 @@ export default class SearchGoods extends Component {
     }, 1500);
   }
 
-  componentWillMount() {
-    this._panResponder = PanResponder.create({
-      // 要求成为响应者：
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1})
-        this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
-          this.animate();
-        })
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        // 最近一次的移动距离为gestureState.move{X,Y}
-
-        // 从成为响应者开始时的累计手势移动距离为gestureState.d{x,y}
-      },
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-      onPanResponderRelease: (evt, gestureState) => {
-        // 用户放开了所有的触摸点，且此时视图已经成为了响应者。
-        // 一般来说这意味着一个手势操作已经成功完成。
-      },
-      onPanResponderTerminate: (evt, gestureState) => {
-        // 另一个组件已经成为了新的响应者，所以当前手势将被取消。
-      },
-      onShouldBlockNativeResponder: (evt, gestureState) => {
-        // 返回一个布尔值，决定当前组件是否应该阻止原生组件成为JS响应者
-        // 默认返回true。目前暂时只支持android。
-        return true;
-      },
-    });
-  }
-
   componentWillUnmount() {
     this.unsubscribe();
   }
@@ -173,12 +165,12 @@ export default class SearchGoods extends Component {
             [
               Animated.timing(this.state.right, {
                   toValue: pxToDp(10),
-              duration: 500,
+              duration: 300,
               easing: Easing.quad
               }),
               Animated.timing(this.state.top, {
                   toValue: pxToDp(10),
-                  duration: 500,
+                  duration: 300,
                   easing: Easing.quad
               })
             ]
@@ -201,15 +193,25 @@ export default class SearchGoods extends Component {
 
   _renderRow1(item, index) {
     const { navigate } = this.props.navigation;
+    let hasStock = this.hasStock(item)
     return (
       <View style={styles.rowGoods}>
-        <TouchableOpacity onPress={()=>navigate('GoodsDetail',{id: item.id})}>
-          <Image style={styles.rowGoodsImg} source={{uri: item.cover}}/>
+        <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={()=>navigate('GoodsDetail',{id: item.id})}>
+          <Image style={styles.rowGoodsImg} source={{ uri: item.cover }} />
+          <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
+            <Text style={styles.rowGoodsNoStockText}>售空</Text>
+          </View>
         </TouchableOpacity>
-        <View ><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
+        <View><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
-          <TouchableOpacity onPress={() => {this.addToCart(this.state.dataSource[index].specs[0].id)}} style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}><Image style={styles.rowGoodsAddImg} source={require('../images/addGood.png')}/></TouchableOpacity>
+          <TouchableOpacity
+            disabled={!hasStock}
+            ref={(r) => this._refs[index] = r}
+            onPress={() => { this.getScreenXY(index, item.specs[0].id) }}
+            style={styles.rowGoodsAdd}>
+            <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -294,6 +296,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none'
   },
   headerContainer: {
     backgroundColor: 'white'
@@ -390,10 +395,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderColor: '#f4f4f4',
   },
+  rowGoodsImgContainer: {
+    width: '100%',
+    height: pxToDp(320)
+  },
   rowGoodsImg: {
     width: pxToDp(375),
     height: pxToDp(375),
     marginBottom: pxToDp(18)
+  },
+  rowGoodsNoStock: {
+    position: 'absolute',
+    padding: pxToDp(10),
+    right: 0,
+    top: 0,
+  },
+  rowGoodsNoStockText: {
+    fontSize: pxToDp(20),
+    color: '#ffae00'
   },
   rowGoodsName: {
     marginTop: pxToDp(10),

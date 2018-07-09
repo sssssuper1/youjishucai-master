@@ -63,6 +63,8 @@ export default class Home extends Component {
       refreshing: false
     }
 
+    this._refs = {}
+
     this.getNotify();
     //菜单获取
     Fetch(global.url + '/api/home/initSgHome', 'get', null, (responseData) => {
@@ -172,7 +174,11 @@ export default class Home extends Component {
               this.toast.show('加入成功!');
             }
           } else {
-            this.toast.show(responseData.message);
+            if (Platform.OS == 'android') {
+              ToastAndroid.show(responseData.message, ToastAndroid.SHORT);
+            } else {
+              this.toast.show(responseData.message);
+            }
           }
         },
         (err) => {
@@ -197,17 +203,15 @@ export default class Home extends Component {
   }
 
   getScreenXY(i, id) {
-    // alert(id);
-    // this.refs[i].measure((x, y, width, height, pageX, pageY) => {
-    //   this.setState({
-    //     right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
-    //     top: new Animated.Value(pageY - pxToDp(45 / 2))
-    //   }, () => { 
-    //     this.animate();
-    //     this.addToCart(id);
-    //   })
-    // })
     this.addToCart(id);
+    this._refs[i].measure((x, y, width, height, pageX, pageY) => {
+      this.setState({
+        right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
+        top: new Animated.Value(pageY - pxToDp(45 / 2))
+      }, () => { 
+        this.animate();
+      })
+    })
   }
 
   // 获取通知
@@ -251,38 +255,6 @@ export default class Home extends Component {
   onButtonPress() {
     this.popupDialog.dismiss();
   }
-  componentWillMount() {
-    this._panResponder = PanResponder.create({
-      // 要求成为响应者：
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        this.setState({ right: new Animated.Value(deviceWidthDp-evt.nativeEvent.pageX-pxToDp(45/2)), top: new Animated.Value(evt.nativeEvent.pageY-pxToDp(45/2)) }, () => { 
-          this.animate();
-        })
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        // 最近一次的移动距离为gestureState.move{X,Y}
-
-        // 从成为响应者开始时的累计手势移动距离为gestureState.d{x,y}
-      },
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-      onPanResponderRelease: (evt, gestureState) => {
-        // 用户放开了所有的触摸点，且此时视图已经成为了响应者。
-        // 一般来说这意味着一个手势操作已经成功完成。
-      },
-      onPanResponderTerminate: (evt, gestureState) => {
-        // 另一个组件已经成为了新的响应者，所以当前手势将被取消。
-      },
-      onShouldBlockNativeResponder: (evt, gestureState) => {
-        // 返回一个布尔值，决定当前组件是否应该阻止原生组件成为JS响应者
-        // 默认返回true。目前暂时只支持android。
-        return true;
-      },
-    });
-  }
 
   componentWillUnmount() {
     this.unsubscribe();
@@ -301,12 +273,12 @@ export default class Home extends Component {
             [
               Animated.timing(this.state.right, {
                   toValue: pxToDp(10),
-              duration: 500,
+              duration: 300,
               easing: Easing.quad
               }),
               Animated.timing(this.state.top, {
                   toValue: pxToDp(10),
-                  duration: 500,
+                  duration: 300,
                   easing: Easing.quad
               })
             ]
@@ -320,6 +292,7 @@ export default class Home extends Component {
       ),
     ]).start();
   }
+
   search() {
     const { navigate } = this.props.navigation;
     navigate('SearchGoods', { keyword: this.state.searchText });
@@ -373,8 +346,9 @@ export default class Home extends Component {
           <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
           <TouchableOpacity
             disabled={!hasStock}
+            ref={(r) => this._refs[index] = r}
             onPress={() => { this.getScreenXY(index, item.specs[0].id) }}
-            style={styles.rowGoodsAdd} {...this._panResponder.panHandlers}>
+            style={styles.rowGoodsAdd}>
             <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
           </TouchableOpacity>
         </View>
