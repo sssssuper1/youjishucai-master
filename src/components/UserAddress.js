@@ -64,9 +64,6 @@ export default class UserAddress extends Component {
             userAddresses: [data]
           });
         }
-      },
-      (err) => {
-        Alert.alert('提示',err);
       }
     );
   }

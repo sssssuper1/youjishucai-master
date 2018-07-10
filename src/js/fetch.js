@@ -1,4 +1,4 @@
-module.exports=(url,method,params1,callback,err,)=>{
+module.exports=(url,method,params1,callback,err=(err)=>{})=>{
     // let oCookie
     // if(cookie.userId){
     //   cookieStr={
@@ -6,7 +6,7 @@ module.exports=(url,method,params1,callback,err,)=>{
     //   }
     // }
     var myHeaders = new Headers({
-      'User-Agent': 'TDJAPP',
+      'User-Agent': 'SXJAPP',
       'Accept': 'application/json',
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*"
@@ -21,14 +21,11 @@ module.exports=(url,method,params1,callback,err,)=>{
             .then((response) => response.json())
             .then((responseData) => { 
               if(typeof responseData=='object'){
-                   callback(responseData)
+                callback(responseData)
               }
             })
             .catch((error) => { 
-              if(typeof err =='object'){
-                err(error)
-              }
-              
+              err('网络错误!')
             })
            .done(); 
     }else{
@@ -41,13 +38,11 @@ module.exports=(url,method,params1,callback,err,)=>{
             .then((response) => response.json())
             .then((responseData) => { 
               if(typeof responseData=='object'){
-                   callback(responseData)
+                callback(responseData)
               }
             })
             .catch((error) => { 
-              if(typeof err =='object'){
-                err(error)
-              }
+              err('网络错误!')
             })
            .done();
     }

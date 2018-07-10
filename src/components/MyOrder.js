@@ -30,6 +30,7 @@ import {
   Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import wxPay from '../js/wxPay';
 
 export default class MyOrder extends Component {
   constructor(props) {
@@ -80,12 +81,37 @@ export default class MyOrder extends Component {
     });
   }
 
+  confirmOrder() {
+    this.popupClose();
+    Fetch(global.url + '/API/order/ConfirmReceipt', 'post', {
+      orderId: this.orderId
+    },
+    (responseData) => {
+      if (responseData.success) {
+        this.loadData();
+      } else {
+        Alert.alert('提示', responseData.message);
+      }
+    },
+    (err) => {
+      Alert.alert('提示', err);
+    });
+  }
+
   popupShow() {
     this.popupDialog.show();
   }
 
   popupClose() {
     this.popupDialog.dismiss();
+  }
+
+  pay(orderNo) {
+    let params = {
+      orderNo: orderNo
+    }
+
+    wxPay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
   }
 
   //list渲染
@@ -97,8 +123,7 @@ export default class MyOrder extends Component {
         </View>
         <View style={styles.goodDetail}>
           <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.goodName}</Text></View>
-          <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.spec}</Text></View>
-          <View style={styles.goodOriginalPriceWrap}><Text   style={styles.goodOriginalPrice}>￥{item.originalPrice}</Text></View>
+          <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.goodspecifications}</Text></View>
           <View style={styles.goodPresentPriceWrap}>
             <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}>/袋</Text>
             <View style={styles.goodsNum}>
@@ -157,7 +182,7 @@ export default class MyOrder extends Component {
                   <Text style={styles.userName}>备注：</Text>
                 </View>
                 <View style={styles.address}>
-                  <Text style={styles.addressText}>{order.remark}</Text>
+                  <Text style={styles.addressText}>{order.remark ? order.remark : '无'}</Text>
                 </View>
               </View>
             </View>
@@ -170,20 +195,20 @@ export default class MyOrder extends Component {
           <View style={styles.goods}>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共{order.productCount}件</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥{order.orderAmount}</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥0.00</Text></View>
-            <View style={[styles.goodsInfo, styles.goodsInfo1]}><Text style={styles.goodsInfoTitle}>下单时间</Text><Text style={styles.price}>{order.orderDate}</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥0.00</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>微信支付</Text><Text style={styles.price}>{order.orderAmount}</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥{order.orderAmount}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥{order.expressMoney}</Text></View>
+            <View style={styles.goodsInfo1}><Text style={styles.goodsInfoTitle}>下单时间</Text><Text style={styles.price}>{order.orderDate}</Text></View>
+            <View style={global.data.user.vip>0?styles.goodsInfo:styles.hidden}><Text style={styles.goodsInfoTitle}>vip积分</Text><Text style={styles.price}>- ¥{order.integralPayAmount}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>微信支付</Text><Text style={styles.price}>{order.cashPayAmount}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle2}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥{order.cashPayAmount}</Text></View>
           </View>
           <View style={styles.btns}>
-            <TouchableOpacity style={state === 0 ? styles.cacelOrder : styles.hidden} onPress={()=>this.popupShow()}>
+            <TouchableOpacity style={state < 1 ? styles.cacelOrder : styles.hidden} onPress={()=>this.popupShow()}>
               <Text>取消订单</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={state===0?styles.goPay:styles.hidden}>
+            <TouchableOpacity style={state===0?styles.goPay:styles.hidden} onPress={() => this.pay(order.orderNum)}>
               <Text style={styles.goPayText}>去付款</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={state===3?styles.goPay:styles.hidden}>
+            <TouchableOpacity style={state===2?styles.goPay:styles.hidden} onPress={() => this.confirmOrder()}>
               <Text style={styles.goPayText}>确认收货</Text>
             </TouchableOpacity>
             <TouchableOpacity style={state >= 1 ? styles.cacelOrder : styles.hidden} onPress={()=>navigate('ServiceCenter')}>
@@ -282,11 +307,12 @@ const styles = StyleSheet.create({
   addressWrap:{
     marginTop: pxToDp(15),
     paddingLeft: pxToDp(26),
+    paddingRight: pxToDp(26),
     backgroundColor: 'white',
   },
   addressInfo:{
     flexDirection: 'row',
-    height: pxToDp(200),
+    height: pxToDp(150),
     borderTopWidth: pxToDp(1),
     borderTopColor: '#f1f1f1'
   },
@@ -306,6 +332,7 @@ const styles = StyleSheet.create({
     height: pxToDp(30),
   },
   user:{
+    flex: 1,
     alignItems:'center',
     justifyContent: 'center'
   },
@@ -316,17 +343,18 @@ const styles = StyleSheet.create({
   },
   userName:{
     marginRight: pxToDp(46),
-    fontSize: pxToDp(32),
+    fontSize: pxToDp(28),
     color: '#1d1d20'
   },
   userTel:{
     position: 'absolute', 
     right: 0,
-    fontSize: pxToDp(32),
+    fontSize: pxToDp(28),
     color: '#1d1d20'
   },
   address:{
-    width: pxToDp(614),
+    marginTop: pxToDp(20),
+    width: '100%',
     flexWrap: 'wrap',
   },
   addressText:{
@@ -370,7 +398,7 @@ const styles = StyleSheet.create({
     height: pxToDp(60)
   },
   goodName: {
-    fontSize: pxToDp(24),
+    fontSize: pxToDp(28),
     color: '#2a2a2a'
   },
   goodSpecWrap: {
@@ -455,15 +483,27 @@ const styles = StyleSheet.create({
     marginLeft: pxToDp(26),
     flexDirection: 'row',
     alignItems: 'center',
-    height: pxToDp(90),
+    justifyContent: 'space-between',
+    height: pxToDp(70),
   },
   goodsInfo1: {
+    position: 'relative',
+    marginLeft: pxToDp(26),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: pxToDp(70),
+    paddingBottom: pxToDp(20),
     borderBottomWidth: pxToDp(2),
     borderBottomColor: '#eeeeee',
   },
   goodsInfoTitle: {
     fontSize: pxToDp(28),
     color: '#a2a2a2',
+  },
+  goodsInfoTitle2: {
+    fontSize: pxToDp(28),
+    color: '#000000',
   },
   totalNum: {
     position: 'absolute',
@@ -472,8 +512,7 @@ const styles = StyleSheet.create({
     color: '#a2a2a2'
   },
   price: {
-    position: 'absolute',
-    right: pxToDp(26),
+    paddingRight: pxToDp(26),
     fontSize: pxToDp(28),
     color: '#a2a2a2'
   },
@@ -540,14 +579,14 @@ const styles = StyleSheet.create({
     color: "#333335",
   },
   bulletContent: {
-    width: pxToDp(480)
+    width: pxToDp(480),
+    height: pxToDp(150)
   },
   bulletContentText: {
     fontSize: pxToDp(33),
     color: '#99979a'
   },
   buttonContent: {
-    marginTop: pxToDp(90),
     marginBottom: pxToDp(50),
     height: pxToDp(100),
     width: '100%',

@@ -39,12 +39,14 @@ export default class Order extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: '',
+      remark: '',
       payNum: 0,
       address: {},
       dataSource: [],
       totalAmount: 0,
       shippingFee: 0,
+      integralPayAmount: 0,
+      payAmount: 0,
       count: 0
     };
 
@@ -63,6 +65,8 @@ export default class Order extends Component {
           address: responseData.data.address,
           totalAmount: responseData.data.totalAmount,
           shippingFee: responseData.data.shippingFee,
+          integralPayAmount: responseData.data.integralPayAmount,
+          payAmount: responseData.data.payAmount,
           enterpriseAccountPayment: responseData.data.enterpriseAccountPayment,
           count: count
         });
@@ -76,8 +80,6 @@ export default class Order extends Component {
   }
 
   pay() {
-    const { navigate } = this.props.navigation;
-
     let params = {
       isApp: true,
       cartProducts: this.state.dataSource.shopCartListDt,
@@ -88,11 +90,11 @@ export default class Order extends Component {
       pickUpPerson: '',
       pickUpPhone: '',
       pickUpPointsId: '',
-      remark: '',
+      remark: this.state.remark,
       isApp:true
     }
 
-    wxPay(params, navigate, '/API/Order/Add', this.state.count);
+    wxPay(params, this.props.navigation, '/API/Order/Add', this.state.count);
   }
 
   changePaymentMethod(payNum) {
@@ -119,7 +121,7 @@ export default class Order extends Component {
           <View style={styles.goodPresentPriceWrap}>
             <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}></Text>
             <View style={styles.goodsNum}>
-              <Text>X {item.count}</Text>
+              <Text style={styles.goodsNumText}>X {item.count}</Text>
             </View>
           </View>
         </View>
@@ -132,7 +134,7 @@ export default class Order extends Component {
     return (
       <View style={styles.contenier}> 
         <Header1 navigation={this.props.navigation} name="确认订单"></Header1>
-        <ScrollView> 
+        <ScrollView style={styles.scrollContainer}> 
           <TouchableOpacity style={!!this.state.address.consignee?styles.address:styles.hidden} onPress={() => {navigate('UserAddress', {callBack: () => this.callBack()})}}>
             <View style={styles.addressWrap}><Image style={styles.addressImg} source={require('../images/orderAddress.png')}></Image></View>
             <View style={styles.userInfo}>
@@ -165,8 +167,7 @@ export default class Order extends Component {
               underlineColorAndroid={'transparent'}
               style={styles.remarksInput}
               placeholder={'选填，本次交易说明'}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
+              onChangeText={(text) => this.setState({remark: text})}
             />  
           </View>
           <View style={styles.paymentMethod}>
@@ -175,7 +176,7 @@ export default class Order extends Component {
               <Text>微信支付</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(1)}>
+            <TouchableOpacity style={styles.hidden} onPress={()=>this.changePaymentMethod(1)}>
               <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
@@ -185,12 +186,12 @@ export default class Order extends Component {
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共{this.state.count}件</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥{this.state.totalAmount}</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥{this.state.shippingFee}</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>vip会员卡优惠</Text><Text style={styles.price}>- ¥0</Text></View>
+            <View style={global.data.user.vip>0?styles.goodsInfo:styles.hidden}><Text style={styles.goodsInfoTitle}>vip积分</Text><Text style={styles.price}>- ¥{this.state.integralPayAmount}</Text></View>
           </View>
         </ScrollView>  
         <View style={styles.result}>    
           <Text style={styles.resultTitle}>实付金额：</Text>
-          <Text style={styles.resultPrice}>¥{this.state.totalAmount + this.state.shippingFee}</Text>
+          <Text style={styles.resultPrice}>¥{this.state.payAmount - this.state.integralPayAmount}</Text>
           <TouchableOpacity style={styles.payBtn} onPress={this.pay.bind(this)}>
             <Text style={styles.payBtnText}>去结算</Text>
           </TouchableOpacity>
@@ -207,6 +208,10 @@ const styles = StyleSheet.create({
   },
   hidden: {
     display: 'none'
+  },
+  scrollContainer: {
+    borderTopWidth: pxToDp(2),
+    borderTopColor: '#f1f1f1'
   },
   header: {
     position: 'relative',
@@ -234,7 +239,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: pxToDp(26),
     paddingRight: pxToDp(26),
-    height: pxToDp(190),
+    paddingTop: pxToDp(40),
+    paddingBottom: pxToDp(40),
     alignItems: "center",
     justifyContent: 'center',
     backgroundColor: 'white'
@@ -321,7 +327,7 @@ const styles = StyleSheet.create({
     height: pxToDp(60)
   },
   goodName: {
-    fontSize: pxToDp(24),
+    fontSize: pxToDp(28),
     color: '#2a2a2a'
   },
   goodSpecWrap: {
@@ -362,6 +368,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: pxToDp(26),
     flexDirection: 'row'
+  },
+  goodsNumText: {
+    fontSize: pxToDp(24)
   },
   goodsReduceWrap: {
     width: pxToDp(50),
@@ -476,7 +485,9 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: pxToDp(100),
     alignItems: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    borderTopColor: '#f1f1f1',
+    borderTopWidth: pxToDp(2)
   },
   resultTitle: {
     marginLeft: pxToDp(26),

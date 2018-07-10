@@ -32,6 +32,7 @@ import AllOrder from './src/components/AllOrder';
 import UserAddress from './src/components/UserAddress';
 import EditAddress from './src/components/EditAddress';
 import VipRegister from './src/components/VipRegister';
+import IntegralRecord from './src/components/IntegralRecord';
 import { StackNavigator } from 'react-navigation';
 import store from './src/store/index';
 import { storage } from './src/js/StorageUtil';
@@ -75,6 +76,16 @@ class SignInScreen extends Component {
   render() {
     return (
       <SignIn navigation={this.props.navigation} />
+    );
+  }
+}
+class IntegralRecordScreen extends Component { 
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <IntegralRecord navigation={this.props.navigation} />
     );
   }
 }
@@ -405,8 +416,10 @@ function configAppNavigator(isLoggeIn) {
     Order: {
       screen: OrderScreen,
     },
-    
-    
+    // 积分记录
+    IntegralRecord: {
+      screen: IntegralRecordScreen,
+    },
   }, {
     initialRouteName: isLoggeIn ? 'Home' : 'SignIn'
   });

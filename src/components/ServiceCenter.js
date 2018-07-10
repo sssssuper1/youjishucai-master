@@ -30,7 +30,7 @@ export default class ServiceCenter extends Component {
   loadData() {
     Fetch(global.url + '/api/home/CustomerServiceInfo', 'get', null, (res) => {
       if (res.result) {
-        let contents = res.data.hoursOfService.split('\r\n');
+        let contents = res.data.hoursOfService.replace('\\r\\n','\r\n').split('\r\n');
         this.setState({
           tel: res.data.tel,
           contents: contents,

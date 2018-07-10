@@ -56,7 +56,7 @@ export default class Fonter extends Component {
     render() {
         const { name}=this.state
     return (
-      <TouchableOpacity onPress={this.props.onPress} style={styles.btn}><Text style={styles.btnText}>{name}</Text></TouchableOpacity>
+      <TouchableOpacity disabled={this.props.disabled} onPress={this.props.onPress} style={styles.btn}><Text style={styles.btnText}>{name}</Text></TouchableOpacity>
     );
   }
 }

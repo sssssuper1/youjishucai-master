@@ -53,7 +53,8 @@ export default class Register1 extends Component {
       phoneNumber: params.phoneNumber,
       isInput: false,
       codeText: '获取验证码',
-      message: '注册尚未完成，是否继续完成注册操作~'
+      message: '注册尚未完成，是否继续完成注册操作~',
+      disabled: false
     }
   }
   popupShow() {
@@ -122,10 +123,17 @@ export default class Register1 extends Component {
     let params = {
       mobileNo: this.state.phoneNumber,
       smsCode: this.state.code,
-      password: this.state.password
+      password: this.state.password,
+      referrerPhone: this.state.referee
     }
+    this.setState({
+      disabled: true
+    })
 
     Fetch(global.url + '/api/User/Register', 'post', params, (res) => {
+      this.setState({
+        disabled: false
+      })
       if (res.result) {
         global.storage.save({
           key: 'Cookie',
@@ -138,6 +146,9 @@ export default class Register1 extends Component {
         this.refs.toast.show(res.errMsg);
       }
     }, (err) => {
+      this.setState({
+        disabled: false
+      })
       this.refs.toast.show(err);
     });
   }
@@ -193,7 +204,7 @@ export default class Register1 extends Component {
           />
         </View>
         <View style={styles.fonter}>
-          <Fonter name="提交" onPress={this.submit.bind(this)}></Fonter>
+          <Fonter name="提交" onPress={this.submit.bind(this)} disabled={this.state.disabled}></Fonter>
         </View>
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
         <PopupDialog
@@ -323,14 +334,14 @@ const styles = StyleSheet.create({
     color: "#333335",
   },
   bulletContent: {
-    width: pxToDp(480)
+    width: pxToDp(480),
+    height: pxToDp(150)
   },
   bulletContentText: {
     fontSize: pxToDp(33),
     color: '#99979a'
   },
   buttonContent: {
-    marginTop: pxToDp(50),
     marginBottom: pxToDp(50),
     height: pxToDp(100),
     width: '100%',

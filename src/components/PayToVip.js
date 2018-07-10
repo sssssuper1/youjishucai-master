@@ -34,6 +34,7 @@ import {
   FlatList,
   Picker
 } from 'react-native';
+import wxPayVip from '../js/wxPayVip';
 import pxToDp from '../js/pxToDp';
 
 export default class PayToVip extends Component {
@@ -41,13 +42,14 @@ export default class PayToVip extends Component {
     super(props);
 
     this.state={
-      phone:'',
+      phone: global.data.user.phone ? global.data.user.phone : '',
       code:'',
       password: '',
       payNum: 0,
       isInput: false,
       codeText: '获取验证码',
-      timer:null
+      timer:null,
+      referrer: global.data.user.referrer ? global.data.user.referrer.name : ''
     }
   }
   
@@ -89,22 +91,29 @@ export default class PayToVip extends Component {
   }
 
   submit() {
-    if (this.state.phone == '') {
-      this.refs.toast.show('请输入手机号!');
-      return;
-    }
+    // if (this.state.phone == '') {
+    //   this.refs.toast.show('请输入手机号!');
+    //   return;
+    // }
 
-    if (this.state.code == '') {
-      this.refs.toast.show('请输入验证码!');
-      return;
-    }
+    // if (this.state.code == '') {
+    //   this.refs.toast.show('请输入验证码!');
+    //   return;
+    // }
 
-    if (this.state.password == '') {
-      this.refs.toast.show('请输入密码!');
-      return;
+    // if (this.state.password == '') {
+    //   this.refs.toast.show('请输入密码!');
+    //   return;
+    // }
+    let params = {};
+    if (!global.data.user.referrer) {
+      params = {
+        referrerPhone: this.state.referrer
+      }
     }
+    
 
-    this.props.navigation.navigate('PayFun');
+    wxPayVip('/api/user/UpdateToVip1', this.props.navigation, params);
   }
 
   render() {
@@ -114,10 +123,11 @@ export default class PayToVip extends Component {
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="vip会员购买付费"></Header1>
         <ScrollView keyboardShouldPersistTaps={'handled'}>
-          <View style={styles.user}>
+          <View style={styles.hidden}>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>手机号：</Text>
               <TextInput
+                editable={global.data.user.phone}
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
                 maxLength={11}
@@ -156,10 +166,20 @@ export default class PayToVip extends Component {
               <Text style={styles.vipText}>开通服务：</Text><Text style={styles.vipText1}>VIP会员</Text>
             </View>
             <View style={styles.vipItems}>
-              <Text style={styles.vipText}>付款模式：</Text><Text style={styles.vipText1}>按年付费</Text>
+              <Text style={styles.vipText}>应付金额：</Text><Text style={styles.vipText2}>￥{global.data.vipPrice}</Text>
             </View>
             <View style={styles.vipItems}>
-              <Text style={styles.vipText}>应付金额：</Text><Text style={styles.vipText2}>￥2000.00</Text>
+              <Text style={styles.vipText}>推荐人：</Text>
+              <TextInput
+                keyboardType={'numeric'}
+                underlineColorAndroid={'transparent'}
+                style={styles.detailAddress}
+                maxLength={11}
+                placeholder={'推荐人手机号（选填）'}
+                onChangeText={(text) => this.setState({referrer:text})}
+                value={this.state.referrer}
+                editable={!global.data.user.referrer}
+              />
             </View>
           </View>
           <View style={styles.paymentMethod}>
@@ -168,7 +188,7 @@ export default class PayToVip extends Component {
               <Text>微信支付</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(1)}>
+            <TouchableOpacity style={styles.hidden} onPress={()=>this.changePaymentMethod(1)}>
               <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
@@ -188,6 +208,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none'
   },
   header:{
     height: pxToDp(96),

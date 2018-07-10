@@ -40,13 +40,13 @@ export default class PaySuccess extends Component {
     super(props);
     const { params } = this.props.navigation.state;
 
-    if (!!params&&!!params.amount) {
-      this.amount = params.amount;
+    if (!!params) {
+      this.amount = params.payAmount;
     }
   }
 
   render() {
-    const { navigate } = this.props.navigation;
+    const { navigate, replace } = this.props.navigation;
 
     return (
       <View style={styles.container}>
@@ -55,9 +55,9 @@ export default class PaySuccess extends Component {
           <View style={styles.stateImgWrap}>
             <Image style={styles.stateImg} source={require('../images/paySuccess.png')}></Image>
           </View>
-          <View style={styles.stateShow}><Text style={styles.stateShowText}>您已成功付款￥{this.amount}</Text></View>
+          <View style={styles.stateShow}><Text style={styles.stateShowText}>订单支付成功!</Text></View>
           <View style={styles.ButtonContainer }>
-            <TouchableOpacity style={styles.stateButton} onPress={() => navigate('AllOrder')}>
+            <TouchableOpacity style={styles.stateButton} onPress={() => replace('AllOrder')}>
               <Text>查看订单</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.stateButton} onPress={() => navigate('Home')}>

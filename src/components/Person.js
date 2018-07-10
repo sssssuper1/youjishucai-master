@@ -243,7 +243,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   text:{
-    marginLeft: pxToDp(28),
     fontSize: pxToDp(32),
     color: '#2b2b2b'
   },

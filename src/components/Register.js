@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
     marginTop: pxToDp(15),
     height: pxToDp(106),
     backgroundColor:'white',
-    paddingLeft: pxToDp(34)
+    paddingLeft: pxToDp(34),
+    fontSize: pxToDp(32)
   },
   fonter: {
     paddingLeft: pxToDp(34),

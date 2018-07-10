@@ -66,6 +66,7 @@ export default class Cart extends Component {
       }
     },
     (err) => {
+      this.hideAlert();
       Alert.alert('提示',err);
     });
     
@@ -440,9 +441,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   list: {
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
-    height: pxToDp(240)
+    height: pxToDp(240),
+    marginTop: pxToDp(10)
   },
   unchecked: {
     width: pxToDp(80),
@@ -469,7 +472,7 @@ const styles = StyleSheet.create({
     height: pxToDp(60)
   },
   goodName: {
-    fontSize: pxToDp(24),
+    fontSize: pxToDp(28),
     color: '#2a2a2a'
   },
   goodSpecWrap: {
@@ -576,6 +579,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   totalText: {
+    lineHeight: pxToDp(32),
     fontSize: pxToDp(24),
     color: '#2a2a2a'
   },

@@ -44,7 +44,7 @@ export default class AllOrder extends Component {
       now = params.state;
     }
 
-    this.states = ['全部','待付款','待发货','待收货','已收货'];
+    this.states = ['全部','待付款','待发货','待收货','已完成'];
     this.data = [];
 
     this.state = {
@@ -52,6 +52,7 @@ export default class AllOrder extends Component {
       dataSource: [],
       showAlert: false,
       cancelId: NaN,
+      comfirmId: NaN,
       warning: '确认要取消订单吗？'
     };
 
@@ -62,7 +63,8 @@ export default class AllOrder extends Component {
     this.isLoad = true;
     let params = {
       pageIndex: 0,
-      state: ''
+      state: '',
+      pageSize: 10000
     }
     Fetch(global.url + '/API/order/getMyOrderList', 'post', params,
       (responseData) => {
@@ -74,6 +76,7 @@ export default class AllOrder extends Component {
         }
       },
       (err) => {
+        this.hideAlert();
         Alert.alert('提示',err);
       }
     );
@@ -96,10 +99,29 @@ export default class AllOrder extends Component {
     (responseData) => {
       if (responseData.success) {
         this.loadData();
+      } else {
+        Alert.alert('提示', responseData.message);
       }
     },
     (err) => {
       Alert.alert('提示',err);
+    });
+  }
+
+  confirmOrder(orderId) {
+    this.popupClose();
+    Fetch(global.url + '/API/order/ConfirmReceipt', 'post', {
+      orderId: orderId
+    },
+    (responseData) => {
+      if (responseData.success) {
+        this.loadData();
+      } else {
+        Alert.alert('提示', responseData.message);
+      }
+    },
+    (err) => {
+      Alert.alert('提示', err);
     });
   }
 
@@ -155,7 +177,6 @@ export default class AllOrder extends Component {
 
   _renderRow(item, index) {
     const { navigate } = this.props.navigation;
-    if (this.state.state === 0 || this.states[this.state.state] == item.state) {
       return (
         <View style={styles.goods1}>
           <View style={styles.order}>
@@ -171,27 +192,32 @@ export default class AllOrder extends Component {
           <View style={styles.orderSum}>
             <Text>共{item.productCount}件商品，</Text>
             <Text>总金额：</Text>
-            <Text>￥{item.payAmount}</Text>
+            <Text style={styles.goodPresentPrice}>￥{item.payAmount}</Text>
           </View>
           <View style={styles.orderSum}>
-            <TouchableOpacity style={item.orderState>0?styles.orderButtonGrey:styles.hidden} onPress={() => {navigate('MyOrder', {orderId: item.id})}}>
+            <TouchableOpacity style={item.orderState>0?styles.orderButtonGrey:styles.hidden} onPress={() => {
+              navigate('MyOrder', {orderId: item.id, callBack: () => this.loadData()})
+            }}>
               <Text style={styles.buttonTextGrey}>查看订单</Text>  
             </TouchableOpacity>
-            <TouchableOpacity style={item.orderState === 0 ? styles.orderButtonGrey : styles.hidden} onPress={() => {
+            <TouchableOpacity style={item.orderState < 1 ? styles.orderButtonGrey : styles.hidden} onPress={() => {
               this.setState({ cancelId: item.id },()=>this.popupShow())
             }}>
               <Text style={styles.buttonTextGrey}>取消订单</Text>  
             </TouchableOpacity>
-            <TouchableOpacity style={item.orderState===0?styles.orderButtonGreen:styles.hidden} onPress={() => {navigate('MyOrder', {orderId: item.id})}}>
+            <TouchableOpacity style={item.orderState===0?styles.orderButtonGreen:styles.hidden} onPress={() => {
+              navigate('MyOrder', { orderId: item.id, callBack: () => this.loadData() })
+            }}>
               <Text style={styles.buttonTextWhite}>继续支付</Text>  
             </TouchableOpacity>
-            <TouchableOpacity style={item.orderState===3?styles.orderButtonGreen:styles.hidden} onPress={() => {navigate('MyOrder', {orderId: item.id})}}>
+            <TouchableOpacity style={item.orderState===2?styles.orderButtonGreen:styles.hidden} onPress={() => {
+              this.confirmOrder(item.id)
+            }}>
               <Text style={styles.buttonTextWhite}>确认收货</Text>
             </TouchableOpacity>
           </View>
         </View> 
       );
-    }
   }
   //list渲染
   _renderRow1(item, index) {
@@ -203,7 +229,6 @@ export default class AllOrder extends Component {
       <View style={styles.goodDetail}>
         <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.goodName}</Text></View>
         <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.goodspecifications}</Text></View>
-        <View style={styles.goodOriginalPriceWrap}><Text style={styles.goodOriginalPrice}>￥{item.price*1.2}</Text></View>
         <View style={styles.goodPresentPriceWrap}>
           <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text>
           <View style={styles.goodsNum}>
@@ -239,24 +264,24 @@ export default class AllOrder extends Component {
     }
     return (
       <View style={styles.contenier}>
-        <Header1 navigation={this.props.navigation} name="全部订单"></Header1>
+        <Header1 navigation={this.props.navigation} name="全部订单" goHome={true}></Header1>
         <ScrollView>
           <View style={styles.stateBtns}>
             <TouchableOpacity onPress={()=>{
               this.changeState(0)
-            }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[0]}</Text></TouchableOpacity>
+            }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===0?styles.orderSortSelected:styles.orderSort}>{this.states[0]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(1)
-            }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[1]}</Text></TouchableOpacity>
+            }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===1?styles.orderSortSelected:styles.orderSort}>{this.states[1]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(2)
-            }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[2]}</Text></TouchableOpacity>
+            }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===2?styles.orderSortSelected:styles.orderSort}>{this.states[2]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(3)
-            }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[3]}</Text></TouchableOpacity>
+            }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===3?styles.orderSortSelected:styles.orderSort}>{this.states[3]}</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(4)
-            }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={styles.orderSort}>{this.states[4]}</Text></TouchableOpacity>
+            }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===4?styles.orderSortSelected:styles.orderSort}>{this.states[4]}</Text></TouchableOpacity>
           </View>
           {view}
         </ScrollView>
@@ -330,6 +355,10 @@ const styles = StyleSheet.create({
   orderSort: {
     fontSize: pxToDp(30),
   },
+  orderSortSelected: {
+    fontSize: pxToDp(30),
+    color: '#2abd89'
+  },
   goods1:{
     marginTop: pxToDp(15),
     backgroundColor: 'white',
@@ -367,11 +396,10 @@ const styles = StyleSheet.create({
     height: pxToDp(60)
   },
   goodName: {
-    fontSize: pxToDp(24),
+    fontSize: pxToDp(28),
     color: '#2a2a2a'
   },
   goodSpecWrap: {
-    fontSize: pxToDp(24),
     color: '#a7a7a7'
   },
   goodSpec: {
@@ -393,11 +421,13 @@ const styles = StyleSheet.create({
   },
   goodSymble: {
     fontSize: pxToDp(24),
-    color: '#ff0036'
+    color: '#ff0036',
+    fontWeight: 'bold'
   },
   goodPresentPrice: {
     fontSize: pxToDp(28),
-    color: '#ff0036'
+    color: '#ff0036',
+    fontWeight: 'bold'
   },
   company: {
     marginLeft: pxToDp(10),
@@ -548,14 +578,14 @@ const styles = StyleSheet.create({
     color: "#333335",
   },
   bulletContent: {
-    width: pxToDp(480)
+    width: pxToDp(480),
+    height: pxToDp(150)
   },
   bulletContentText: {
     fontSize: pxToDp(33),
     color: '#99979a'
   },
   buttonContent: {
-    marginTop: pxToDp(90),
     marginBottom: pxToDp(50),
     height: pxToDp(100),
     width: '100%',

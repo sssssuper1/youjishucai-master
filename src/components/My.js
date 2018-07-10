@@ -33,43 +33,13 @@ export default class My extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      paymentDt: 0,
-      shipmentDt: 0,
-      goodsReceiptDt: 0,
-      name: global.data.user.name,
-      vip: global.data.user.vip,
       count: store.getState().count,
-      qrCode: ''
     }
-    this.loadData();
     this.unsubscribe = store.subscribe(() => {
       this.setState({
         count: store.getState().count
       })
     })
-  }
-
-  loadData() {
-    Fetch(global.url + '/API/user/getStateNum', 'get', '', (responseData) => {
-        if (responseData.success) {
-          this.setState({
-            paymentDt: responseData.data.paymentDt,
-            shipmentDt: responseData.data.shipmentDt,
-            goodsReceiptDt: responseData.data.goodsReceiptDt
-          })
-        }
-      },
-      (err) => {
-        Alert.alert('提示',err);
-      }
-    );
-  }
-
-  callBack() {
-    this.setState({
-      name: global.data.user.name,
-      vip: global.data.user.vip,
-    });
   }
 
   componentWillUnmount() {
@@ -83,19 +53,22 @@ export default class My extends Component {
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
           <View style={styles.header}>
             <View style={styles.headPointer}>
-              {this.state.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip.png')}></Image> :
+              {this.props.user.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip.png')}></Image> :
               <Image style={styles.headPointerImg} source={require('../images/noVip.png')}></Image>  }  
             </View>
-            <View>
-              <Text style={styles.name}>{this.state.name}</Text>
+            <View style={styles.nameContainer}>
+              <Text style={styles.name}>{this.props.user.name}</Text>
+              <TouchableOpacity style={this.props.user.vip > 0 ? styles.pointContent : styles.hidden} onPress={()=>{navigate('IntegralRecord')}}>
+                <Text style={styles.point}>积分: {this.props.user.integral}</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.set} onPress={() => {navigate('Set',{callBack: ()=>this.callBack()})}}>
+            <TouchableOpacity style={styles.set} onPress={() => {navigate('Set')}}>
               <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
             </TouchableOpacity>  
           </View>
         </ImageBackground>
         <View style={styles.cartInfo}>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart', {callBack: ()=>this.loadData()})}}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}}>
             <View style={[styles.cartImg,styles.cart1Img]}>
               <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
             </View>
@@ -106,36 +79,36 @@ export default class My extends Component {
               <Text style={styles.cartName}>购物车</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 1, callBack: ()=>this.loadData()})}}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 1})}}>
             <View style={[styles.cartImg,styles.cart2Img]}>
               <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
             </View>
-            <View style={this.state.paymentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.state.paymentDt}</Text></View>
+            <View style={this.props.stateNum.paymentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.props.stateNum.paymentDt}</Text></View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待付款</Text>
             </View>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 2, callBack: ()=>this.loadData()})}}>
+          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 2})}}>
             <View style={[styles.cartImg,styles.cart3Img]}>
               <Image style={styles.cart3Img} source={require('../images/sendGoods.png')}></Image>
             </View>
-            <View style={this.state.shipmentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.state.shipmentDt}</Text></View>
+            <View style={this.props.stateNum.shipmentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.props.stateNum.shipmentDt}</Text></View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待发货</Text>
             </View>
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn}  onPress={() => {navigate('AllOrder', {state: 3, callBack: ()=>this.loadData()})}}>
+          <TouchableOpacity style={styles.cartBtn}  onPress={() => {navigate('AllOrder', {state: 3})}}>
             <View style={[styles.cartImg,styles.cart4Img]}>
               <Image style={styles.cart4Img} source={require('../images/getGoods.png')}></Image>
             </View>
-            <View style={this.state.goodsReceiptDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.state.goodsReceiptDt}</Text></View>
+            <View style={this.props.stateNum.goodsReceiptDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.props.stateNum.goodsReceiptDt}</Text></View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待收货</Text>
             </View>
           </TouchableOpacity>
         </View>
         <View style={styles.detail}>
-          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('AllOrder', {callBack: ()=>this.loadData()})}}>
+          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('AllOrder')}}>
             <Image style={styles.detailBtnImg} source={require('../images/order.png')}></Image>
             <Text style={styles.detailBtnText}>全部订单</Text> 
             <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
@@ -210,9 +183,21 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0
   },
+  nameContainer: {
+    flexDirection: 'column'
+  },
   name: {
+    lineHeight: pxToDp(50),
     fontSize: pxToDp(36),
     color: 'white'
+  },
+  pointContent: {
+
+  },
+  point: {
+    lineHeight: pxToDp(50),
+    fontSize: pxToDp(30),
+    color: '#fdeb63'
   },
   set: {
     position: 'absolute',
@@ -295,8 +280,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'    
   },
   detailBtnImg: {
-    marginLeft: pxToDp(64),
-    marginRight: pxToDp(44),
+    marginLeft: pxToDp(40),
+    marginRight: pxToDp(20),
     width: pxToDp(30),
     height: pxToDp(30)
   },

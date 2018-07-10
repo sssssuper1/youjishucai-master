@@ -132,7 +132,7 @@ export default class Home extends Component {
       let params = {
         categoryId: categoryId,
         pageIndex: 0,
-        loadAll: true
+        pageSize: 10000
       }
       Fetch(global.url + '/api/home/getGoodsList', 'post', params, (res) => {
         if (typeof res == 'object' && res.success) { 
@@ -336,14 +336,17 @@ export default class Home extends Component {
     return (
       <View style={styles.rowGoods}>
         <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
-          <Image style={styles.rowGoodsImg} source={{ uri: item.goodImg }} />
+          <Image style={styles.rowGoodsImg} source={{ uri: item.cover == null ? '' : item.cover }} />
           <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
             <Text style={styles.rowGoodsNoStockText}>售空</Text>
           </View>
         </TouchableOpacity>
         <View><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
         <View style={styles.rowGoodsMoneyAndAdd}>
-          <View style={styles.rowGoodsMoney}><Text style={styles.rowGoodsSymbol}>¥</Text><Text style={styles.rowGoodsNum}>{item.price}</Text><Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text></View>
+          <View style={styles.rowGoodsMoney}>
+            <Text style={styles.rowGoodsSymbol}>¥ {item.price}</Text>
+            <Text style={styles.rowGoodsCompany}>/{item.specs[0].spec}</Text>
+          </View>
           <TouchableOpacity
             disabled={!hasStock}
             ref={(r) => this._refs[index] = r}
@@ -356,17 +359,17 @@ export default class Home extends Component {
     );
   }
 
-  _renderBanner(list) {
-    return list.map(item => {
-      return (
-        <Image style={styles.banner} source={{ uri: item.imgUrl }}></Image>
-      );
-    });
-  }
-
   render() {
     const { navigate } = this.props.navigation;
     const { showAlert, message } = this.state;
+
+    let swiper = (this.state.banners.map((item, index)=> {
+      return (
+        <View key={item.imgUrl} style={{ flex: 1, justifyContent: 'center'}}>
+          <Image style={styles.banner} source={{ uri: item.imgUrl }}></Image>
+        </View>
+      )
+    }));
 
     return (
       <View style={styles.contenier}>  
@@ -394,8 +397,15 @@ export default class Home extends Component {
           </View>
         </ImageBackground>
         <View style={styles.wrapperWrap}>
-          <Swiper style={styles.wrapper} activeDot={<View style={{backgroundColor:'#007aff', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />} dot={<View style={{backgroundColor:'white', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}  autoplay={true} >
-            {this._renderBanner(this.state.banners)}
+          <Swiper 
+            key={this.state.banners.length}
+            horizontal={true}
+            showsPagination={true}
+            activeDot={<View style={{backgroundColor:'#2abd89', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 10, marginBottom: 3,}} />} 
+            dot={<View style={{backgroundColor:'white', width: 20, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 10, marginBottom: 3,}} />}
+            autoplay={true}
+            loop={true}>
+            {swiper}
           </Swiper>
         </View>
         <View style={styles.goodsWrap} >
@@ -408,6 +418,8 @@ export default class Home extends Component {
             <View style={styles.goods2Header}><Image style={styles.goods2HeaderImg1} source={require("../images/bubbleLeft.png")}></Image><Text style={styles.goods2HeaderText}>{this.state.selectName}</Text><Image style={styles.goods2HeaderImg2}  source={require("../images/bubbleRight.png")}></Image></View>  
               <FlatList 
               contentContainerStyle={styles.goods3}
+              horizontal={false}
+              numColumns={2}
               data={this.state.RightdataSource}
               renderItem={({ item, index }) => this._renderRow2(item, index)}
               refreshing={this.state.refreshing}
@@ -540,7 +552,7 @@ const styles = StyleSheet.create({
     borderColor: '#ececec',
     borderWidth: 1,
     borderRadius: 36,
-    backgroundColor: "#eeeeee",
+    backgroundColor: "white",
     height: "100%",
     paddingLeft: pxToDp(74),
     paddingBottom: 0,
@@ -626,7 +638,7 @@ const styles = StyleSheet.create({
   goods2: {
     width: pxToDp(576),
     height: scrrollHeight(pxToDp(242)),
-    paddingLeft: pxToDp(24),
+    paddingLeft: pxToDp(12),
     backgroundColor: "white",
   },
   goods2Header: {
@@ -653,8 +665,6 @@ const styles = StyleSheet.create({
     marginTop: pxToDp(28)
   },
   goods3: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     paddingBottom: pxToDp(250)
   },
   rowGoods: {
@@ -697,10 +707,10 @@ const styles = StyleSheet.create({
   rowGoodsMoney: {
     marginLeft: pxToDp(18),
     flexDirection: "row",
-    alignItems: 'flex-end',
+    alignItems: 'baseline',
   },
   rowGoodsSymbol: {
-    fontSize: pxToDp(20),
+    fontSize: pxToDp(26),
     color: "#ff0036",
   },
   rowGoodsNum: {

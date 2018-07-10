@@ -13,6 +13,7 @@ import Header1 from './Header1'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
+import MyTextInput from './MyTextInput';
 import {
   Platform,
   StyleSheet,
@@ -36,7 +37,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
-import citysWrap from '../json/citys.json'
+import citysWrap from '../json/city.json'
 
 export default class EditAddress extends Component {
   constructor(props) {
@@ -64,8 +65,8 @@ export default class EditAddress extends Component {
         citys: this.citys(citysWrap,this.provinces(citysWrap)[0]),
         area: this.area(citysWrap,this.provinces(citysWrap)[0],this.citys(citysWrap,this.provinces(citysWrap)[0])[0]),
         selectedProvinces: citysWrap.provinces[0].name,
-        selectedCitys: citysWrap.provinces[0].City[0].name,
-        selectedArea: citysWrap.provinces[0].City[0].Area[0].name,
+        selectedCitys: citysWrap.provinces[0].childs[0].name,
+        selectedArea: citysWrap.provinces[0].childs[0].childs[0].name,
         detailAddress:'',
         name:'',
         phoneNumber:'',
@@ -105,8 +106,8 @@ export default class EditAddress extends Component {
     let citys=[]
       for(let i=0;i<citysWrap.provinces.length;i++){
         if(citysWrap.provinces[i].name==provinces){
-          for(let j=0;j<citysWrap.provinces[i].City.length;j++){
-              citys.push(citysWrap.provinces[i].City[j].name)
+          for(let j=0;j<citysWrap.provinces[i].childs.length;j++){
+              citys.push(citysWrap.provinces[i].childs[j].name)
           }
         }
       }
@@ -125,10 +126,10 @@ export default class EditAddress extends Component {
      let area=[]
       for(let i=0;i<citysWrap.provinces.length;i++){
         if(citysWrap.provinces[i].name==provinces){
-          for(let j=0;j<citysWrap.provinces[i].City.length;j++){
-              if(citysWrap.provinces[i].City[j].name==citys){
-                 for(let k=0;k<citysWrap.provinces[i].City[j].Area.length;k++){
-                     area.push(citysWrap.provinces[i].City[j].Area[k].name)    
+          for(let j=0;j<citysWrap.provinces[i].childs.length;j++){
+              if(citysWrap.provinces[i].childs[j].name==citys){
+                 for(let k=0;k<citysWrap.provinces[i].childs[j].childs.length;k++){
+                     area.push(citysWrap.provinces[i].childs[j].childs[k].name)    
                  }
               }
           }
@@ -224,7 +225,7 @@ export default class EditAddress extends Component {
       <View style={styles.user}>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>收货人：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             placeholder={''}
@@ -234,7 +235,7 @@ export default class EditAddress extends Component {
         </View>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>手机号码：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             maxLength={11}
@@ -284,7 +285,7 @@ export default class EditAddress extends Component {
         </View>     
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>详细地址：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             placeholder={'街道、楼牌号'}
@@ -298,7 +299,7 @@ export default class EditAddress extends Component {
       <View style={styles.user}>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>收货人：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             placeholder={''}
@@ -308,7 +309,7 @@ export default class EditAddress extends Component {
         </View>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>手机号码：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             maxLength={11}
@@ -372,7 +373,7 @@ export default class EditAddress extends Component {
         </Picker>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>详细地址：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             placeholder={'街道、楼牌号'}

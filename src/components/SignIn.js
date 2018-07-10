@@ -46,7 +46,8 @@ export default class SignIn extends Component {
       isHidden: true,
       disabled: true,
       phone:'',
-      password: ''
+      password: '',
+      btnText: '登录'
     }
   }
 
@@ -76,12 +77,20 @@ export default class SignIn extends Component {
   }
 
   login() {
+    this.setState({
+      disabled: true,
+      btnText: '登录中..'
+    });
     let params = {
       mobileNo: this.state.phone,
       password: this.state.password
     }
 
     Fetch(global.url + '/api/User/UserLogin', 'post', params, (res) => {
+      this.setState({
+        disabled: false,
+        btnText: '登录'
+      });
       if (res.result) {
         global.storage.save({
           key: 'Cookie',
@@ -105,8 +114,9 @@ export default class SignIn extends Component {
         <Header1 navigation={this.props.navigation} name="登录"></Header1>
         <View style={styles.content}>
           <View style={styles.Item}>
-            <Text>账户</Text>
+            <Text style={styles.signText}>账户</Text>
             <TextInput
+              keyboardType={'numeric'}
               style={styles.account}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) =>this.phoneInput(text) }
@@ -115,7 +125,7 @@ export default class SignIn extends Component {
             />
           </View>
           <View style={styles.Item}>
-            <Text>密码</Text>
+            <Text style={styles.signText}>密码</Text>
             <TextInput
               style={styles.account}
               underlineColorAndroid={'transparent'}
@@ -123,13 +133,19 @@ export default class SignIn extends Component {
               secureTextEntry={this.state.isHidden}
               placeholder={'请输入登录密码'}
               placeholderTextColor={'#a6a6a6'}
+              
             />
             <TouchableOpacity onPress={()=>{this.isHidden()}} style={styles.btnPasswrd}>
               <Image style={this.state.isHidden ? styles.hidenPassword : styles.opacity} source={require('../images/hiddenPassword.png')}></Image>
               <Image style={this.state.isHidden ? styles.opacity : styles.showPassword} source={require('../images/showPassword.png')}></Image>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={this.login.bind(this)} disabled={this.state.disabled} style={this.state.disabled?styles.signIn:styles.signIn1}><Text style={{color:"white"}}>登录</Text></TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.login.bind(this)}
+            disabled={this.state.disabled}
+            style={this.state.disabled?styles.signIn:styles.signIn1}>
+            <Text style={{color:"white", fontSize: pxToDp(32)}}>{this.state.btnText}</Text>
+          </TouchableOpacity>
           <View style={styles.otherBtn}>
             <TouchableOpacity style={[styles.btn, styles.register]} onPress={() => {navigate('Register',{linkType: 1})}}>
               <Text style={styles.registerText}>快速注册</Text>
@@ -154,6 +170,9 @@ const styles = StyleSheet.create({
   opacity:{
     display: 'none'
   },
+  signText: {
+    fontSize: pxToDp(32)
+  },
   content: {
     paddingLeft: pxToDp(34),
     paddingRight: pxToDp(34),
@@ -171,7 +190,8 @@ const styles = StyleSheet.create({
   account: {
     flex:1,
     height:"100%",
-    paddingLeft: pxToDp(20)
+    paddingLeft: pxToDp(20),
+    fontSize: pxToDp(32)
   },
   btnPasswrd:{
     width: pxToDp(80),

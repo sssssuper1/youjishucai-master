@@ -13,6 +13,7 @@ import Header1 from './Header1'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
+import MyTextInput from './MyTextInput';
 import {
   Platform,
   StyleSheet,
@@ -160,6 +161,7 @@ export default class VipRegister extends Component {
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在省：</Text>
           <Picker
+            mode={'dropdown'}
             style={styles.Picker}
             itemStyle={styles.itempicker} 
             selectedValue={this.state.selectedProvinces}
@@ -172,6 +174,7 @@ export default class VipRegister extends Component {
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在市：</Text>
           <Picker
+            mode={'dropdown'}
             style={styles.Picker}
             selectedValue={this.state.selectedCitys}
             itemStyle={styles.itempicker} 
@@ -184,6 +187,7 @@ export default class VipRegister extends Component {
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>所在区：</Text>
           <Picker
+            mode={'dropdown'}
             style={styles.Picker}
             selectedValue={this.state.selectedArea}
             itemStyle={styles.itempicker}
@@ -195,7 +199,7 @@ export default class VipRegister extends Component {
         </View>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>详细地址：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             placeholder={'街道、楼牌号'}
@@ -262,7 +266,7 @@ export default class VipRegister extends Component {
         </Picker>
         <View style={styles.PickerWrap}>  
           <Text style={styles.PickerTitle}>详细地址：</Text>
-          <TextInput
+          <MyTextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             placeholder={'街道、楼牌号'}
@@ -280,7 +284,7 @@ export default class VipRegister extends Component {
           <View style={styles.user}>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>姓名：</Text>
-              <TextInput
+              <MyTextInput
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
                 placeholder={''}
@@ -290,7 +294,7 @@ export default class VipRegister extends Component {
             </View>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>身份证：</Text>
-              <TextInput
+              <MyTextInput
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
                 placeholder={''}
@@ -303,7 +307,7 @@ export default class VipRegister extends Component {
           <View style={styles.userBm}>
             <View style={styles.PickerWrap}>
               <Text style={styles.PickerTitle}>推荐人：</Text>
-              <TextInput
+              <MyTextInput
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
                 placeholder={'选填'}

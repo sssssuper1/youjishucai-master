@@ -209,7 +209,7 @@ export default class GoodsDetail extends Component {
         <Header1 navigation={this.props.navigation} name="商品详情"></Header1>
         <ScrollView>
           <View style={styles.wrapperWrap}>
-            <Swiper style={styles.wrapper}  renderPagination={renderPagination} autoplay={true} >
+            <Swiper key={this.state.productDetailDt.goodImg.length} style={styles.wrapper}  renderPagination={renderPagination} autoplay={true} >
               {this._renderSwiper(this.state.productDetailDt.goodImg)}
             </Swiper>
           </View>
@@ -235,15 +235,15 @@ export default class GoodsDetail extends Component {
         </ScrollView>
         <View style={styles.btns}>
           <TouchableOpacity style={styles.goGoods} onPress={()=>{navigate('Home', {selectedTab: 'home'})}}>
-            <View><Image style={styles.goGoodsImg} source={require('../images/menu1-2.png')}></Image></View>
+            <View style={styles.goodsImgContainer}><Image style={styles.goGoodsImg} source={require('../images/menu1-2.png')}></Image></View>
             <View><Text style={styles.goGoodsText}>有机食材</Text></View>  
           </TouchableOpacity>
           <TouchableOpacity style={styles.customerService} onPress={()=>{navigate('ServiceCenter')}}> 
-            <View><Image style={styles.customerServiceImg} source={require('../images/customerService2.png')}></Image></View>
+            <View style={styles.goodsImgContainer}><Image style={styles.customerServiceImg} source={require('../images/customerService2.png')}></Image></View>
             <View><Text style={styles.customerServiceText}>客服</Text></View>    
           </TouchableOpacity>
           <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}> 
-            <View><Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image></View>
+            <View style={styles.goodsImgContainer}><Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image></View>
             <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
             <View><Text style={styles.cartText}>购物车</Text></View>
           </TouchableOpacity>
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   },
   paginationStyle:{
     position: 'absolute',
-    right: pxToDp(0),
+    right: pxToDp(26),
     bottom: pxToDp(0),
     width: pxToDp(64),
     height: pxToDp(64),
@@ -464,7 +464,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: pxToDp(100),
     bottom:0,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    borderTopColor: '#f1f1f1',
+    borderTopWidth: pxToDp(1)
   },
   goGoods:{
     paddingLeft: pxToDp(35),
@@ -472,6 +474,9 @@ const styles = StyleSheet.create({
     height: pxToDp(100),
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  goodsImgContainer: {
+    paddingBottom: pxToDp(5)
   },
   goGoodsImg:{
     width: pxToDp(44),
@@ -553,7 +558,7 @@ const styles = StyleSheet.create({
     height: pxToDp(650),
   },
   modal:{
-    paddingTop: pxToDp(20),
+    paddingTop: pxToDp(40),
     width: '100%',
     height: '100%',
     backgroundColor: '#fafafa',
@@ -563,19 +568,19 @@ const styles = StyleSheet.create({
     left: pxToDp(34),
     top: pxToDp(0),
     zIndex:100,
-    width: pxToDp(244),
-    height: pxToDp(244),
+    width: pxToDp(229),
+    height: pxToDp(229),
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
   modalGoodsImg:{
-    width: pxToDp(230),
-    height: pxToDp(200),
+    width: pxToDp(214),
+    height: pxToDp(214),
     resizeMode: 'contain',
   },
   modalGoodsPriceNum:{
-    marginLeft: pxToDp(310),
+    marginLeft: pxToDp(290),
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -653,8 +658,8 @@ const styles = StyleSheet.create({
     height: pxToDp(50),
   },
   closeImg: {
-    width: pxToDp(30),
-    height: pxToDp(30)
+    width: pxToDp(20),
+    height: pxToDp(20)
   },
   goodsNum: {
     position: 'absolute',

@@ -203,19 +203,20 @@ const styles = StyleSheet.create({
   },
   list1: {
     marginTop: pxToDp(14),
-    backgroundColor:"white",
   },
   list2: {
     display: "none"
   },
   list1Content: {
-    marginTop: pxToDp(32),
-    marginBottom: pxToDp(32),
+    backgroundColor:"white",
+    paddingTop: pxToDp(32),
+    paddingBottom: pxToDp(32),
     flexDirection: 'row',
     paddingLeft: pxToDp(22),
     paddingRight: pxToDp(22),
-    alignItems: 'center'
-    
+    alignItems: 'center',
+    borderBottomWidth: pxToDp(1),
+    borderBottomColor: '#eeeeee'
   },
   list1ContentImgLeft: {
     marginLeft: pxToDp(10),

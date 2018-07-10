@@ -85,7 +85,7 @@ export default class SearchGoods extends Component {
 
   addToCart(id) {
     CookieManager.get(global.url).then(cookie => {
-      if (!!cookie) {
+      if (!!cookie.userId) {
         Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
           count: 1,
           goodspecifications: id
@@ -136,6 +136,7 @@ export default class SearchGoods extends Component {
       }
     },
     (err) => {
+      this.hideAlert()
       Alert.alert('提示',err);
     });
     
@@ -397,7 +398,7 @@ const styles = StyleSheet.create({
   },
   rowGoodsImgContainer: {
     width: '100%',
-    height: pxToDp(320)
+    height: pxToDp(375)
   },
   rowGoodsImg: {
     width: pxToDp(375),

@@ -33,6 +33,7 @@ import {
   FlatList,
   Picker
 } from 'react-native';
+import wxPay from '../js/wxPay';
 import pxToDp from '../js/pxToDp';
 
 export default class PayFun extends Component {
@@ -72,12 +73,24 @@ export default class PayFun extends Component {
     });
   }
 
+  pay() {
+    let params = {
+      orderNo: this.props.navigation.state.params.orderNo
+    }
+
+    if (this.props.navigation.state.params.orderType == 0) {
+      wxPay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
+    } else if (this.props.navigation.state.params.orderType == 1) {
+      this.props.navigation.navigate('PayToVip');
+    }
+  }
+
   render() {
-    const { userAddresses, state, showAlert, message } = this.state;
-    const { goBack } = this.props.navigation;
+    const { userAddresses, showAlert, message } = this.state;
+    const { goBack, state, navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>
-        <Header1 navigation={this.props.navigation} name="请选择支付方式" popupShow={this.popupShow.bind(this)}></Header1>
+        <Header1 navigation={this.props.navigation} name="请选择支付方式" popupShow={this.popupShow.bind(this)} goHome={true}></Header1>
         <View style={styles.state}>
           <View style={styles.stateImgWrap}>
             <Image style={styles.stateImg} source={require('../images/payFail.png')}></Image> 
@@ -85,8 +98,8 @@ export default class PayFun extends Component {
           <View style={styles.stateShow}><Text style={styles.stateShowText}>付款失败</Text></View>  
         </View>
         <View style={styles.goods}>
-          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>订单金额</Text><Text style={styles.totalNum}>¥148.00</Text></View>
-          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>订单号</Text><Text style={styles.price}>211547346896</Text></View>
+          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>订单金额</Text><Text style={styles.totalNum}>¥{state.params.payAmount}</Text></View>
+          <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>订单号</Text><Text style={styles.price}>{state.params.orderNo}</Text></View>
         </View>
         <View style={styles.paymentMethod}>
           <TouchableOpacity style={styles.payment} onPress={() => this.changePaymentMethod(0)}>
@@ -94,15 +107,13 @@ export default class PayFun extends Component {
             <Text>微信支付</Text>
             <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.payment} onPress={() => this.changePaymentMethod(1)}>
+          <TouchableOpacity style={styles.hidden} onPress={() => this.changePaymentMethod(1)}>
             <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
             <Text>支付宝</Text>
             <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.save} onPress={()=>{
-          this.showAlert()
-        }}>
+        <TouchableOpacity style={styles.save} onPress={()=>{this.pay()}}>
           <Text style={styles.saveText}>立即支付</Text>
         </TouchableOpacity>
         <AwesomeAlert
@@ -124,7 +135,12 @@ export default class PayFun extends Component {
             <View style={styles.bulletContent}><Text style={styles.bulletContentText}>{this.state.warning}</Text>
             </View>
             <View style={styles.buttonContent}>
-              <TouchableOpacity style={styles.button} onPress={() => goBack()}>
+              <TouchableOpacity style={styles.button} onPress={() => {
+                if (state.params != undefined && state.params.callBack != undefined) {
+                  state.params.callBack();
+                }
+                navigate('Home');
+                }}>
                 <Text style={styles.buttonCancle}>取消</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.button, styles.buttonCut]} onPress={this.popupClose.bind(this)}>
@@ -142,6 +158,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%'
+  },
+  hidden: {
+    display: 'none'
   },
   state: {
     width: '100%',
@@ -202,6 +221,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: pxToDp(90),
+    borderBottomColor: '#f1f1f1',
+    borderBottomWidth: pxToDp(1)
   },
   goodsInfo1: {
     borderBottomWidth: pxToDp(2),
@@ -266,14 +287,14 @@ const styles = StyleSheet.create({
     color: "#333335",
   },
   bulletContent: {
-    width: pxToDp(480)
+    width: pxToDp(480),
+    height: pxToDp(150)
   },
   bulletContentText: {
     fontSize: pxToDp(33),
     color: '#99979a'
   },
   buttonContent: {
-    marginTop: pxToDp(50),
     marginBottom: pxToDp(50),
     height: pxToDp(100),
     width: '100%',

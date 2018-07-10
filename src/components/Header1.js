@@ -70,13 +70,15 @@ export default class Header1 extends Component {
 
   render() {
     const { name } = this.state;
-    const { goBack, state } = this.props.navigation;
+    const { goBack, state, navigate } = this.props.navigation;
     return (
       <View style={styles.container}>  
         <View style={styles.header}>
           <TouchableOpacity style={styles.headerGoBack} onPress={() => {
             if (this.props.popupShow != undefined) {
               this.props.popupShow();
+            } else if (this.props.goHome) {
+              navigate('Home');
             } else {
               this.doCallBack();
               goBack();
