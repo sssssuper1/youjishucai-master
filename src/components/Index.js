@@ -28,6 +28,7 @@ import CookieManager from 'react-native-cookies';
 import SplashScreen from 'react-native-splash-screen';
 
 global.url = "http://sxj.xcf178.com";
+// global.url = "http://xsq.ngrok.sws168.com";
 
 global.data = {
   user: {

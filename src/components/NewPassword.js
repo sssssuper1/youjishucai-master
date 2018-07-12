@@ -58,7 +58,8 @@ export default class NewPassword extends Component {
     clearInterval(this.state.timer)
     let num=60
     let params = {
-      mobileNo: this.state.phoneNumber
+      mobileNo: this.state.phoneNumber,
+      type: '忘记密码'
     };
     Fetch(global.url + '/api/User/GetSMScode', 'post', params, (res) => {
       if (res.result) {

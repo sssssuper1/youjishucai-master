@@ -68,7 +68,8 @@ export default class Register extends Component {
     }
 
     let params = {
-      mobileNo: this.state.phone
+      mobileNo: this.state.phone,
+      type: this.state.name
     };
 
     Fetch(global.url + '/api/User/GetSMScode', 'post', params, (res) => {
@@ -90,6 +91,7 @@ export default class Register extends Component {
           maxLength={11}
           style={styles.phoneNumber}
           underlineColorAndroid={'transparent'}
+          returnKeyType={'done'}
           onChangeText={(text) => this.setState({phone:text}) }
           placeholder={'请输入手机号'}
           placeholderTextColor={'#a6a6a6'}

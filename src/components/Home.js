@@ -35,6 +35,7 @@ import {
   ToastAndroid
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import { CachedImage } from 'react-native-img-cache';
 const deviceHeightDp = Dimensions.get('window').height;
 const deviceWidthDp = Dimensions.get('window').width;
 function scrrollHeight(uiElementHeight) {
@@ -100,7 +101,7 @@ export default class Home extends Component {
         Alert.alert('提示', responseData.errMsg);
       }
     }, (err) => { 
-      Alert.alert('提示', '网络错误！');
+      // Alert.alert('提示', '网络错误！');
     })
 
     this.unsubscribe = store.subscribe(() => {
@@ -336,7 +337,7 @@ export default class Home extends Component {
     return (
       <View style={styles.rowGoods}>
         <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
-          <Image style={styles.rowGoodsImg} source={{ uri: item.cover == null ? '' : item.cover }} />
+          <CachedImage style={styles.rowGoodsImg} source={{ uri: item.cover == null ? '' : item.cover}} />
           <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
             <Text style={styles.rowGoodsNoStockText}>售空</Text>
           </View>
@@ -483,7 +484,11 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   wrapperWrap: {
-    height: pxToDp(238)
+    height: pxToDp(238),
+    borderBottomColor: '#f1f1f1',
+    borderBottomWidth: pxToDp(2),
+    borderTopColor: '#f1f1f1',
+    borderTopWidth: pxToDp(2)
   },
   slide: {
     justifyContent: 'center',

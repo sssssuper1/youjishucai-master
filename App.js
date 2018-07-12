@@ -33,6 +33,7 @@ import UserAddress from './src/components/UserAddress';
 import EditAddress from './src/components/EditAddress';
 import VipRegister from './src/components/VipRegister';
 import IntegralRecord from './src/components/IntegralRecord';
+import ShopDetail from './src/components/ShopDetail';
 import { StackNavigator } from 'react-navigation';
 import store from './src/store/index';
 import { storage } from './src/js/StorageUtil';
@@ -126,6 +127,16 @@ class MessageScreen extends Component {
   render() {
     return (
       <Message navigation={this.props.navigation} />
+    );
+  }
+}
+class ShopDetailScreen extends Component { 
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <ShopDetail navigation={this.props.navigation} />
     );
   }
 }
@@ -419,6 +430,10 @@ function configAppNavigator(isLoggeIn) {
     // 积分记录
     IntegralRecord: {
       screen: IntegralRecordScreen,
+    },
+    // 店铺详情
+    ShopDetail: {
+      screen: ShopDetailScreen,
     },
   }, {
     initialRouteName: isLoggeIn ? 'Home' : 'SignIn'

@@ -167,6 +167,7 @@ export default class Order extends Component {
               underlineColorAndroid={'transparent'}
               style={styles.remarksInput}
               placeholder={'选填，本次交易说明'}
+              returnKeyType={'done'}
               onChangeText={(text) => this.setState({remark: text})}
             />  
           </View>

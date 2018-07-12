@@ -53,18 +53,20 @@ export default class GoodsDetail extends Component {
     const { params } = this.props.navigation.state;
 
     this.index = 0;
+    this.desc = '';
 
     this.state={
       selectionModelVisible: false,
       detailModelVisible: false,
       productDetailDt: {
         goodImg: [],
-        goodDetailImgs: []
       },
       specDt: [{}],
       specIndex: 0,
       count: 1,
-      noStock: true
+      noStock: true,
+      WebViewHeight: 0,
+      desc: ''
     }
 
     if (!!params && !!params.id) {
@@ -79,6 +81,27 @@ export default class GoodsDetail extends Component {
       if (responseData.success) {
         let count = 0;
         let specIndex = 0;
+        this.desc = responseData.data.productDetailDt.goodDetail;
+        let html = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+            <style>
+              img {width: 100% !important; height: 100% !important}
+            </style>
+        </head>
+        <body style="padding: 0; margin: 0">
+        <div>
+        ${this.desc}
+        </div>
+        <script>
+          window.onload=function(){ window.location.hash = '#' + document.body.clientHeight;document.title = document.body.clientHeight;}
+        </script>
+        </body>
+        </html>
+        `;
         for (let i = 0; i < responseData.data.specDt.length; i++) {
           if (count === 0 && responseData.data.specDt[i].stock > 0) {
             specIndex = i;
@@ -89,7 +112,8 @@ export default class GoodsDetail extends Component {
           productDetailDt: responseData.data.productDetailDt,
           specDt: responseData.data.specDt,
           noStock: count > 0 ? false : true,
-          specIndex: specIndex
+          specIndex: specIndex,
+          desc: html
         });
       }
     },
@@ -167,6 +191,21 @@ export default class GoodsDetail extends Component {
     });
   }
 
+  webViewLoaded = () => {
+    this.refs.webview.injectJavaScript(`
+        const height = document.body.scrollHeight;
+        window.postMessage(height);
+    `);
+  }
+
+  handleMessage(e) {
+    if (this.desc != '') {
+      this.setState({
+        WebViewHeight: e.nativeEvent.data
+      });
+    }
+  }
+
   _renderSwiper(list) {
     return list.map(item => this._renderSwiperImg(item));
   }
@@ -229,9 +268,16 @@ export default class GoodsDetail extends Component {
               <Text style={styles.title}>产品参数</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
             </TouchableOpacity>
           </View>
-          <View style={styles.goodDetailImg}>
-            {this._renderDetailList(productDetailDt.goodDetailImgs)}
-          </View>
+          <WebView
+            ref={'webview'}
+            source={{html: this.state.desc}}
+            style={{height: Number(this.state.WebViewHeight), marginTop: pxToDp(15), paddingBottom: pxToDp(100), backgroundColor: 'white',}}
+            onLoadEnd={this.webViewLoaded}
+            onMessage={(e)=>this.handleMessage(e)}
+            javaScriptEnabled={true}
+            automaticallyAdjustContentInsets={true}
+            scalesPageToFit={true}>
+          </WebView>
         </ScrollView>
         <View style={styles.btns}>
           <TouchableOpacity style={styles.goGoods} onPress={()=>{navigate('Home', {selectedTab: 'home'})}}>

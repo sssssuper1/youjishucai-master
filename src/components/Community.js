@@ -40,17 +40,38 @@ export default class Community extends Component {
 
     this.state = {
       menuNum: 0,
+      defaultImage: require('../images/a-tang.png'),
       lists: [[], [], []],
       detailList: []
     }
+
+    this.menuName = [
+      '汤一点',
+      '康养中心',
+      '共享商家'
+    ]
 
     this.loadData(0);
   }
 
   loadData(id) {
+    switch (id) {
+      case 0: this.setState({
+        defaultImage: require('../images/a-tang.png')
+      });
+      break;
+      case 1: this.setState({
+        defaultImage: require('../images/a-kangyang.png')
+      });
+      break;
+      case 2: this.setState({
+        defaultImage: require('../images/a-gongxiang.png')
+      });
+      break;
+    }
     let lists = this.state.lists;
     if (lists[id].length == 0) {
-      Fetch(global.url + '/api/home/GetShopList?categoryName=' + id, 'get', null, (res) => {
+      Fetch(global.url + '/api/store/getlist?categoryName=' + this.menuName[id], 'get', null, (res) => {
         if (res.result) {
           lists[id] = res.data;
           this.setState({
@@ -73,6 +94,7 @@ export default class Community extends Component {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>  
         <Header name="正弘新社群"></Header>
@@ -115,15 +137,15 @@ export default class Community extends Component {
           data={this.state.detailList}
           style={styles.list1}
           renderItem={({ item }) =>
-            <View style={styles.list1Content}>
-              <View style={styles.list1ContentImgLeft}>
+            <TouchableOpacity style={styles.list1Content} onPress={() => navigate('ShopDetail', {id: item.id, type: this.state.menuNum})}>
+              <ImageBackground style={styles.list1ContentImgLeft} source={this.state.defaultImage} resizeMode='cover'>
                 <Image style={styles.list1ContentImg} source={{uri: item.image}}></Image>
-              </View>
+              </ImageBackground>
               <View style={styles.list1ContentRIght}>
                 <View style={styles.list1ContentNameWrap}><Text style={styles.list1ContentName}>{item.name}</Text></View>
                 <View style={styles.list1ContentAddressWrap}><Text style={styles.list1ContentAddress}>{item.address}</Text><View style={styles.hidden}><Image style={styles.list1ContentDistanceImg} source={require("../images/address.png")}></Image><Text style={styles.list1ContentDistance}>{item.distance}</Text></View></View>
               </View>
-            </View>
+            </TouchableOpacity>
           }
         /> 
       </View>
