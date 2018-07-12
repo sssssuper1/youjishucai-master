@@ -10,6 +10,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.theweflex.react.WeChatPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new CookieManagerPackage(),
           new SplashScreenReactPackage(),
-          new WeChatPackage()
+          new WeChatPackage(),
+          new RNFetchBlobPackage()
       );
     }
 
