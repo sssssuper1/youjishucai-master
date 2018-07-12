@@ -48,6 +48,7 @@
 		9563998320BCFBAD00285802 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9563998220BCFBAD00285802 /* libc++.tbd */; };
 		9563998520BCFBBA00285802 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9563998420BCFBBA00285802 /* libz.tbd */; };
 		95D4642C20F4F3450076E268 /* bundle in Resources */ = {isa = PBXBuildFile; fileRef = 95D4640220F4F3440076E268 /* bundle */; };
+		95DEF0B320F629C5000E62E6 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 95DEF0B220F6297C000E62E6 /* libRNFetchBlob.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 /* End PBXBuildFile section */
 
@@ -346,6 +347,13 @@
 			remoteGlobalIDString = 1BD725DA1CF77A8B005DBD79;
 			remoteInfo = RNCookieManagerIOS;
 		};
+		95DEF0B120F6297C000E62E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 95DEF0AD20F6297C000E62E6 /* RNFetchBlob.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A15C300E1CD25C330074CB35;
+			remoteInfo = RNFetchBlob;
+		};
 		ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
@@ -392,6 +400,7 @@
 		9563998220BCFBAD00285802 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		9563998420BCFBBA00285802 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		95D4640220F4F3440076E268 /* bundle */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bundle; sourceTree = "<group>"; };
+		95DEF0AD20F6297C000E62E6 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		A3597A7D196B4316989B4AFB /* RNCookieManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RNCookieManagerTests.xctest; sourceTree = "<group>"; };
 		A5B2F3211B6D46509EDABDE4 /* RCTWeChat.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWeChat.xcodeproj; path = "../node_modules/react-native-wechat/ios/RCTWeChat.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -412,6 +421,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95DEF0B320F629C5000E62E6 /* libRNFetchBlob.a in Frameworks */,
 				9563998520BCFBBA00285802 /* libz.tbd in Frameworks */,
 				9563998320BCFBAD00285802 /* libc++.tbd in Frameworks */,
 				9563998120BCFB9200285802 /* libsqlite3.0.tbd in Frameworks */,
@@ -614,6 +624,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				95DEF0AD20F6297C000E62E6 /* RNFetchBlob.xcodeproj */,
 				9563991320BCEDA800285802 /* SplashScreen.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -701,6 +712,14 @@
 			isa = PBXGroup;
 			children = (
 				95D0453820EC6DAE00231C95 /* libRNCookieManagerIOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		95DEF0AE20F6297C000E62E6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				95DEF0B220F6297C000E62E6 /* libRNFetchBlob.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -805,7 +824,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = J45G98H729;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -885,6 +904,10 @@
 				{
 					ProductGroup = 95D0453420EC6DAD00231C95 /* Products */;
 					ProjectRef = 72032AA9D4EB477D8F6A4310 /* RNCookieManagerIOS.xcodeproj */;
+				},
+				{
+					ProductGroup = 95DEF0AE20F6297C000E62E6 /* Products */;
+					ProjectRef = 95DEF0AD20F6297C000E62E6 /* RNFetchBlob.xcodeproj */;
 				},
 				{
 					ProductGroup = 9563991420BCEDA800285802 /* Products */;
@@ -1182,6 +1205,13 @@
 			remoteRef = 95D0453720EC6DAE00231C95 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		95DEF0B220F6297C000E62E6 /* libRNFetchBlob.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFetchBlob.a;
+			remoteRef = 95DEF0B120F6297C000E62E6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1397,10 +1427,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Houlei Pu (N742334PYG)";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = J45G98H729;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-wechat/ios",
@@ -1416,8 +1447,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rhino.youjishucai;
 				PRODUCT_NAME = youjishucai;
-				PROVISIONING_PROFILE = "6587f685-3c6f-47f2-a93b-c25581761f8a";
-				PROVISIONING_PROFILE_SPECIFIER = "youjishucai-pp-test";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1428,9 +1459,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Houlei Pu (N742334PYG)";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = J45G98H729;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-wechat/ios",
@@ -1446,8 +1478,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rhino.youjishucai;
 				PRODUCT_NAME = youjishucai;
-				PROVISIONING_PROFILE = "6587f685-3c6f-47f2-a93b-c25581761f8a";
-				PROVISIONING_PROFILE_SPECIFIER = "youjishucai-pp-test";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

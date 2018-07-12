@@ -92,6 +92,7 @@ export default class Person extends Component {
             style={styles.name}
             underlineColorAndroid={'transparent'}
             onChangeText={(text) => this.setState({ name: text })}
+            returnKeyType={'done'}
             placeholder={'请输入昵称'}
             placeholderTextColor={'#a6a6a6'}
             maxLength={12}

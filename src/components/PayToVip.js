@@ -175,6 +175,7 @@ export default class PayToVip extends Component {
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
                 maxLength={11}
+                returnKeyType={'done'}
                 placeholder={'推荐人手机号（选填）'}
                 onChangeText={(text) => this.setState({referrer:text})}
                 value={this.state.referrer}

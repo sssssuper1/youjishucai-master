@@ -58,7 +58,8 @@ export default class ModifyPhoneNum extends Component {
     clearInterval(this.state.timer)
     let num=60
     let params = {
-      mobileNo: this.state.phone
+      mobileNo: this.state.phone,
+      type: '修改手机号'
     };
     Fetch(global.url + '/api/User/GetSMScode', 'post', params, (res) => {
       if (res.result) {

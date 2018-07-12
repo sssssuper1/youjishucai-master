@@ -241,8 +241,8 @@ export default class Cart extends Component {
         </View>
         <View style={styles.goodDetail}>
           <View style={styles.goodNameWrap}><Text style={styles.goodName}>{item.goodName}</Text></View>
-          <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>{item.goodspecifications}</Text></View>
-          <View style={styles.goodOriginalPriceWrap}><Text style={styles.goodOriginalPrice}>￥{item.originalPrice}</Text></View>
+          <View style={styles.hidden}><Text style={styles.goodOriginalPrice}>￥{item.originalPrice}</Text></View>
+          <View style={styles.goodSpecWrap}><Text style={styles.goodSpec}>规格: {item.goodspecifications}</Text></View>
           <View style={styles.goodPresentPriceWrap}>
             <Text style={styles.goodSymble}>￥</Text><Text style={styles.goodPresentPrice}>{item.price}</Text><Text style={styles.company}></Text>
             <View style={styles.goodsNum}>
