@@ -82,12 +82,11 @@ export default class IntegralRecord extends Component {
   }
 
   _renderRow(item, index) {
-    const { navigate } = this.props.navigation;
       return (
         <View style={styles.goods1}>
           <View style={styles.order}>
             <Text style={styles.orderText}>订单号</Text>
-            <Text style={styles.orderNum}>{item.orderNum}</Text>
+            <Text style={styles.orderNum}>{item.orderNum != '' ? item.orderNum : item.fromOrderNum}</Text>
             <Text style={styles.state}>{item.createTime}</Text>
           </View>
           <View style={styles.orderSum}>

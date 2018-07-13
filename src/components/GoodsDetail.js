@@ -97,7 +97,10 @@ export default class GoodsDetail extends Component {
         ${this.desc}
         </div>
         <script>
-          window.onload=function(){ window.location.hash = '#' + document.body.clientHeight;document.title = document.body.clientHeight;}
+          window.onload=function(){
+            let height = document.body.scrollHeight;
+            window.postMessage(height);
+          }
         </script>
         </body>
         </html>
@@ -193,7 +196,7 @@ export default class GoodsDetail extends Component {
 
   webViewLoaded = () => {
     this.refs.webview.injectJavaScript(`
-        const height = document.body.scrollHeight;
+        let height = document.body.scrollHeight;
         window.postMessage(height);
     `);
   }

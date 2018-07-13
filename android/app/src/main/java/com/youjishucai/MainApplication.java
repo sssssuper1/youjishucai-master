@@ -3,6 +3,7 @@ package com.youjishucai;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.yunpeng.alipay.AlipayPackage;
 import com.psykar.cookiemanager.CookieManagerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+          new AlipayPackage(),
           new CookieManagerPackage(),
           new SplashScreenReactPackage(),
           new WeChatPackage(),

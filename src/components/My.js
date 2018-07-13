@@ -32,12 +32,15 @@ import pxToDp from '../js/pxToDp';
 export default class My extends Component {
   constructor(props) {
     super(props);
+    let userId = '6' + ('000000' + props.user.id).slice(-6);
+
     this.state = {
       count: store.getState().count,
+      userId: userId
     }
     this.unsubscribe = store.subscribe(() => {
       this.setState({
-        count: store.getState().count
+        count: store.getState().count,
       })
     })
   }
@@ -58,6 +61,7 @@ export default class My extends Component {
             </View>
             <View style={styles.nameContainer}>
               <Text style={styles.name}>{this.props.user.name}</Text>
+              <Text style={styles.userId}>ID: {this.state.userId}</Text>
               <TouchableOpacity style={this.props.user.vip > 0 ? styles.pointContent : styles.hidden} onPress={()=>{navigate('IntegralRecord')}}>
                 <Text style={styles.point}>积分: {this.props.user.integral}</Text>
               </TouchableOpacity>
@@ -198,6 +202,11 @@ const styles = StyleSheet.create({
     lineHeight: pxToDp(50),
     fontSize: pxToDp(30),
     color: '#fdeb63'
+  },
+  userId: {
+    lineHeight: pxToDp(50),
+    fontSize: pxToDp(30),
+    color: 'white'
   },
   set: {
     position: 'absolute',

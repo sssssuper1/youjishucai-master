@@ -90,7 +90,7 @@ export default class PayFun extends Component {
     const { goBack, state, navigate } = this.props.navigation;
     return (
       <View style={styles.contenier}>
-        <Header1 navigation={this.props.navigation} name="请选择支付方式" popupShow={this.popupShow.bind(this)} goHome={true}></Header1>
+        <Header1 navigation={this.props.navigation} name="请选择支付方式" goHome={true}></Header1>
         <View style={styles.state}>
           <View style={styles.stateImgWrap}>
             <Image style={styles.stateImg} source={require('../images/payFail.png')}></Image> 

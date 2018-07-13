@@ -75,9 +75,7 @@ export default class Vip extends Component {
               </View>          
               <View style={styles.warnContent}>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员可以优先获得商城内各种新品资讯和活动咨询;</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员充值即可获得积分;积分能够在会员未来消费时抵扣现金(不包括VIP充值);</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员每成功推荐一名会员成为VIP;即可获得积分;</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP(被推荐人)每在商城消费,推荐人VIP即可获得积分;</Text></View>
+                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员充值即可获得积分;积分能够在会员消费时抵扣现金(不包括VIP充值);</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP累计积分只能在同一会员账号内累计,不同账号的积分不能合并;</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP充值金额不提现,不找零,不退款,不转让;</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP积分活动不断完善中，敬请期待。</Text></View>
@@ -122,9 +120,7 @@ export default class Vip extends Component {
               <View style={styles.warnTitle}><Image style={styles.warnImg1} source={require('../images/bubbleLeft1.png')}></Image><Text style={styles.warnText}>vip会员权益</Text><Image style={styles.warnImg2} source={require('../images/bubbleRight1.png')}></Image></View>          
               <View style={styles.warnContent}>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员可以优先获得商城内各种新品资讯和活动咨询;</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员充值即可获得积分;积分能够在会员未来消费时抵扣现金(不包括VIP充值);</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员每成功推荐一名会员成为VIP;即可获得积分;</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP(被推荐人)每在商城消费,推荐人VIP即可获得积分;</Text></View>
+                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员充值即可获得积分;积分能够在会员消费时抵扣现金(不包括VIP充值);</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP累计积分只能在同一会员账号内累计,不同账号的积分不能合并;</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP充值金额不提现,不找零,不退款,不转让;</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP积分活动不断完善中，敬请期待。</Text></View>

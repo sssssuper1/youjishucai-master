@@ -141,6 +141,7 @@ android {
 dependencies {
     compile project(':react-native-cookies')
     compile project(':react-native-splash-screen')
+    compile project(':react-native-yunpeng-alipay')
     compile project(':RCTWeChat')
     compile project(':rn-fetch-blob')
     compile fileTree(dir: "libs", include: ["*.jar"])
