@@ -170,13 +170,13 @@ export default class Home extends Component {
           if (responseData.success) {
             store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 });
             if (Platform.OS == 'android') {
-              ToastAndroid.show('加入成功!', ToastAndroid.SHORT);
+              ToastAndroid.showWithGravity('加入成功!', ToastAndroid.SHORT, ToastAndroid.CENTER);
             } else {
               this.toast.show('加入成功!');
             }
           } else {
             if (Platform.OS == 'android') {
-              ToastAndroid.show(responseData.message, ToastAndroid.SHORT);
+              ToastAndroid.showWithGravity(responseData.message, ToastAndroid.SHORT, ToastAndroid.CENTER);
             } else {
               this.toast.show(responseData.message);
             }
