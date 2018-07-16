@@ -78,7 +78,6 @@ export default class Vip extends Component {
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员充值即可获得积分;积分能够在会员消费时抵扣现金(不包括VIP充值);</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP累计积分只能在同一会员账号内累计,不同账号的积分不能合并;</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP充值金额不提现,不找零,不退款,不转让;</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP积分活动不断完善中，敬请期待。</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ 最终解释权归食鲜机所有</Text></View>
               </View>
             </View>     
@@ -123,7 +122,6 @@ export default class Vip extends Component {
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP会员充值即可获得积分;积分能够在会员消费时抵扣现金(不包括VIP充值);</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP累计积分只能在同一会员账号内累计,不同账号的积分不能合并;</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP充值金额不提现,不找零,不退款,不转让;</Text></View>
-                <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ VIP积分活动不断完善中，敬请期待。</Text></View>
                 <View style={styles.warnContentLine}><Text style={styles.warnContentText}>◆ 最终解释权归食鲜机所有</Text></View>
               </View>
             </View>         
