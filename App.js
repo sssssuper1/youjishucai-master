@@ -34,6 +34,7 @@ import EditAddress from './src/components/EditAddress';
 import VipRegister from './src/components/VipRegister';
 import IntegralRecord from './src/components/IntegralRecord';
 import ShopDetail from './src/components/ShopDetail';
+import Share from './src/components/Share';
 import { StackNavigator } from 'react-navigation';
 import store from './src/store/index';
 import { storage } from './src/js/StorageUtil';
@@ -320,6 +321,16 @@ class PayToVipScreen extends Component {
     );
   }
 }
+class ShareScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <Share navigation={this.props.navigation} />
+    );
+  }
+}
 
 function configAppNavigator(isLoggeIn) {
   return StackNavigator({
@@ -435,6 +446,10 @@ function configAppNavigator(isLoggeIn) {
     ShopDetail: {
       screen: ShopDetailScreen,
     },
+    // 分享
+    Share: {
+      screen: ShareScreen
+    }
   }, {
     initialRouteName: isLoggeIn ? 'Home' : 'SignIn'
   });

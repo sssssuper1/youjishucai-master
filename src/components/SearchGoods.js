@@ -260,7 +260,9 @@ export default class SearchGoods extends Component {
             </View>
             <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}>
               <Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image>
-              <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
+              <View style={[styles.cartNumWrap, this.state.count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+                <Text style={styles.cartNum}>{this.state.count}</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -374,12 +376,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: pxToDp(17),
-    width: pxToDp(42),
     height: pxToDp(24),
     borderRadius: pxToDp(30),
     backgroundColor: '#fd4448',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  cartNumWrapShort: {
+    width: pxToDp(32),
+  },
+  cartNumWrapLong: {
+    width: pxToDp(40),
   },
   cartNum: {
     color: 'white',

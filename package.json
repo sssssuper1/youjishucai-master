@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.js --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle"
+    "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.js --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/"
   },
   "dependencies": {
     "@types/prop-types": "^15.5.2",
@@ -28,6 +29,7 @@
     "react-native-storage": "^0.2.2",
     "react-native-swiper": "^1.5.13",
     "react-native-tab-navigator": "^0.3.4",
+    "react-native-view-shot": "^2.4.0",
     "react-native-wechat": "^1.9.9",
     "react-native-yunpeng-alipay": "^2.0.0",
     "react-navigation": "^2.0.1",

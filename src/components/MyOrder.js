@@ -218,7 +218,7 @@ export default class MyOrder extends Component {
         </ScrollView>
         <PopupDialog
           width={pxToDp(600)} 
-          height={pxToDp(385)} 
+          height={pxToDp(400)} 
           ref={(popupDialog) => { this.popupDialog = popupDialog; }}
           >
           <View style={styles.bullet}>

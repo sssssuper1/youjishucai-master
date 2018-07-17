@@ -248,7 +248,13 @@ export default class GoodsDetail extends Component {
 
     return (
       <View style={styles.contenier}>
-        <Header1 navigation={this.props.navigation} name="商品详情"></Header1>
+        <Header1 navigation={this.props.navigation} name="商品详情" share={true} shareData={{
+          name: productDetailDt.goodName,
+          goodImg: productDetailDt.goodImg[0],
+          price: specDt[specIndex].price,
+          spec: specDt[specIndex].spec,
+          preSellPrice: specDt[specIndex].preSellPrice
+        }}></Header1>
         <ScrollView>
           <View style={styles.wrapperWrap}>
             <Swiper key={this.state.productDetailDt.goodImg.length} style={styles.wrapper}  renderPagination={renderPagination} autoplay={true} >
@@ -274,7 +280,7 @@ export default class GoodsDetail extends Component {
           <WebView
             ref={'webview'}
             source={{html: this.state.desc}}
-            style={{height: Number(this.state.WebViewHeight), marginTop: pxToDp(15), paddingBottom: pxToDp(100), backgroundColor: 'white',}}
+            style={{height: Number(this.state.WebViewHeight), marginTop: pxToDp(15), marginBottom: pxToDp(100), backgroundColor: 'white',}}
             onLoadEnd={this.webViewLoaded}
             onMessage={(e)=>this.handleMessage(e)}
             javaScriptEnabled={true}
@@ -293,7 +299,9 @@ export default class GoodsDetail extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}> 
             <View style={styles.goodsImgContainer}><Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image></View>
-            <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{store.getState().count}</Text></View>
+            <View style={[styles.cartNumWrap, store.getState().count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+              <Text style={styles.cartNum}>{store.getState().count}</Text>
+            </View>
             <View><Text style={styles.cartText}>购物车</Text></View>
           </TouchableOpacity>
           <TouchableOpacity disabled={this.state.noStock} style={this.state.noStock?styles.noGoods:styles.addGoods} onPress={this.addToCart.bind(this)}>
@@ -576,6 +584,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: pxToDp(30),
+  },
+  cartNumWrapShort: {
+    width: pxToDp(32),
+  },
+  cartNumWrapLong: {
+    width: pxToDp(40),
   },
   cartNum:{
     fontSize: pxToDp(20),
