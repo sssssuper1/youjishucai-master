@@ -10,7 +10,6 @@ import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
 import CookieManager from 'react-native-cookies';
 import {
@@ -42,7 +41,6 @@ function scrrollHeight(uiElementHeight) {
   return deviceHeightDp-uiElementHeight;
 }
 
-
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -58,7 +56,6 @@ export default class Home extends Component {
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
       message: '网络错误!',
-      announce: '',
       count: 0,
       banners: [],
       refreshing: false
@@ -66,7 +63,6 @@ export default class Home extends Component {
 
     this._refs = {}
 
-    this.getNotify();
     //菜单获取
     Fetch(global.url + '/api/home/initSgHome', 'get', null, (responseData) => {
       if (responseData.result) {
@@ -213,48 +209,6 @@ export default class Home extends Component {
         this.animate();
       })
     })
-  }
-
-  // 获取通知
-  getNotify() {
-    Fetch(global.url + '/api/Home/GetNotify', 'get', null, (res) => {
-      if (typeof res == 'object' && res.result) {
-        global.storage.load({
-          key: 'notify'
-        }).then(ret => {
-          if (!ret || !ret.text || ret.text != res.data.notify.text) {
-            this.setState({
-              announce: res.data.notify.text
-            }, () => {
-              this.popupDialog.show();
-              global.storage.save({
-                key: 'notify',
-                data: {
-                  text: res.data.notify.text
-                }
-              });
-            });
-          }
-        }).catch(err => {
-          this.setState({
-            announce: res.data.notify.text
-          }, () => {
-            this.popupDialog.show();
-            global.storage.save({
-              key: 'notify',
-              data: {
-                text: res.data.notify.text
-              }
-            });
-          });
-        });
-      }
-    }, (err) => { 
-    })
-  }
-
-  onButtonPress() {
-    this.popupDialog.dismiss();
   }
 
   componentWillUnmount() {
@@ -458,26 +412,6 @@ export default class Home extends Component {
             this.hideAlert();
           }}
         />
-        <PopupDialog
-          width={pxToDp(600)} 
-          height={pxToDp(692)} 
-          containerStyle={{zIndex: 1000}}
-          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
-          >
-            <View>
-              <Image style={styles.bulletImage} resizeMode="stretch" source={require("../images/bullet.png")}></Image>
-            </View>
-          <View style={styles.bullet}>
-            <View style={styles.bulletTitle}><Text style={styles.bulletTitleText}>消息通知</Text></View>  
-            <View style={styles.bulletContent}><Text style={styles.bulletContentText}>{this.state.announce}</Text>
-            </View>
-            <TouchableOpacity style={styles.button} onPress={this.onButtonPress.bind(this)}>
-              <Text
-              style={styles.buttonText}  
-              >知道了</Text>
-            </TouchableOpacity>
-          </View>
-        </PopupDialog>
         <Toast ref={toast => {this.toast = toast;}} style={styles.toast} position="top" positionValue={410}/>
       </View>
     );
@@ -743,37 +677,12 @@ const styles = StyleSheet.create({
     width: pxToDp(45),
     height: pxToDp(45)
   },
-  bullet: {
-    height: pxToDp(570),
-    alignItems: 'center'
-  },
-  bulletImage: {
-    width: "100%",
-    height: pxToDp(120)
-  },
-  bulletTitle: {
-    marginTop: pxToDp(64),
-    marginBottom: pxToDp(10),
-    alignItems: "center"
-  },
-  bulletTitleText: {
-    fontSize: pxToDp(40),
-    color: "#333335"
-  },
-  bulletContent: {
-    marginTop: pxToDp(20),
-    width: pxToDp(430)
-  },
-  bulletContentText: {
-    fontSize: pxToDp(28),
-    color: '#99979a'
-  },
   button: {
     position: 'absolute',
-    bottom: pxToDp(80),
+    bottom: pxToDp(60),
     width: pxToDp(334),
     height: pxToDp(84),
-    borderRadius: pxToDp(30),
+    borderRadius: pxToDp(44),
     backgroundColor: "#2abd89",
     alignItems: 'center',
     justifyContent: 'center'

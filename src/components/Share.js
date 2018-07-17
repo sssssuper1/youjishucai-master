@@ -58,9 +58,13 @@ export default class Share extends Component {
       quality: 1,
       result: 'tmpfile'
     }).then((uri) => {
+      let imageUrl = uri;
+      if (imageUrl.indexOf('file://') < 0) {
+        imageUrl = 'file://' + imageUrl;
+      }
       let data = {
         type: 'imageFile',
-        imageUrl: uri
+        imageUrl: imageUrl
       }
       if (shareType == 1) {
         wxShareToSession(data);
@@ -94,16 +98,17 @@ export default class Share extends Component {
                 <Text style={styles.originalPrice}>￥{this.state.preSellPrice}</Text>
               </View>
               <View>
-                <Text style={styles.wxText}>微信扫描二维码进入商城</Text>
+                <Text style={styles.wxText}>微信识别二维码进入商城</Text>
+              </View>
+              <View>
+                <Text style={styles.wxText}>购新鲜产品共享品质生活</Text>
               </View>
             </View>
           </View>
         </View>
         <View style={styles.shareController}>
           <View style={styles.titleContainer}>
-            <Text style={styles.shareLine}>  　　　　　　　　</Text>
-            <Text style={styles.shareToTitle}>  商品分享到  </Text>
-            <Text style={styles.shareLine}>  　　　　　　　　</Text>
+            <Text style={styles.shareToTitle}>—————————  商品分享到  —————————</Text>
           </View>
           <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.shareBtn} onPress={() => this.takeToImage(1)}>

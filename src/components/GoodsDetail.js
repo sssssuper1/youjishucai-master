@@ -93,15 +93,20 @@ export default class GoodsDetail extends Component {
             </style>
         </head>
         <body style="padding: 0; margin: 0">
+        <script>
+          var height = 0;
+          window.location.hash = '#' + document.body.clientHeight;
+          function changeHeight() {
+            if (document.body.scrollHeight != height) {
+              height = document.body.scrollHeight;
+              window.postMessage(height);
+            }
+          }
+          var flag =  setInterval(changeHeight, 500);
+        </script>
         <div>
         ${this.desc}
         </div>
-        <script>
-          window.onload=function(){
-            let height = document.body.scrollHeight;
-            window.postMessage(height);
-          }
-        </script>
         </body>
         </html>
         `;
@@ -195,13 +200,18 @@ export default class GoodsDetail extends Component {
   }
 
   webViewLoaded = () => {
+    console.log('load over, inject js clearInterval');
     this.refs.webview.injectJavaScript(`
-        let height = document.body.scrollHeight;
+      (function() {
+        height = document.body.scrollHeight;
         window.postMessage(height);
+        clearInterval(flag)
+      }())
     `);
   }
 
   handleMessage(e) {
+    console.log(e.nativeEvent.data);
     if (this.desc != '') {
       this.setState({
         WebViewHeight: e.nativeEvent.data
@@ -210,12 +220,12 @@ export default class GoodsDetail extends Component {
   }
 
   _renderSwiper(list) {
-    return list.map(item => this._renderSwiperImg(item));
+    return list.map((item, index) => this._renderSwiperImg(item, index));
   }
 
-  _renderSwiperImg(item) {
+  _renderSwiperImg(item, index) {
     return (
-      <View style={styles.slide}>
+      <View style={styles.slide} key={index}>
         <Image style={styles.banner} source={{uri: item}}></Image>
       </View>
     );
@@ -234,7 +244,7 @@ export default class GoodsDetail extends Component {
   _renderSpecifications(list) {
     return list.map((item, index) => {
       return (
-        <TouchableOpacity style={this.state.specIndex === index ? styles.modalGoodsSpecContent : styles.modalGoodsSpecContent1}
+        <TouchableOpacity key={index} style={this.state.specIndex === index ? styles.modalGoodsSpecContent : styles.modalGoodsSpecContent1}
           onPress={() => this.changeSpec(index)}>
           <Text style={this.state.specIndex === index?styles.modalGoodsSpecContentText:styles.modalGoodsSpecContentText1}>{item.spec}</Text>
         </TouchableOpacity>

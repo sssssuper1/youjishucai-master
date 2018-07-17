@@ -62,15 +62,20 @@ export default class ShopDetail extends Component {
             </style>
         </head>
         <body style="padding: 0; margin: 0">
+        <script>
+          var height = 0;
+          window.location.hash = '#' + document.body.clientHeight;
+          function changeHeight() {
+            if (document.body.scrollHeight != height) {
+              height = document.body.scrollHeight;
+              window.postMessage(height);
+            }
+          }
+          var flag =  setInterval(changeHeight, 500);
+        </script>
         <div>
         ${res.data.desc}
         </div>
-        <script>
-          window.onload=function(){
-            let height = document.body.scrollHeight;
-            window.postMessage(height);
-          }
-        </script>
         </body>
         </html>
         `;
@@ -91,8 +96,11 @@ export default class ShopDetail extends Component {
 
   webViewLoaded = () => {
     this.refs.webview.injectJavaScript(`
-        let height = document.body.scrollHeight;
-        window.postMessage(height);
+        (function() {
+          height = document.body.scrollHeight;
+          window.postMessage(height);
+          clearInterval(flag)
+        }())
     `);
   }
 

@@ -571,7 +571,8 @@ const styles = StyleSheet.create({
   bulletTitle: {
     marginTop: pxToDp(55),
     marginBottom: pxToDp(25),
-    width: pxToDp(480)
+    width: pxToDp(480),
+    height: pxToDp(50)
   },
   bulletTitleText: {
     fontSize: pxToDp(40),
@@ -586,7 +587,6 @@ const styles = StyleSheet.create({
     color: '#99979a'
   },
   buttonContent: {
-    marginBottom: pxToDp(50),
     height: pxToDp(100),
     width: '100%',
     flexDirection: 'row',

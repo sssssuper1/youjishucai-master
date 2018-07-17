@@ -13,7 +13,8 @@ import {
   Image,
   BackHandler,
   ToastAndroid,
-  Alert
+  Alert,
+  TouchableOpacity
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import types from '../actions/shopingCart';
@@ -26,6 +27,7 @@ import My from './My';
 import TabNavigator from 'react-native-tab-navigator';
 import CookieManager from 'react-native-cookies';
 import SplashScreen from 'react-native-splash-screen';
+import PopupDialog from 'react-native-popup-dialog';
 
 global.url = "http://sxj.xcf178.com";
 // global.url = "http://xsq.ngrok.sws168.com";
@@ -50,6 +52,7 @@ export default class Index extends Component {
         user: {
           name: '',
           phone: '',
+          announce: '',
           integral: 0,
           vip: 0
         },
@@ -64,9 +67,13 @@ export default class Index extends Component {
           integral: 0,
           vip: 0
         },
+        announce: '',
         stateNum: {}
       }
     }
+
+    // 获取通知
+    this.getNotify();
 
     this._didFocusSubscription = props.navigation.addListener('didFocus', payload => {
       BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
@@ -109,6 +116,47 @@ export default class Index extends Component {
         })
       }
     });
+  }
+
+  getNotify() {
+    Fetch(global.url + '/api/Home/GetNotify', 'get', null, (res) => {
+      if (typeof res == 'object' && res.result) {
+        global.storage.load({
+          key: 'notify'
+        }).then(ret => {
+          if (!ret || !ret.text || ret.text != res.data.notify.text) {
+            this.setState({
+              announce: res.data.notify.text
+            }, () => {
+              this.popupDialog.show();
+              global.storage.save({
+                key: 'notify',
+                data: {
+                  text: res.data.notify.text
+                }
+              });
+            });
+          }
+        }).catch(err => {
+          this.setState({
+            announce: res.data.notify.text
+          }, () => {
+            this.popupDialog.show();
+            global.storage.save({
+              key: 'notify',
+              data: {
+                text: res.data.notify.text
+              }
+            });
+          });
+        });
+      }
+    }, (err) => { 
+    })
+  }
+
+  onButtonPress() {
+    this.popupDialog.dismiss();
   }
 
   componentDidMount() {
@@ -159,54 +207,76 @@ export default class Index extends Component {
 
   render() {
     return (
-        <TabNavigator tabBarStyle={{backgroundColor:'white',height: pxToDp(114),alignItems: 'center'}}>
-          <TabNavigator.Item
-              selected={this.state.selectedTab === 'home'}
-              title="有机蔬菜"
-              titleStyle={{color:'#999'}}
-              selectedTitleStyle={{color:'#2abd89'}}
-              renderIcon={() => <Image style={styles.menuImg1} source={require('../images/menu1-1.png')} />}
-              renderSelectedIcon={() => <Image style={styles.menuImg1} source={require('../images/menu1-2.png')} />}
-              onPress={() => this.setState({ selectedTab: 'home' })}>
-            <Home navigation={this.props.navigation} />
-          </TabNavigator.Item>
-          <TabNavigator.Item
-              selected={this.state.selectedTab === 'payment'}
-              title="正弘新社群"
-              titleStyle={{color:'#999'}}
-              selectedTitleStyle={{color:'#2abd89'}}
-              renderIcon={() => <Image style={styles.menuImg2} source={require('../images/menu2-1.png')} />}
-              renderSelectedIcon={() => <Image style={styles.menuImg2} source={require('../images/menu2-2.png')} />}
-              onPress={() => this.setState({ selectedTab: 'payment' })}>
-              <Community navigation={this.props.navigation} />
-          </TabNavigator.Item>
-          <TabNavigator.Item
-              selected={this.state.selectedTab === 'vip'}
-              title="vIP会员"
-              selectedTitleStyle={{color:'#2abd89'}}
-              titleStyle={{color:'#999'}}
-              renderIcon={() => <Image style={styles.menuImg3} source={require('../images/menu3-1.png')} />}
-              renderSelectedIcon={() => <Image style={styles.menuImg3} source={require('../images/menu3-2.png')} />}
-              onPress={() => this.toVip()}>
-              <Vip navigation={this.props.navigation} user={this.state.user}/>
-          </TabNavigator.Item>
-          <TabNavigator.Item
-              selected={this.state.selectedTab === 'my'}
-              title="我的"
-              selectedTitleStyle={{color:'#2abd89'}}
-              titleStyle={{color:'#999'}}
-              renderIcon={() => <Image style={styles.menuImg4} source={require('../images/menu4-1.png')} />}
-              renderSelectedIcon={() => <Image style={styles.menuImg4} source={require('../images/menu4-2.png')} />}
-              onPress={() => this.toMy()}>
-              <My navigation={this.props.navigation} user={this.state.user} stateNum={this.state.stateNum}/>
-          </TabNavigator.Item>
-        </TabNavigator>
+        <View style={styles.container}>
+          <TabNavigator tabBarStyle={{backgroundColor:'white',height: pxToDp(114),alignItems: 'center'}}>
+            <TabNavigator.Item
+                selected={this.state.selectedTab === 'home'}
+                title="有机蔬菜"
+                titleStyle={{color:'#999'}}
+                selectedTitleStyle={{color:'#2abd89'}}
+                renderIcon={() => <Image style={styles.menuImg1} source={require('../images/menu1-1.png')} />}
+                renderSelectedIcon={() => <Image style={styles.menuImg1} source={require('../images/menu1-2.png')} />}
+                onPress={() => this.setState({ selectedTab: 'home' })}>
+              <Home navigation={this.props.navigation} />
+            </TabNavigator.Item>
+            <TabNavigator.Item
+                selected={this.state.selectedTab === 'payment'}
+                title="正弘新社群"
+                titleStyle={{color:'#999'}}
+                selectedTitleStyle={{color:'#2abd89'}}
+                renderIcon={() => <Image style={styles.menuImg2} source={require('../images/menu2-1.png')} />}
+                renderSelectedIcon={() => <Image style={styles.menuImg2} source={require('../images/menu2-2.png')} />}
+                onPress={() => this.setState({ selectedTab: 'payment' })}>
+                <Community navigation={this.props.navigation} />
+            </TabNavigator.Item>
+            <TabNavigator.Item
+                selected={this.state.selectedTab === 'vip'}
+                title="vIP会员"
+                selectedTitleStyle={{color:'#2abd89'}}
+                titleStyle={{color:'#999'}}
+                renderIcon={() => <Image style={styles.menuImg3} source={require('../images/menu3-1.png')} />}
+                renderSelectedIcon={() => <Image style={styles.menuImg3} source={require('../images/menu3-2.png')} />}
+                onPress={() => this.toVip()}>
+                <Vip navigation={this.props.navigation} user={this.state.user}/>
+            </TabNavigator.Item>
+            <TabNavigator.Item
+                selected={this.state.selectedTab === 'my'}
+                title="我的"
+                selectedTitleStyle={{color:'#2abd89'}}
+                titleStyle={{color:'#999'}}
+                renderIcon={() => <Image style={styles.menuImg4} source={require('../images/menu4-1.png')} />}
+                renderSelectedIcon={() => <Image style={styles.menuImg4} source={require('../images/menu4-2.png')} />}
+                onPress={() => this.toMy()}>
+                <My navigation={this.props.navigation} user={this.state.user} stateNum={this.state.stateNum}/>
+            </TabNavigator.Item>
+          </TabNavigator>
+          <PopupDialog
+            width={pxToDp(600)} 
+            height={pxToDp(570)} 
+            containerStyle={{zIndex: 1000}}
+            ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+            >
+            <View style={styles.bullet}>
+              <View style={styles.bulletTitle}><Text style={styles.bulletTitleText}>消息通知</Text></View>  
+              <View style={styles.bulletContent}>
+                <Text style={styles.bulletContentText}>{this.state.announce}</Text>
+              </View>
+              <TouchableOpacity style={styles.button} onPress={this.onButtonPress.bind(this)}>
+                <Text style={styles.buttonText}>知道了</Text>
+              </TouchableOpacity>
+            </View>
+          </PopupDialog>
+        </View>
     );
   }
 }
 
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%'
+  },
   menuImg1: {
     marginTop:pxToDp(10),
     width:pxToDp(50),
@@ -226,5 +296,43 @@ const styles = StyleSheet.create({
     marginTop:pxToDp(10),
     width:pxToDp(44),
     height:pxToDp(48)
+  },
+  bullet: {
+    height: pxToDp(570),
+    alignItems: 'center'
+  },
+  bulletImage: {
+    width: "100%",
+    height: pxToDp(120)
+  },
+  bulletTitle: {
+    marginTop: pxToDp(64),
+    marginBottom: pxToDp(10),
+    alignItems: "center"
+  },
+  bulletTitleText: {
+    fontSize: pxToDp(40),
+    color: "#333335"
+  },
+  bulletContent: {
+    marginTop: pxToDp(20),
+    width: pxToDp(500)
+  },
+  bulletContentText: {
+    fontSize: pxToDp(32),
+    color: '#99979a'
+  },
+  button: {
+    position: 'absolute',
+    bottom: pxToDp(60),
+    width: pxToDp(334),
+    height: pxToDp(84),
+    borderRadius: pxToDp(44),
+    backgroundColor: "#2abd89",
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    color: "white"
   },
 });
