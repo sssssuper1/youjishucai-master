@@ -56,8 +56,8 @@ export default class My extends Component {
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
           <View style={styles.header}>
             <View style={styles.headPointer}>
-              {this.props.user.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip.png')}></Image> :
-              <Image style={styles.headPointerImg} source={require('../images/noVip.png')}></Image>  }  
+              {this.props.user.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/v1.png')}></Image> :
+              <Image style={styles.headPointerImg} source={require('../images/v0.png')}></Image>  }  
             </View>
             <View style={styles.nameContainer}>
               <Text style={styles.name}>{this.props.user.name}</Text>
@@ -76,7 +76,7 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart1Img]}>
               <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
             </View>
-            <View style={this.state.count > 0 ? styles.cart1NumWrap : styles.hidden}>
+            <View style={[this.state.count > 0 ? styles.cart1NumWrap : styles.hidden, this.state.count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
               <Text style={styles.cart1Num}>{this.state.count}</Text>
             </View>
             <View style={styles.cartNameWrap}>
@@ -87,7 +87,9 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart2Img]}>
               <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
             </View>
-            <View style={this.props.stateNum.paymentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.props.stateNum.paymentDt}</Text></View>
+            <View style={[this.props.stateNum.paymentDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.paymentDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+              <Text style={styles.cart1Num}>{this.props.stateNum.paymentDt}</Text>
+            </View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待付款</Text>
             </View>
@@ -96,7 +98,9 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart3Img]}>
               <Image style={styles.cart3Img} source={require('../images/sendGoods.png')}></Image>
             </View>
-            <View style={this.props.stateNum.shipmentDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.props.stateNum.shipmentDt}</Text></View>
+            <View style={[this.props.stateNum.shipmentDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.shipmentDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+              <Text style={styles.cart1Num}>{this.props.stateNum.shipmentDt}</Text>
+            </View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待发货</Text>
             </View>
@@ -105,7 +109,9 @@ export default class My extends Component {
             <View style={[styles.cartImg,styles.cart4Img]}>
               <Image style={styles.cart4Img} source={require('../images/getGoods.png')}></Image>
             </View>
-            <View style={this.props.stateNum.goodsReceiptDt>0?styles.cart1NumWrap:styles.hidden}><Text style={styles.cart1Num}>{this.props.stateNum.goodsReceiptDt}</Text></View>
+            <View style={[this.props.stateNum.goodsReceiptDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.goodsReceiptDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+              <Text style={styles.cart1Num}>{this.props.stateNum.goodsReceiptDt}</Text>
+            </View>
             <View style={styles.cartNameWrap}>
               <Text style={styles.cartName}>待收货</Text>
             </View>
@@ -240,17 +246,23 @@ const styles = StyleSheet.create({
   },
   cart1NumWrap:{
     position: 'absolute',
-    right: pxToDp(30),
     backgroundColor: 'white',
     top: pxToDp(15),
-    width: pxToDp(58),
     height:pxToDp(30),
     borderWidth: pxToDp(2),
     borderColor: "#15c57f",
     borderRadius: pxToDp(30),
     alignItems: 'center',
     justifyContent: 'center',
-  },  
+  },
+  cartNumWrapShort: {
+    width: pxToDp(40),
+    right: pxToDp(48),
+  },
+  cartNumWrapLong: {
+    width: pxToDp(58),
+    right: pxToDp(30),
+  },
   cart1Num: {
     fontSize: pxToDp(24),
     color: '#11b57c'

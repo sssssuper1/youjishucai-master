@@ -5,12 +5,6 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
-import Fetch from '../js/fetch'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
   StyleSheet,
@@ -86,7 +80,10 @@ export default class Header1 extends Component {
           }}>
             <Image style={styles.headerImg} source={require('../images/orderDir.png')}></Image>
           </TouchableOpacity>
-          <Text style={styles.headerText}>{name}</Text>  
+          <Text style={styles.headerText}>{name}</Text>
+          <TouchableOpacity style={this.props.share ? styles.headerShare : styles.hidden} onPress={() => navigate('Share', {shareData: this.props.shareData})}>
+            <Image style={styles.shareImg} source={require('../images/share.png')}></Image>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -96,6 +93,9 @@ export default class Header1 extends Component {
 const styles = StyleSheet.create({
   container:{
     backgroundColor: 'white',
+  },
+  hidden: {
+    display: 'none'
   },
   header:{
     position: 'relative',
@@ -117,9 +117,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  headerShare: {
+    position: 'absolute',
+    right: pxToDp(40),
+    width: pxToDp(50),
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   headerImg:{
     width: pxToDp(24),
     height: pxToDp(40)
+  },
+  shareImg: {
+    width: pxToDp(39),
+    height: pxToDp(45)
   },
   headerText: {
     fontSize: pxToDp(36),

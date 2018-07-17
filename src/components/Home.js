@@ -393,7 +393,9 @@ export default class Home extends Component {
             </View>
             <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}} >
               <Image style={styles.cartImg} source={require("../images/cart.png")}></Image>
-              <View style={styles.cartNumWrap}><Text style={styles.cartNum}>{this.state.count}</Text></View>
+              <View style={[styles.cartNumWrap, this.state.count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+                <Text style={styles.cartNum}>{this.state.count}</Text>
+              </View>
             </TouchableOpacity> 
           </View>
         </ImageBackground>
@@ -460,7 +462,7 @@ export default class Home extends Component {
           width={pxToDp(600)} 
           height={pxToDp(692)} 
           containerStyle={{zIndex: 1000}}
-            ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
           >
             <View>
               <Image style={styles.bulletImage} resizeMode="stretch" source={require("../images/bullet.png")}></Image>
@@ -486,9 +488,9 @@ const styles = StyleSheet.create({
   wrapperWrap: {
     height: pxToDp(238),
     borderBottomColor: '#f1f1f1',
-    borderBottomWidth: pxToDp(2),
+    borderBottomWidth: pxToDp(1),
     borderTopColor: '#f1f1f1',
-    borderTopWidth: pxToDp(2)
+    borderTopWidth: pxToDp(1)
   },
   slide: {
     justifyContent: 'center',
@@ -579,12 +581,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    width: pxToDp(40),
     height: pxToDp(24),
     backgroundColor: "#fd4448",
     borderRadius: 36,
     alignItems: "center",
     justifyContent: "center"
+  },
+  cartNumWrapShort: {
+    width: pxToDp(32),
+  },
+  cartNumWrapLong: {
+    width: pxToDp(40),
   },
   cartNum: {
     color: "white",
@@ -638,7 +645,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: pxToDp(6),
     height: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#f4f4f4',
   },
   goods2: {
     width: pxToDp(576),
