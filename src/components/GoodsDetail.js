@@ -66,8 +66,17 @@ export default class GoodsDetail extends Component {
       count: 1,
       noStock: true,
       WebViewHeight: 0,
-      desc: ''
+      desc: '',
+      isLogin: false
     }
+
+    CookieManager.get(global.url).then(cookie => {
+      if (!!cookie.userId) {
+        this.setState({
+          isLogin: true
+        })
+      }
+    })
 
     if (!!params && !!params.id) {
       this.loadData(params.id);
@@ -137,27 +146,25 @@ export default class GoodsDetail extends Component {
   }
 
   addToCart() {
-    CookieManager.get(global.url).then(cookie => {
-      if (!!cookie.userId) {
-        Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
-          count: this.state.count,
-          goodspecifications: this.state.specDt[this.state.specIndex].id
-        }, (responseData) => {
-          if (responseData.success) {
-            this.refs.toast.show('加入成功!');
-            store.dispatch({ type: types.addShopingNum.ADDNUM, num: this.state.count })
-            this.closeselectionModel();
-          } else {
-            this.refs.toast.show(responseData.message);
-          }
-        },
-        (err) => {
-          Alert.alert('提示',err);
-        });
-      } else {
-        this.props.navigation.navigate('SignIn');
-      }
-    })
+    if (this.state.isLogin) {
+      Fetch(global.url + '/API/ProductDetail/joinCart', 'post', {
+        count: this.state.count,
+        goodspecifications: this.state.specDt[this.state.specIndex].id
+      }, (responseData) => {
+        if (responseData.success) {
+          this.refs.toast.show('加入成功!');
+          store.dispatch({ type: types.addShopingNum.ADDNUM, num: this.state.count })
+          this.closeselectionModel();
+        } else {
+          this.refs.toast.show(responseData.message);
+        }
+      },
+      (err) => {
+        Alert.alert('提示',err);
+      });
+    } else {
+      this.props.navigation.navigate('SignIn');
+    }
   }
 
   reduceGoodsNum() {
@@ -258,7 +265,7 @@ export default class GoodsDetail extends Component {
 
     return (
       <View style={styles.contenier}>
-        <Header1 navigation={this.props.navigation} name="商品详情" share={true} shareData={{
+        <Header1 navigation={this.props.navigation} name="商品详情" share={this.state.isLogin} shareData={{
           name: productDetailDt.goodName,
           goodImg: productDetailDt.goodImg[0],
           price: specDt[specIndex].price,
