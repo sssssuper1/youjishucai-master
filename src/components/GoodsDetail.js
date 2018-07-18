@@ -296,7 +296,7 @@ export default class GoodsDetail extends Component {
           </View>
           <WebView
             ref={'webview'}
-            source={{html: this.state.desc}}
+            source={{html: this.state.desc, baseUrl: ''}}
             style={{height: Number(this.state.WebViewHeight), marginTop: pxToDp(15), marginBottom: pxToDp(100), backgroundColor: 'white',}}
             onLoadEnd={this.webViewLoaded}
             onMessage={(e)=>this.handleMessage(e)}
