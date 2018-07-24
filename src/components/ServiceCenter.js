@@ -13,6 +13,7 @@ import {
   View,
   Image,
   Alert,
+  Linking
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -44,6 +45,12 @@ export default class ServiceCenter extends Component {
     })
   }
 
+  callTel(tel) {
+    Linking.openURL('tel:'+ tel).catch(err => {
+      Alert.alert(err);
+    })
+  }
+
   _renderContent(list) {
     return list.map(item => <View><Text style={styles.workTime}>{item}</Text></View>)
   }
@@ -56,7 +63,7 @@ export default class ServiceCenter extends Component {
           <View style={styles.Item}>
             <Image style={styles.itemImg} source={require('../images/serverPhone.png')}></Image>
             <Text style={styles.title}>客服电话</Text>
-            <Text style={styles.phone}>{this.state.tel}</Text>
+            <Text style={styles.phone} onPress={() => this.callTel(this.state.tel)}>{this.state.tel}</Text>
           </View>
           <View style={styles.Item}>
             <Image style={styles.itemImg} source={require('../images/serverTime.png')}></Image>

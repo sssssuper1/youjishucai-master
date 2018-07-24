@@ -123,7 +123,7 @@ export default class PayToVip extends Component {
       <View style={styles.contenier}>  
         <Header1 navigation={this.props.navigation} name="vip会员购买付费"></Header1>
         <ScrollView keyboardShouldPersistTaps={'handled'}>
-          <View style={styles.hidden}>
+          {/*<View style={styles.vipInfo}>
             <View style={styles.PickerWrap}>  
               <Text style={styles.PickerTitle}>手机号：</Text>
               <TextInput
@@ -160,7 +160,7 @@ export default class PayToVip extends Component {
                 value={this.state.password}
               /> 
             </View>
-          </View>
+          </View>*/}
           <View style={styles.vipInfo}>
             <View style={styles.vipItems}>
               <Text style={styles.vipText}>开通服务：</Text><Text style={styles.vipText1}>VIP会员</Text>
@@ -169,14 +169,14 @@ export default class PayToVip extends Component {
               <Text style={styles.vipText}>应付金额：</Text><Text style={styles.vipText2}>￥{global.data.vipPrice}</Text>
             </View>
             <View style={styles.vipItems}>
-              <Text style={styles.vipText}>推荐人：</Text>
+              <Text style={styles.vipText}>邀请人：</Text>
               <TextInput
                 keyboardType={'numeric'}
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
                 maxLength={11}
                 returnKeyType={'done'}
-                placeholder={'推荐人手机号（选填）'}
+                placeholder={'邀请人手机号（选填）'}
                 onChangeText={(text) => this.setState({referrer:text})}
                 value={this.state.referrer}
                 editable={!global.data.user.referrer}

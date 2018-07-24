@@ -56,8 +56,8 @@ export default class My extends Component {
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
           <View style={styles.header}>
             <View style={styles.headPointer}>
-              {this.props.user.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/v1.png')}></Image> :
-              <Image style={styles.headPointerImg} source={require('../images/v0.png')}></Image>  }  
+              {this.props.user.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip1.png')}></Image> :
+              <Image style={styles.headPointerImg} source={require('../images/vip0.png')}></Image>  }  
             </View>
             <View style={styles.nameContainer}>
               <Text style={styles.name}>{this.props.user.name}</Text>

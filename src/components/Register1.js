@@ -199,7 +199,7 @@ export default class Register1 extends Component {
             style={styles.detailAddress}
             maxLength={11}
             returnKeyType={'done'}
-            placeholder={'推荐人手机号（选填）'}
+            placeholder={'邀请人手机号（选填）'}
             onChangeText={(text) => this.setState({referee:text})}
             value={this.state.referee}
           />
@@ -210,7 +210,7 @@ export default class Register1 extends Component {
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
         <PopupDialog
           width={pxToDp(600)} 
-          height={pxToDp(385)} 
+          height={pxToDp(400)} 
           ref={(popupDialog) => { this.popupDialog = popupDialog; }}
           >
           <View style={styles.bullet}>
@@ -328,7 +328,8 @@ const styles = StyleSheet.create({
   bulletTitle: {
     marginTop: pxToDp(55),
     marginBottom: pxToDp(25),
-    width: pxToDp(480)
+    width: pxToDp(480),
+    height: pxToDp(50)
   },
   bulletTitleText: {
     fontSize: pxToDp(40),
@@ -343,7 +344,6 @@ const styles = StyleSheet.create({
     color: '#99979a'
   },
   buttonContent: {
-    marginBottom: pxToDp(50),
     height: pxToDp(100),
     width: '100%',
     flexDirection: 'row',

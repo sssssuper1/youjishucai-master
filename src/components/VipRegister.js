@@ -306,7 +306,7 @@ export default class VipRegister extends Component {
           {pickers}
           <View style={styles.userBm}>
             <View style={styles.PickerWrap}>
-              <Text style={styles.PickerTitle}>推荐人：</Text>
+              <Text style={styles.PickerTitle}>邀请人：</Text>
               <MyTextInput
                 underlineColorAndroid={'transparent'}
                 style={styles.detailAddress}
