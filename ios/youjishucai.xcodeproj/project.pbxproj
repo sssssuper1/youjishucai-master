@@ -1484,7 +1484,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rhino.youjishucai;
 				PRODUCT_NAME = youjishucai;
-				PROVISIONING_PROFILE = "170a4a24-69e8-43ea-a1df-ffedb61b6f92";
+				PROVISIONING_PROFILE = "ff07079b-3606-4a3b-a031-9c36b87c4904";
 				PROVISIONING_PROFILE_SPECIFIER = "youjishucai-distribution";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1516,7 +1516,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rhino.youjishucai;
 				PRODUCT_NAME = youjishucai;
-				PROVISIONING_PROFILE = "170a4a24-69e8-43ea-a1df-ffedb61b6f92";
+				PROVISIONING_PROFILE = "ff07079b-3606-4a3b-a031-9c36b87c4904";
 				PROVISIONING_PROFILE_SPECIFIER = "youjishucai-distribution";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
