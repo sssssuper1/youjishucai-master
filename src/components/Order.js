@@ -5,15 +5,10 @@
  */
 
 import React, { Component, PureComponent } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart';
-import store from '../store/index';
 import Fetch from '../js/fetch';
-import Header from './Header';
 import wxPay from '../js/wxPay';
-import PopupDialog from 'react-native-popup-dialog';
+import alipay from '../js/aliPay';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
@@ -21,15 +16,8 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
   ImageBackground,
   Alert,
-  Button,
   FlatList
 } from 'react-native';
 import Header1 from './Header1';
@@ -47,7 +35,8 @@ export default class Order extends Component {
       shippingFee: 0,
       integralPayAmount: 0,
       payAmount: 0,
-      count: 0
+      count: 0,
+      isSubmitting: false
     };
 
     this.loadData();
@@ -80,21 +69,41 @@ export default class Order extends Component {
   }
 
   pay() {
-    let params = {
-      isApp: true,
-      cartProducts: this.state.dataSource.shopCartListDt,
-      customerAddressId: 0,
-      customerCouponId: '',
-      defaultDeliveryType: 0,
-      enterpriseAccountPayment: this.state.enterpriseAccountPayment,
-      pickUpPerson: '',
-      pickUpPhone: '',
-      pickUpPointsId: '',
-      remark: this.state.remark,
-      isApp:true
-    }
+    this.setState({
+      isSubmitting: true
+    })
 
-    wxPay(params, this.props.navigation, '/API/Order/Add', this.state.count);
+    if (this.state.payNum == 0) {
+      let params = {
+        isApp: true,
+        cartProducts: this.state.dataSource.shopCartListDt,
+        customerAddressId: 0,
+        customerCouponId: '',
+        defaultDeliveryType: 0,
+        enterpriseAccountPayment: this.state.enterpriseAccountPayment,
+        pickUpPerson: '',
+        pickUpPhone: '',
+        pickUpPointsId: '',
+        remark: this.state.remark,
+        payType: 'wx'
+      }
+      wxPay(params, this.props.navigation, '/API/Order/Add', this.state.count);
+    } else {
+      let params = {
+        isApp: true,
+        cartProducts: this.state.dataSource.shopCartListDt,
+        customerAddressId: 0,
+        customerCouponId: '',
+        defaultDeliveryType: 0,
+        enterpriseAccountPayment: this.state.enterpriseAccountPayment,
+        pickUpPerson: '',
+        pickUpPhone: '',
+        pickUpPointsId: '',
+        remark: this.state.remark,
+        payType: 'ali'
+      }
+      alipay(params, this.props.navigation, '/API/Order/Add', this.state.count);
+    }
   }
 
   changePaymentMethod(payNum) {
@@ -177,7 +186,7 @@ export default class Order extends Component {
               <Text>微信支付</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.hidden} onPress={()=>this.changePaymentMethod(1)}>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(1)}>
               <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
@@ -193,8 +202,8 @@ export default class Order extends Component {
         <View style={styles.result}>    
           <Text style={styles.resultTitle}>实付金额：</Text>
           <Text style={styles.resultPrice}>¥{this.state.payAmount - this.state.integralPayAmount}</Text>
-          <TouchableOpacity style={styles.payBtn} onPress={this.pay.bind(this)}>
-            <Text style={styles.payBtnText}>去结算</Text>
+          <TouchableOpacity style={styles.payBtn} onPress={this.pay.bind(this)} disabled={this.state.isSubmitting}>
+            <Text style={styles.payBtnText}>{this.state.isSubmitting ? '结算中' : '去结算'}</Text>
           </TouchableOpacity>
         </View>
       </View>

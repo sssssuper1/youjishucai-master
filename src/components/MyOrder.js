@@ -31,6 +31,7 @@ import {
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import wxPay from '../js/wxPay';
+import alipay from '../js/aliPay';
 
 export default class MyOrder extends Component {
   constructor(props) {
@@ -41,6 +42,7 @@ export default class MyOrder extends Component {
 
     this.state = {
       state: 0,
+      payNum: 0,
       order: {
         details: [],
       },
@@ -107,11 +109,25 @@ export default class MyOrder extends Component {
   }
 
   pay(orderNo) {
-    let params = {
-      orderNo: orderNo
+    if (this.state.payNum == 0) {
+      let params = {
+        orderNo: orderNo,
+        payType: 'wx'
+      }
+      wxPay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
+    } else {
+      let params = {
+        orderNo: orderNo,
+        payType: 'ali'
+      }
+      alipay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
     }
+  }
 
-    wxPay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
+  changePaymentMethod(payNum) {
+    this.setState({
+      payNum: payNum
+    });
   }
 
   //list渲染
@@ -198,8 +214,20 @@ export default class MyOrder extends Component {
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥{order.expressMoney}</Text></View>
             <View style={styles.goodsInfo1}><Text style={styles.goodsInfoTitle}>下单时间</Text><Text style={styles.price}>{order.orderDate}</Text></View>
             <View style={global.data.user.vip>0?styles.goodsInfo:styles.hidden}><Text style={styles.goodsInfoTitle}>vip积分</Text><Text style={styles.price}>- ¥{order.integralPayAmount}</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>微信支付</Text><Text style={styles.price}>{order.cashPayAmount}</Text></View>
+            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>在线支付</Text><Text style={styles.price}>{order.cashPayAmount}</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle2}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥{order.cashPayAmount}</Text></View>
+          </View>
+          <View style={state === 0 ? styles.paymentMethod : styles.hidden}>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(0)}>
+              <Image style={styles.payment1Img} source={require('../images/wechat.png')}></Image>
+              <Text>微信支付</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(1)}>
+              <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
+              <Text>支付宝</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
           </View>
           <View style={styles.btns}>
             <TouchableOpacity style={state < 1 ? styles.cacelOrder : styles.hidden} onPress={()=>this.popupShow()}>
@@ -213,7 +241,7 @@ export default class MyOrder extends Component {
             </TouchableOpacity>
             <TouchableOpacity style={state >= 1 ? styles.cacelOrder : styles.hidden} onPress={()=>navigate('ServiceCenter')}>
               <Text>联系客服</Text>
-            </TouchableOpacity>   
+            </TouchableOpacity>      
           </View>
         </ScrollView>
         <PopupDialog
@@ -611,5 +639,35 @@ const styles = StyleSheet.create({
   buttonCancle: {
     color: "#000000",
     fontSize: pxToDp(33),
-  }
+  },
+  paymentMethod: {
+    marginTop: pxToDp(15),
+    backgroundColor: 'white'
+  },
+  payment: {
+    position: 'relative',
+    marginLeft: pxToDp(26),
+    marginRight: pxToDp(26),
+    height: pxToDp(87),
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: pxToDp(2),
+    borderBottomColor: '#eeeeee'
+  },
+  payment1Img: {
+    marginRight: pxToDp(20),
+    width: pxToDp(52),
+    height: pxToDp(45)
+  },
+  payment2Img: {
+    marginRight: pxToDp(20),
+    width: pxToDp(50),
+    height: pxToDp(50)
+  },
+  isSelect: {
+    position: 'absolute',
+    right: 0,
+    width: pxToDp(40),
+    height: pxToDp(40)
+  },
 });

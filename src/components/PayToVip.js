@@ -189,7 +189,7 @@ export default class PayToVip extends Component {
               <Text>微信支付</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.hidden} onPress={()=>this.changePaymentMethod(1)}>
+            <TouchableOpacity style={styles.payment} onPress={()=>this.changePaymentMethod(1)}>
               <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>

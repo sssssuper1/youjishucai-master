@@ -38,7 +38,8 @@ function wxPay(params, navigation, uri, count) {
       navigation.replace('PayFun', {
         payAmount: responseData.data.wxAmount,
         orderNo: responseData.data.orderNo,
-        orderType: 0
+        orderType: 0,
+        payNum: 0
       })
     });
   }, (error) => {

@@ -5,13 +5,11 @@
  */
 
 import React, { Component, PureComponent } from 'react';
-import Swiper from 'react-native-swiper';
 import types from '../actions/shopingCart'
 import store from '../store/index'
 import Fetch from '../js/fetch'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast from 'react-native-easy-toast';
-import PopupDialog from 'react-native-popup-dialog';
 import {
   Platform,
   StyleSheet,
@@ -19,17 +17,8 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
   ImageBackground,
   Alert,
-  Button,
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
@@ -39,6 +28,7 @@ export default class Cart extends Component {
     super(props);
 
     this.isLoad = false;
+    this.isSubmitting = false;
     
     this.state = {
       dataSource: [],
@@ -261,8 +251,13 @@ export default class Cart extends Component {
   }
 
   submit() {
+    if (this.isSubmitting) {
+      return;
+    }
+    this.isSubmitting = true;
     Fetch(global.url + '/API/user/getUserAddressList', 'get', '',
       (responseData) => {
+        this.isSubmitting = false;
         if (responseData.success) {
           if (responseData.data.length > 0) {
             this.props.navigation.navigate('Order', {callBack: () => {this.loadData()}});
@@ -272,6 +267,7 @@ export default class Cart extends Component {
         }
       },
       (err) => {
+        this.isSubmitting = false;
         Alert.alert('提示',err);
       }
     );

@@ -34,13 +34,14 @@ import {
   Picker
 } from 'react-native';
 import wxPay from '../js/wxPay';
+import alipay from '../js/aliPay';
 import pxToDp from '../js/pxToDp';
 
 export default class PayFun extends Component {
   constructor(props) {
     super(props);
     this.state={
-      payNum:0,
+      payNum: this.props.navigation.state.params.payNum,
       message: '网络错误！',
       showAlert: false,
       warning: '订单支付尚未完成，是否继续完成支付操作~'
@@ -74,12 +75,20 @@ export default class PayFun extends Component {
   }
 
   pay() {
-    let params = {
-      orderNo: this.props.navigation.state.params.orderNo
-    }
-
     if (this.props.navigation.state.params.orderType == 0) {
-      wxPay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
+      if (this.state.payNum == 0) {
+        let params = {
+          orderNo: this.props.navigation.state.params.orderNo,
+          payType: 'wx'
+        }
+        wxPay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
+      } else {
+        let params = {
+          orderNo: this.props.navigation.state.params.orderNo,
+          payType: 'ali'
+        }
+        alipay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
+      }
     } else if (this.props.navigation.state.params.orderType == 1) {
       this.props.navigation.navigate('PayToVip');
     }
@@ -107,7 +116,7 @@ export default class PayFun extends Component {
             <Text>微信支付</Text>
             <Image style={styles.isSelect} source={this.state.payNum === 0 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.hidden} onPress={() => this.changePaymentMethod(1)}>
+          <TouchableOpacity style={styles.payment} onPress={() => this.changePaymentMethod(1)}>
             <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
             <Text>支付宝</Text>
             <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
