@@ -26,6 +26,7 @@ module.exports=(url,method,params1,callback,err=(err)=>{})=>{
             })
             .catch((error) => { 
               err('网络错误!')
+              // console.error(error);
             })
            .done(); 
     }else{

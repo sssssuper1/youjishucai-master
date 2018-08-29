@@ -26,7 +26,8 @@ function wxPayVip(uri, navigation, params) {
       navigation.replace('PayFun', {
         payAmount: responseData.data.money,
         orderNo: responseData.data.orderNum,
-        orderType: 1
+        orderType: 1,
+        payNum: 0
       })
     });
   }, (error) => {
