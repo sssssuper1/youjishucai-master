@@ -32,7 +32,7 @@ import pxToDp from '../js/pxToDp';
 export default class My extends Component {
   constructor(props) {
     super(props);
-    let userId = '6' + ('000000' + props.user.id).slice(-6);
+    let userId = props.user.id == '' ? props.user.id : '6' + ('000000' + props.user.id).slice(-6);
 
     this.state = {
       count: store.getState().count,
@@ -61,7 +61,7 @@ export default class My extends Component {
             </View>
             <View style={styles.nameContainer}>
               <Text style={styles.name}>{this.props.user.name}</Text>
-              <Text style={styles.userId}>ID: {this.state.userId}</Text>
+              <Text style={styles.userId}>{this.state.userId == '' ? '' : `ID: ${this.state.userId}`}</Text>
               <TouchableOpacity style={this.props.user.vip > 0 ? styles.pointContent : styles.hidden} onPress={()=>{navigate('IntegralRecord')}}>
                 <Text style={styles.point}>积分: {this.props.user.integral}</Text>
               </TouchableOpacity>

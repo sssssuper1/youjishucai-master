@@ -202,8 +202,8 @@ export default class Order extends Component {
         <View style={styles.result}>    
           <Text style={styles.resultTitle}>实付金额：</Text>
           <Text style={styles.resultPrice}>¥{this.state.payAmount - this.state.integralPayAmount}</Text>
-          <TouchableOpacity style={styles.payBtn} onPress={this.pay.bind(this)} disabled={this.state.isSubmitting}>
-            <Text style={styles.payBtnText}>{this.state.isSubmitting ? '结算中' : '去结算'}</Text>
+          <TouchableOpacity style={[styles.payBtn, this.state.isSubmitting ? styles.payDisable : styles.payEnable]} onPress={this.pay.bind(this)} disabled={this.state.isSubmitting}>
+            <Text style={styles.payBtnText}>去结算</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -514,8 +514,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: pxToDp(220),
-    height: '100%',
-    backgroundColor: '#ff0036',
+    height: '100%'
+  },
+  payEnable: {
+    backgroundColor: '#ff0036'
+  },
+  payDisable: {
+    backgroundColor: '#d0d0d0'
   },
   payBtnText: {
     color: 'white',

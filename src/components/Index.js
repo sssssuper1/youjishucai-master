@@ -50,6 +50,7 @@ export default class Index extends Component {
       this.state = {
         selectedTab: params.selectedTab,
         user: {
+          id: '',
           name: '',
           phone: '',
           announce: '',
@@ -62,6 +63,7 @@ export default class Index extends Component {
       this.state = {
         selectedTab: 'home',
         user: {
+          id: '',
           name: '',
           phone: '',
           integral: 0,
