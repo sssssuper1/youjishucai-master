@@ -35,6 +35,7 @@ import {
   Picker
 } from 'react-native';
 import wxPayVip from '../js/wxPayVip';
+import aliPayVip from '../js/aliPayVip';
 import pxToDp from '../js/pxToDp';
 
 export default class PayToVip extends Component {
@@ -49,7 +50,8 @@ export default class PayToVip extends Component {
       isInput: false,
       codeText: '获取验证码',
       timer:null,
-      referrer: global.data.user.referrer ? global.data.user.referrer.name : ''
+      referrer: global.data.user.referrer ? global.data.user.referrer.name : '',
+      isPaying: false
     }
   }
   
@@ -105,15 +107,24 @@ export default class PayToVip extends Component {
     //   this.refs.toast.show('请输入密码!');
     //   return;
     // }
+    this.setState({
+      isPaying: true
+    });
+
     let params = {};
     if (!global.data.user.referrer) {
       params = {
         referrerPhone: this.state.referrer
       }
     }
-    
 
-    wxPayVip('/api/user/UpdateToVip1', this.props.navigation, params);
+    if (this.state.payNum === 0) {
+      params.payType = 'wx';
+      wxPayVip('/api/user/UpdateToVip1', this.props.navigation, params);
+    } else {
+      params.payType = 'ali';
+      aliPayVip('/api/user/UpdateToVip1', this.props.navigation, params);
+    }
   }
 
   render() {
@@ -196,7 +207,7 @@ export default class PayToVip extends Component {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.save} onPress={this.submit.bind(this)}>
+        <TouchableOpacity style={[styles.save, this.state.isPaying ? styles.saveDisable : styles.saveEnable]} onPress={this.submit.bind(this)} disabled={this.state.isPaying}>
           <Text style={styles.saveText}>立即支付</Text>
         </TouchableOpacity>
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
@@ -263,8 +274,13 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    height: pxToDp(100),
+    height: pxToDp(100)
+  },
+  saveEnable: {
     backgroundColor: '#2abd89'
+  },
+  saveDisable: {
+    backgroundColor: '#d0d0d0'
   },
   saveText:{
     fontSize: pxToDp(32),

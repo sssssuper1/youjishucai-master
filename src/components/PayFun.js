@@ -44,7 +44,8 @@ export default class PayFun extends Component {
       payNum: this.props.navigation.state.params.payNum,
       message: '网络错误！',
       showAlert: false,
-      warning: '订单支付尚未完成，是否继续完成支付操作~'
+      warning: '订单支付尚未完成，是否继续完成支付操作~',
+      isPaying: false
     }
   }
 
@@ -76,6 +77,9 @@ export default class PayFun extends Component {
 
   pay() {
     if (this.props.navigation.state.params.orderType == 0) {
+      this.setState({
+        isPaying: true
+      });
       if (this.state.payNum == 0) {
         let params = {
           orderNo: this.props.navigation.state.params.orderNo,
@@ -122,7 +126,7 @@ export default class PayFun extends Component {
             <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.save} onPress={()=>{this.pay()}}>
+        <TouchableOpacity style={[styles.save, this.state.isPaying ? styles.saveDisable : styles.saveEnable]} onPress={() => { this.pay() }} disabled={this.state.isPaying}>
           <Text style={styles.saveText}>立即支付</Text>
         </TouchableOpacity>
         <AwesomeAlert
@@ -275,8 +279,13 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    height: pxToDp(100),
+    height: pxToDp(100)
+  },
+  saveEnable: {
     backgroundColor: '#2abd89'
+  },
+  saveDisable: {
+    backgroundColor: '#d0d0d0'
   },
   saveText:{
     fontSize: pxToDp(32),
