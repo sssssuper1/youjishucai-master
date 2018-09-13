@@ -7,6 +7,7 @@ import store from '../store/index';
 import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -188,7 +189,7 @@ export default class IntegralRecharge extends Component {
           </View>
           <TextInput
             style={styles.inputField}
-            keyboardType={'numeric'}
+            keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
             underlineColorAndroid={'transparent'}
             onChangeText={(text) => this.changeAmount(text)}
           />
@@ -257,7 +258,7 @@ export default class IntegralRecharge extends Component {
                 <Text style={styles.bulletCellText}>手机号末4位</Text>
                 <TextInput
                   style={[styles.bulletCellInput, this.state.isConfirm ? styles.textGrey : styles.textBlack]}
-                  keyboardType={'numeric'}
+                  keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
                   underlineColorAndroid={'transparent'}
                   maxLength={4}
                   editable={!this.state.isConfirm}

@@ -10,6 +10,7 @@ import Header1 from './Header1.js'
 import Fonter from './Fonter'
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {
+  Platform,
   StyleSheet,
   View,
   TextInput,
@@ -47,7 +48,7 @@ export default class TransferInput extends Component {
         <TextInput
           maxLength={11}
           style={styles.phoneNumber}
-          keyboardType={'numeric'}
+          keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
           underlineColorAndroid={'transparent'}
           returnKeyType={'done'}
           onChangeText={(text) => this.setState({phone:text}) }

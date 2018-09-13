@@ -259,6 +259,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     // paddingVertical: pxToDp(25)
+    borderBottomColor: '#daddde',
+    borderBottomWidth: pxToDp(1)
   },
   orderTypeBtn: {
     flex: 1,

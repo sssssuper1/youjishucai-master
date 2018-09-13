@@ -4,6 +4,7 @@ import store from '../store/index';
 import Toast from 'react-native-easy-toast';
 import Fetch from '../js/fetch';
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -74,7 +75,7 @@ export default class Cash extends Component {
             <Text style={styles.textBlack}>余额提现</Text>
           </View>
           <TextInput
-            keyboardType={'numeric'}
+            keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
             style={styles.inputField}
             underlineColorAndroid={'transparent'}
             onChangeText={(text) => this.cashInput(text)}

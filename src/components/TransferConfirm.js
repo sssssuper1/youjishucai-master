@@ -5,6 +5,7 @@ import Fetch from '../js/fetch';
 import getVipPortrait from '../js/getVipPortrait';
 import Toast from 'react-native-easy-toast';
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -88,7 +89,7 @@ export default class TransferConfirm extends Component {
               <Text style={styles.textBlack}>余额转账</Text>
             </View>
             <TextInput
-              keyboardType={'numeric'}
+              keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
               style={styles.inputField}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({cash: text})}

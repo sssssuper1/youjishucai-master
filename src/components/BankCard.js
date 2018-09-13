@@ -7,8 +7,10 @@ import {
   Platform,
   StyleSheet,
   View,
+  Text,
   TextInput,
   Picker,
+  TouchableHighlight,
   Alert
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
@@ -42,6 +44,10 @@ export default class BankCard extends Component {
       this.refs.toast.show('请选择银行名称!');
       return;
     }
+
+    this.setState({
+      IOSPickerShow: false
+    })
 
     const params = {
       bankNo: this.state.bankCardID,
@@ -97,9 +103,10 @@ export default class BankCard extends Component {
         </Picker>
       </View>
     } else {
-      <View style={styles.passwordWrap}>
-        <TouchableHighlight style={styles.textWrap} onPress={()=>this.togglePicker()}>  
-          <Text>{this.state.bankName}</Text>
+      picker =
+      <View style={styles.pickerWrap}>
+        <TouchableHighlight style={styles.pickerSwitcher} onPress={()=>this.togglePicker()}>  
+          <Text style={styles.pickerText}>{this.state.bankName}</Text>
         </TouchableHighlight>     
         <Picker
           style={this.state.IOSPickerShow?styles.Picker2:styles.hidden}
@@ -119,7 +126,7 @@ export default class BankCard extends Component {
           <View style={styles.passwordWrap}>
             <TextInput
               style={styles.textWrap}
-              keyboardType={'numeric'}
+              keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({ bankCardID: text })}
               value={this.state.bankCardID}
@@ -166,9 +173,20 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eeeeee',
     backgroundColor:'white'
   },
+  pickerWrap: {
+    backgroundColor:'white'
+  },
   textWrap: {
     marginLeft: pxToDp(8),
     height: pxToDp(109),
+    fontSize: pxToDp(33)
+  },
+  pickerSwitcher: {
+    height: pxToDp(109),
+    paddingLeft: pxToDp(38),
+    justifyContent: 'center'
+  },
+  pickerText: {
     fontSize: pxToDp(33)
   },
   fonter:{
@@ -183,9 +201,8 @@ const styles = StyleSheet.create({
   },
   Picker2: {
     fontSize: pxToDp(20),
-    color: '#a9a9a9',
-    height: pxToDp(282),
-    backgroundColor:'grey'
+    // height: pxToDp(282),
+    backgroundColor:'#ffffff'
   },
   toast:{
     backgroundColor: '#626262'

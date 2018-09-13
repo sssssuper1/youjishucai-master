@@ -4,6 +4,7 @@ import store from '../store/index';
 import Fetch from '../js/fetch';
 import Toast from 'react-native-easy-toast';
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -77,7 +78,7 @@ export default class ShopPay extends Component {
           <View style={styles.inputCell}>
             <Text style={styles.titleText}>积分消费:</Text>
             <TextInput
-              keyboardType={'numeric'}
+              keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
               style={styles.payInputField}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.payInput(text)}

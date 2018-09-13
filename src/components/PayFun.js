@@ -80,7 +80,7 @@ export default class PayFun extends Component {
     } else if (orderType == 1) {
       this.props.navigation.navigate('PayToVip');
     } else if (orderType == 2) {
-      this.props.navigation.navigate('IntegralRecharge');
+      this.props.navigation.replace('IntegralRecharge');
     }
   }
 
