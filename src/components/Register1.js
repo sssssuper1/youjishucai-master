@@ -5,36 +5,18 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import Fonter from './Fonter'
-import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Modal,
-  Button,
-  FlatList,
-  Picker
+  TextInput
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -49,6 +31,8 @@ export default class Register1 extends Component {
       code: '',
       password: '',
       confirmPassword: '',
+      payPassword: '',
+      confirmPayPassword: '',
       referee: '',
       phoneNumber: params.phoneNumber,
       isInput: false,
@@ -102,8 +86,23 @@ export default class Register1 extends Component {
       return;
     }
 
+    if (this.state.payPassword == '') {
+      this.refs.toast.show('请输入支付密码!');
+      return;
+    }
+
+    if (this.state.referee == '') {
+      this.refs.toast.show('请输入推荐人手机号!');
+      return;
+    }
+
     if (this.state.password.length < 6) {
       this.refs.toast.show('请确认密码长度在6位及以上!');
+      return;
+    }
+
+    if (this.state.payPassword.length < 6) {
+      this.refs.toast.show('请确认支付密码长度在6位及以上!');
       return;
     }
 
@@ -120,10 +119,21 @@ export default class Register1 extends Component {
       return;
     }
 
+    if (digit.exec(this.state.payPassword) || alpha.exec(this.state.payPassword)) {
+      this.refs.toast.show('请确认支付密码包含字母和数字!');
+      return;
+    }
+
+    if (this.state.confirmPayPassword !== this.state.payPassword) {
+      this.refs.toast.show('两次输入支付密码不一致!');
+      return;
+    }
+
     let params = {
       mobileNo: this.state.phoneNumber,
       smsCode: this.state.code,
       password: this.state.password,
+      payPwd: this.state.payPassword,
       referrerPhone: this.state.referee
     }
     this.setState({
@@ -135,12 +145,6 @@ export default class Register1 extends Component {
         disabled: false
       })
       if (res.result) {
-        global.storage.save({
-          key: 'Cookie',
-          data: {
-            userId: 'TestUser'
-          }
-        });
         this.props.navigation.replace('Home');
       } else {
         this.refs.toast.show(res.errMsg);
@@ -168,7 +172,7 @@ export default class Register1 extends Component {
             value={this.state.code}
           />
           <TouchableOpacity style={isInput?styles.getCode1:styles.getCode} onPress={this.getCode.bind(this)} disabled={isInput}>
-            <Text style={isInput?styles.getCodeText1:styles.getCodeText}>{codeText}</Text>
+            <Text allowFontScaling={false} style={isInput?styles.getCodeText1:styles.getCodeText}>{codeText}</Text>
           </TouchableOpacity>   
         </View>
         <View style={styles.PickerWrap}>  
@@ -193,13 +197,35 @@ export default class Register1 extends Component {
             value={this.state.confirmPassword}
           />
         </View>
+        <View style={[styles.PickerWrap, styles.margin]}>
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            maxLength={20}
+            secureTextEntry={true}
+            placeholder={'输入支付密码'}
+            onChangeText={(text) => this.setState({payPassword:text})}
+            value={this.state.payPassword}
+          />
+        </View>
+        <View style={styles.PickerWrap}>  
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={styles.detailAddress}
+            maxLength={20}
+            secureTextEntry={true}
+            placeholder={'再次输入支付密码'}
+            onChangeText={(text) => this.setState({confirmPayPassword:text})}
+            value={this.state.confirmPayPassword}
+          />
+        </View>
         <View style={[styles.PickerWrap,styles.margin]}>  
           <TextInput
             underlineColorAndroid={'transparent'}
             style={styles.detailAddress}
             maxLength={11}
             returnKeyType={'done'}
-            placeholder={'邀请人手机号（选填）'}
+            placeholder={'邀请人手机号'}
             onChangeText={(text) => this.setState({referee:text})}
             value={this.state.referee}
           />

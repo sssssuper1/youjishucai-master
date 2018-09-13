@@ -2,7 +2,7 @@ import {Alert} from 'react-native';
 import Fetch from './fetch';
 import * as WeChat from 'react-native-wechat';
 
-function wxPayVip(uri, navigation, params) {
+function wxPayVip(uri, navigation, params, orderType = 1) {
   WeChat.registerApp('wx4e425ddae999f00b');
 
   Fetch(global.url + uri, 'post', params, async (responseData) => {
@@ -20,15 +20,15 @@ function wxPayVip(uri, navigation, params) {
     }).then((result)=>{
       navigation.replace('PaySuccess', {
         payAmount: responseData.data.money,
-      })
+        orderType: orderType
+      });
     }).catch((errCode) => {
-      Alert.alert('提示','支付失败')
       navigation.replace('PayFun', {
         payAmount: responseData.data.money,
         orderNo: responseData.data.orderNum,
-        orderType: 1,
+        orderType: orderType,
         payNum: 0
-      })
+      });
     });
   }, (error) => {
     Alert.alert('提示',JSON.stringify(error))

@@ -428,8 +428,9 @@ const styles = StyleSheet.create({
     color: '#2b2b2b'
   },
   remarksInput: {
-    width: '100%',
-    height: '100%'
+    flex: 1,
+    height: '100%',
+    textAlign: 'right'
   },
   paymentMethod: {
     marginTop: pxToDp(15),

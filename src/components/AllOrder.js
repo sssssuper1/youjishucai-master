@@ -10,25 +10,14 @@ import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  TextInput,
   ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
   Alert,
-  Button,
   FlatList,
-  Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -198,22 +187,22 @@ export default class AllOrder extends Component {
             <TouchableOpacity style={item.orderState>0?styles.orderButtonGrey:styles.hidden} onPress={() => {
               navigate('MyOrder', {orderId: item.id, callBack: () => this.loadData()})
             }}>
-              <Text style={styles.buttonTextGrey}>查看订单</Text>  
+              <Text allowFontScaling={false} style={styles.buttonTextGrey}>查看订单</Text>  
             </TouchableOpacity>
             <TouchableOpacity style={item.orderState < 1 ? styles.orderButtonGrey : styles.hidden} onPress={() => {
               this.setState({ cancelId: item.id },()=>this.popupShow())
             }}>
-              <Text style={styles.buttonTextGrey}>取消订单</Text>  
+              <Text allowFontScaling={false} style={styles.buttonTextGrey}>取消订单</Text>  
             </TouchableOpacity>
             <TouchableOpacity style={item.orderState===0?styles.orderButtonGreen:styles.hidden} onPress={() => {
               navigate('MyOrder', { orderId: item.id, callBack: () => this.loadData() })
             }}>
-              <Text style={styles.buttonTextWhite}>继续支付</Text>  
+              <Text allowFontScaling={false} style={styles.buttonTextWhite}>继续支付</Text>  
             </TouchableOpacity>
             <TouchableOpacity style={item.orderState===2?styles.orderButtonGreen:styles.hidden} onPress={() => {
               this.confirmOrder(item.id)
             }}>
-              <Text style={styles.buttonTextWhite}>确认收货</Text>
+              <Text allowFontScaling={false} style={styles.buttonTextWhite}>确认收货</Text>
             </TouchableOpacity>
           </View>
         </View> 
@@ -269,19 +258,29 @@ export default class AllOrder extends Component {
           <View style={styles.stateBtns}>
             <TouchableOpacity onPress={()=>{
               this.changeState(0)
-            }} style={state===0?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===0?styles.orderSortSelected:styles.orderSort}>{this.states[0]}</Text></TouchableOpacity>
+            }} style={state === 0 ? styles.stateBtnsItem1 : styles.stateBtnsItem}>
+              <Text allowFontScaling={false} style={state === 0 ? styles.orderSortSelected : styles.orderSort}>{this.states[0]}</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(1)
-            }} style={state===1?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===1?styles.orderSortSelected:styles.orderSort}>{this.states[1]}</Text></TouchableOpacity>
+            }} style={state === 1 ? styles.stateBtnsItem1 : styles.stateBtnsItem}>
+              <Text allowFontScaling={false} style={state === 1 ? styles.orderSortSelected : styles.orderSort}>{this.states[1]}</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(2)
-            }} style={state===2?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===2?styles.orderSortSelected:styles.orderSort}>{this.states[2]}</Text></TouchableOpacity>
+            }} style={state === 2 ? styles.stateBtnsItem1 : styles.stateBtnsItem}>
+              <Text allowFontScaling={false} style={state === 2 ? styles.orderSortSelected : styles.orderSort}>{this.states[2]}</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(3)
-            }} style={state===3?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===3?styles.orderSortSelected:styles.orderSort}>{this.states[3]}</Text></TouchableOpacity>
+            }} style={state === 3 ? styles.stateBtnsItem1 : styles.stateBtnsItem}>
+              <Text allowFontScaling={false} style={state === 3 ? styles.orderSortSelected : styles.orderSort}>{this.states[3]}</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={()=>{
               this.changeState(4)
-            }} style={state===4?styles.stateBtnsItem1:styles.stateBtnsItem}><Text style={state===4?styles.orderSortSelected:styles.orderSort}>{this.states[4]}</Text></TouchableOpacity>
+            }} style={state === 4 ? styles.stateBtnsItem1 : styles.stateBtnsItem}>
+              <Text allowFontScaling={false} style={state === 4 ? styles.orderSortSelected : styles.orderSort}>{this.states[4]}</Text>
+            </TouchableOpacity>
           </View>
           {view}
         </ScrollView>

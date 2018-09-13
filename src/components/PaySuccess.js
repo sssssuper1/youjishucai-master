@@ -5,33 +5,13 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
-import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Button,
-  FlatList,
-  Picker
+  TouchableOpacity
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -45,8 +25,24 @@ export default class PaySuccess extends Component {
     }
   }
 
+  seeResult() {
+    const { state, replace, navigate } = this.props.navigation;
+
+    switch (state.params.orderType) {
+      case 0:
+        replace('AllOrder');
+        break;
+      case 1:
+      case 2:
+        navigate('Home', { selectedTab: 'My' });
+        break;
+      default:
+        navigate('Home');
+    }
+  }
+
   render() {
-    const { navigate, replace } = this.props.navigation;
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
@@ -57,7 +53,7 @@ export default class PaySuccess extends Component {
           </View>
           <View style={styles.stateShow}><Text style={styles.stateShowText}>订单支付成功!</Text></View>
           <View style={styles.ButtonContainer }>
-            <TouchableOpacity style={styles.stateButton} onPress={() => replace('AllOrder')}>
+            <TouchableOpacity style={styles.stateButton} onPress={this.seeResult.bind(this)}>
               <Text>查看订单</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.stateButton} onPress={() => navigate('Home')}>

@@ -5,34 +5,15 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
-import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import CookieManager from 'react-native-cookies';
 import { StackActions, NavigationActions } from 'react-navigation';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Modal,
-  Button,
-  FlatList,
-  Picker
+  TouchableOpacity
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -45,11 +26,6 @@ export default class Set extends Component {
   }
 
   logout() {
-    global.storage.remove({
-      key: 'Cookie'
-    });
-
-
     CookieManager.clearAll();
 
     const resetAction = StackActions.reset({
@@ -67,6 +43,9 @@ export default class Set extends Component {
         <View style={styles.margin}>
           <TouchableOpacity style={styles.set} onPress={() => {navigate('Person')}}>
             <Image style={styles.Img} source={require('../images/person.png')}></Image><Text style={styles.text}>个人信息</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+          </TouchableOpacity>  
+          <TouchableOpacity style={styles.set} onPress={() => {navigate('BankCard')}}>
+            <Image style={styles.Img} source={require('../images/cardNum.png')}></Image><Text style={styles.text}>银行卡信息</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
           <TouchableOpacity style={styles.set} onPress={() => {navigate('AccountSecurity')}}>
             <Image style={styles.Img} source={require('../images/save.png')}></Image><Text style={styles.text}>账户安全</Text><Text style={styles.warn}>更换手机号/改密码</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>

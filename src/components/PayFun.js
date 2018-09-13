@@ -5,33 +5,15 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
-import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Button,
-  FlatList,
-  Picker
+  TouchableOpacity
 } from 'react-native';
 import wxPay from '../js/wxPay';
 import alipay from '../js/aliPay';
@@ -76,7 +58,9 @@ export default class PayFun extends Component {
   }
 
   pay() {
-    if (this.props.navigation.state.params.orderType == 0) {
+    const { orderType } = this.props.navigation.state.params;
+
+    if (orderType == 0) {
       this.setState({
         isPaying: true
       });
@@ -93,8 +77,10 @@ export default class PayFun extends Component {
         }
         alipay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
       }
-    } else if (this.props.navigation.state.params.orderType == 1) {
+    } else if (orderType == 1) {
       this.props.navigation.navigate('PayToVip');
+    } else if (orderType == 2) {
+      this.props.navigation.navigate('IntegralRecharge');
     }
   }
 

@@ -5,34 +5,13 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
-import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Modal,
-  Button,
-  FlatList,
-  Picker
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -62,7 +41,10 @@ export default class AccountSecurity extends Component {
             <Text style={styles.text}>修改手机号码</Text><Text style={styles.warn}>{this.state.phone}</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>  
           <TouchableOpacity style={styles.set} onPress={() => { navigate('ModifyPassword', {callBack: () => this.callBack()})}}>
-            <Text style={styles.text}>修改密码</Text><Text style={styles.warn}>修改</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+            <Text style={styles.text}>修改登录密码</Text><Text style={styles.warn}>修改</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.set} onPress={() => { navigate('ModifyPayPassword', {callBack: () => this.callBack()})}}>
+            <Text style={styles.text}>修改支付密码</Text><Text style={styles.warn}>修改</Text><Image style={styles.dir} source={require('../images/rightDir.png')}></Image>
           </TouchableOpacity>
         </View> 
       </View>

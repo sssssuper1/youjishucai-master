@@ -5,36 +5,17 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import Fonter from './Fonter'
-import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import SplashScreen from 'react-native-splash-screen';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Modal,
-  Button,
-  FlatList,
-  Picker
+  TextInput
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -92,12 +73,6 @@ export default class SignIn extends Component {
         btnText: '登录'
       });
       if (res.result) {
-        global.storage.save({
-          key: 'Cookie',
-          data: {
-            userId: 'TestUser'
-          }
-        });
         this.props.navigation.replace('Home');
       } else {
         this.refs.toast.show(res.errMsg);

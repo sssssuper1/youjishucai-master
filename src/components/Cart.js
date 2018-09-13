@@ -323,24 +323,27 @@ export default class Cart extends Component {
             this.checkAll()
           }}>
             <Image style={styles.allcheckedImg} source={this.state.checkAll?require('../images/select.png'):require('../images/unchecked.png')}></Image>
-            <Text>全选</Text>
+            <Text allowFontScaling={false}>全选</Text>
           </TouchableOpacity>
           <View style={this.state.isEdit?styles.hidden:styles.totalPrice}>
-            <View style={styles.total}><Text style={styles.totalText}>合计（不含运费）：</Text><Text style={styles.totalNum}>￥{this.state.totalPrice}</Text></View> 
+            <View style={styles.total}>
+              <Text allowFontScaling={false} style={styles.totalText}>合计（不含运费）：</Text>
+              <Text allowFontScaling={false} style={styles.totalNum}>￥{this.state.totalPrice}</Text>
+            </View> 
           </View>
           <TouchableOpacity style={!this.state.isEdit && this.state.sumNum > 0 ? styles.goPay : styles.hidden}
             onPress={this.submit.bind(this)}>
-            <Text style={styles.goPayText}>去结算({this.state.sumNum})</Text>  
+            <Text allowFontScaling={false} style={styles.goPayText}>去结算({this.state.sumNum})</Text>  
           </TouchableOpacity>
           <View style={!this.state.isEdit && this.state.sumNum<=0?styles.payDisable:styles.hidden}>
-            <Text style={styles.goPayText}>去结算</Text>
+            <Text allowFontScaling={false} style={styles.goPayText}>去结算</Text>
           </View>  
           <TouchableOpacity style={this.state.isEdit && this.state.sumNum > 0 ? styles.delete : styles.hidden}
             onPress={() => {this.deleteSelected()}}>
-            <Text style={styles.deleteText}>删除({this.state.sumNum})</Text>
+            <Text allowFontScaling={false} style={styles.deleteText}>删除({this.state.sumNum})</Text>
           </TouchableOpacity>
           <View style={this.state.isEdit&&this.state.sumNum<=0?styles.deleteDisable:styles.hidden}>
-            <Text style={styles.deleteText}>删除</Text>
+            <Text allowFontScaling={false} style={styles.deleteText}>删除</Text>
           </View> 
         </View>
         <AwesomeAlert

@@ -5,34 +5,17 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
   TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Button,
-  FlatList,
-  Picker
+  ScrollView
 } from 'react-native';
 import wxPayVip from '../js/wxPayVip';
 import aliPayVip from '../js/aliPayVip';
@@ -147,7 +130,7 @@ export default class PayToVip extends Component {
                 value={this.state.phone}
               />
               <TouchableOpacity style={isInput?styles.getCode1:styles.getCode} onPress={this.getCode.bind(this)} disabled={isInput}>
-                <Text style={isInput?styles.getCodeText1:styles.getCodeText}>{codeText}</Text>
+                <Text allowFontScaling={false} style={isInput?styles.getCodeText1:styles.getCodeText}>{codeText}</Text>
               </TouchableOpacity>   
             </View>
             <View style={styles.PickerWrap}>  

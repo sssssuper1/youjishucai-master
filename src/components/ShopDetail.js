@@ -5,8 +5,9 @@
  */
 
 import React, { Component } from 'react';
-import Fetch from '../js/fetch'
-import Header1 from './Header1.js'
+import Fetch from '../js/fetch';
+import Header1 from './Header1.js';
+import store from '../store/index';
 import {
   StyleSheet,
   Text,
@@ -15,18 +16,31 @@ import {
   Alert,
   ImageBackground,
   WebView,
-  ScrollView
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
 export default class ShopDetail extends Component {
   constructor(props) {
     super(props);
-    this.imgBg = require('../images/b-tang.png');
-    if (props.navigation.state.params.type == 1) {
-      this.imgBg = require('../images/b-kangyang.png');
-    } else if (props.navigation.state.params.type == 2) {
-      this.imgBg = require('../images/b-gongxiang.png');
+
+    switch (props.navigation.state.params.type) {
+      case 0:
+      case '牛享吧':
+        this.imgBg = require('../images/b-niu.png');
+        break;
+      case 1:
+      case '康养中心':
+        this.imgBg = require('../images/b-kangyang.png');
+        break;
+      case 2:
+      case '共享商家':
+        this.imgBg = require('../images/b-gongxiang.png');
+        break;
+      default:
+        this.imgBg = require('../images/b-gongxiang.png');
+        break;
     }
 
     this.desc = '';
@@ -37,9 +51,16 @@ export default class ShopDetail extends Component {
       address: '',
       image: '',
       desc: '',
-      WebViewHeight: 0
+      WebViewHeight: 0,
+      integral: store.getState().integral
     }
     this.loadData();
+
+    this.unsubscribe = store.subscribe(() => {
+      this.setState({
+        integral: store.getState().integral
+      });
+    });
   }
 
   loadData() {
@@ -116,7 +137,12 @@ export default class ShopDetail extends Component {
     return list.map((item, index)=> <View key={index}><Text style={styles.workTime}>{item}</Text></View>)
   }
 
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   render() {
+    const { navigate, state } = this.props.navigation;
     return (
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name="店铺详情页"></Header1>
@@ -124,6 +150,20 @@ export default class ShopDetail extends Component {
           <ImageBackground style={styles.shopImgContainer} source={this.imgBg}>
             <Image style = {styles.shopImg} source = {{uri: this.state.image}} />
           </ImageBackground>
+          <View style={styles.margin}>
+            <View style={styles.Item}>
+              <Image style={styles.itemImg} source={require('../images/shopPay.png')} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.title}>买单</Text>
+                <Text style={styles.integral}>可用积分: {this.state.integral}</Text>
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.payButton} onPress={() => navigate('ShopPay', {id: state.params.id})}>
+                  <Text style={styles.payText}>买单</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
           <View style={styles.margin}>
             <View style={styles.Item}>
               <Image style={styles.itemImg} source={require('../images/serverPhone.png')}></Image>
@@ -175,7 +215,7 @@ const styles = StyleSheet.create({
     marginTop: pxToDp(15),
     backgroundColor: 'white',
   },
-  Item:{
+  Item: {
     flexDirection: 'row',
     marginLeft: pxToDp(34),
     marginRight: pxToDp(34),
@@ -195,6 +235,11 @@ const styles = StyleSheet.create({
     lineHeight: pxToDp(34),
     color: '#2b2b2b'
   },
+  integral: {
+    fontSize: pxToDp(28),
+    lineHeight: pxToDp(48),
+    color: '#a9a9a9'
+  },
   phone: {
     fontSize: pxToDp(28),
     lineHeight: pxToDp(34),
@@ -211,6 +256,21 @@ const styles = StyleSheet.create({
     lineHeight: pxToDp(34),
     color: '#a9a9a9',
     flexWrap: 'wrap'
+  },
+  buttonContainer: {
+    justifyContent: 'center'
+  },
+  payButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: pxToDp(64),
+    width: pxToDp(168),
+    borderRadius: pxToDp(32),
+    backgroundColor: '#2abd89'
+  },
+  payText: {
+    fontSize: pxToDp(32),
+    color: 'white'
   },
   webContainer: {
     height: '100%',

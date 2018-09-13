@@ -1,12 +1,14 @@
 import types from '../actions/shopingCart'
-const reducer = (state, action) => { 
-    if (action.type === types.addShopingNum.ADDNUM) {
-        return {count: state.count + action.num}
-    } else if (action.type === types.reduceShopingNum.REDUCENUM) {
-        return {count: state.count - action.num}
-    } else if (action.type === types.getShopingNum.GETNUM) {
-        return {count: action.num}
-    }
-    return state
+
+export default cartReducer = (state = 0, action) => { 
+  switch (action.type) {
+    case types.addShopingNum.ADDNUM:
+      return state + action.num
+    case types.reduceShopingNum.REDUCENUM:
+      return state - action.num
+    case types.setShopingNum.SETNUM:
+      return action.num
+    default:
+      return state
+  }
 }
-module.exports =reducer

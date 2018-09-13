@@ -5,34 +5,14 @@
  */
 
 import React, { Component } from 'react';
-import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
-import Toast, { DURATION } from 'react-native-easy-toast';
 import { captureRef } from 'react-native-view-shot';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
-  UIManager,
   Image,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Modal,
-  Button,
-  FlatList,
-  Picker,
-  WebView,
-  takeSnapshot
+  TouchableOpacity
 } from 'react-native';
 import { wxShareToSession, wxShareToTimeline } from '../js/wxShare';
 import pxToDp from '../js/pxToDp';
@@ -90,25 +70,25 @@ export default class Share extends Component {
             </View>
             <View style={styles.goodMsg}>
               <View style={styles.goodsName}>
-                <Text style={styles.goodsNameText}>{this.state.name}</Text>
+                <Text allowFontScaling={false} style={styles.goodsNameText}>{this.state.name}</Text>
               </View>
               <View style={styles.goodsPrice}>
-                <Text style={styles.nowPrice}>￥{this.state.price}</Text>
-                <Text style={styles.spec}>/{this.state.spec}</Text>
-                <Text style={styles.originalPrice}>￥{this.state.preSellPrice}</Text>
+                <Text allowFontScaling={false} style={styles.nowPrice}>￥{this.state.price}</Text>
+                <Text allowFontScaling={false} style={styles.spec}>/{this.state.spec}</Text>
+                <Text allowFontScaling={false} style={styles.originalPrice}>￥{this.state.preSellPrice}</Text>
               </View>
               <View>
-                <Text style={styles.wxText}>微信识别二维码进入商城</Text>
+                <Text allowFontScaling={false} style={styles.wxText}>微信识别二维码进入商城</Text>
               </View>
               <View>
-                <Text style={styles.wxText}>购新鲜产品共享品质生活</Text>
+                <Text allowFontScaling={false} style={styles.wxText}>购新鲜产品共享品质生活</Text>
               </View>
             </View>
           </View>
         </View>
         <View style={styles.shareController}>
           <View style={styles.titleContainer}>
-            <Text style={styles.shareToTitle}>—————————  商品分享到  —————————</Text>
+            <Text allowFontScaling={false} style={styles.shareToTitle}>—————————  商品分享到  —————————</Text>
           </View>
           <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.shareBtn} onPress={() => this.takeToImage(1)}>

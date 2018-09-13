@@ -12,19 +12,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Button,
-  FlatList,
-  Picker,
   BackHandler
 } from 'react-native';
 import pxToDp from '../js/pxToDp';

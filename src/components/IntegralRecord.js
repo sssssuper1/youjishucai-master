@@ -1,34 +1,16 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
+import store from '../store/index';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
+  Image,
   Alert,
-  Button,
-  FlatList,
-  Picker
+  FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -39,18 +21,26 @@ export default class IntegralRecord extends Component {
     this.state = {
       dataSource: [],
       showAlert: false,
+      intergral: store.getState().integral
     };
 
     this.loadData();
+
+    this.unsubscribe = store.subscribe(() => {
+      this.setState({
+        integral: store.getState().integral
+      })
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   loadData() {
     this.isLoad = true;
-    let params = {
-      pageIndex: 0,
-      pageSize: 10000
-    }
-    Fetch(global.url + '/API/user/GetIntegralList', 'post', params,
+
+    Fetch(global.url + '/api/Integral/GetList?pageIndex=0&pageSize=10000', 'get', null,
       (responseData) => {
         this.isLoad = false;
         if (responseData.result) {
@@ -82,19 +72,22 @@ export default class IntegralRecord extends Component {
   }
 
   _renderRow(item, index) {
-      return (
-        <View style={styles.goods1}>
-          <View style={styles.order}>
-            <Text style={styles.orderText}>订单号</Text>
-            <Text style={styles.orderNum}>{item.orderNum != '' ? item.orderNum : item.fromOrderNum}</Text>
-            <Text style={styles.state}>{item.createTime}</Text>
+    return (
+      <View style={styles.goods1} key={index}>
+        <View style={styles.order}>
+          <Text allowFontScaling={false} style={styles.orderText}>订单号</Text>
+          <Text allowFontScaling={false} style={styles.orderNum}>{item.orderNo != '' ? item.orderNo : '无'}</Text>
+          <Text allowFontScaling={false} style={styles.state}>{item.createTime}</Text>
+        </View>
+        <View style={styles.orderSum}>
+          <Text allowFontScaling={false} style={styles.orderRemark}>{item.remark}</Text>
+          <View>
+            <Text allowFontScaling={false} style={item.integral >= 0 ? styles.plus : styles.reduce}>{item.integral >= 0 ? '+' : ''}{item.integral}</Text>
+            <Text allowFontScaling={false} style={styles.integralState}>{item.currentIntegral}</Text>
           </View>
-          <View style={styles.orderSum}>
-            <Text style={styles.orderRemark}>{item.remark}</Text>
-            <Text style={item.integral >= 0?styles.plus:styles.reduce}>{item.integral >= 0? '+':''}{item.integral}</Text>
-          </View>
-        </View> 
-      );
+        </View>
+      </View> 
+    );
   }
   render() {
     const { state } = this.state;
@@ -118,7 +111,16 @@ export default class IntegralRecord extends Component {
     }
     return (
       <View style={styles.contenier}>
-        <Header1 navigation={this.props.navigation} name="积分记录"></Header1>
+        <Header1 navigation={this.props.navigation} name="积分"></Header1>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.integralTitle}>当前积分:</Text>
+            <Text style={styles.integralSum}>{this.state.intergral.toFixed(2)}</Text>
+          </View>
+          <TouchableOpacity style={styles.rechargeBtn} onPress={() => navigate('IntegralRecharge')}>
+            <Text style={styles.rechargeText}>充值</Text>
+          </TouchableOpacity>
+        </View>
           {view}
         <AwesomeAlert
           show={this.state.showAlert}
@@ -142,6 +144,38 @@ const styles = StyleSheet.create({
   hidden: {
     display: 'none'
   },
+  header: {
+    backgroundColor: '#2abd89',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: pxToDp(44),
+    paddingBottom: pxToDp(44),
+    paddingLeft: pxToDp(26),
+    paddingRight: pxToDp(26)
+  },
+  integralTitle: {
+    fontSize: pxToDp(30),
+    color: '#ffffff'
+  },
+  integralSum: {
+    fontSize: pxToDp(46),
+    fontWeight: 'bold',
+    color: '#ffffff'
+  },
+  rechargeBtn: {
+    width: pxToDp(167),
+    height: pxToDp(64),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: pxToDp(2),
+    borderColor: '#ffffff',
+    borderRadius: pxToDp(32)
+  },
+  rechargeText: {
+    color: '#ffffff',
+    fontSize: pxToDp(30)
+  },
   goods1:{
     marginTop: pxToDp(15),
     backgroundColor: 'white',
@@ -162,9 +196,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: pxToDp(1),
     borderBottomColor: '#eeeeee',
     backgroundColor: 'white',
+    paddingLeft: pxToDp(26),
+    paddingRight: pxToDp(26)
   },
   orderText: {
-    marginLeft: pxToDp(26),
     fontSize: pxToDp(24),
     color: '#a2a2a2'
   },
@@ -185,22 +220,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderTopWidth: pxToDp(1),
+    borderTopWidth: pxToDp(2),
     borderTopColor: '#f1f1f1',
     backgroundColor: 'white',
     paddingLeft: pxToDp(26),
     paddingRight: pxToDp(26)
   },
   orderRemark: {
-    fontSize: pxToDp(36)
+    fontSize: pxToDp(30),
+    color: '#000000'
   },
   plus: {
     fontSize: pxToDp(36),
+    fontWeight: 'bold',
     color: '#fe0036'
   },
   reduce: {
     fontSize: pxToDp(36),
+    fontWeight: 'bold',
     color: '#15b97d'
+  },
+  integralState: {
+    fontSize: pxToDp(24),
+    color: '#a2a2a2',
+    textAlign: 'right'
   },
   stateBlank: {
     width: '100%',

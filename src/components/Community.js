@@ -5,31 +5,16 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header from './Header'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
   ImageBackground,
   Alert,
-  Button,
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
@@ -40,13 +25,13 @@ export default class Community extends Component {
 
     this.state = {
       menuNum: 0,
-      defaultImage: require('../images/a-tang.png'),
+      defaultImage: require('../images/a-niu.png'),
       lists: [[], [], []],
       detailList: []
     }
 
     this.menuName = [
-      '汤一点',
+      '牛享吧',
       '康养中心',
       '共享商家'
     ]
@@ -57,7 +42,7 @@ export default class Community extends Component {
   loadData(id) {
     switch (id) {
       case 0: this.setState({
-        defaultImage: require('../images/a-tang.png')
+        defaultImage: require('../images/a-niu.png')
       });
       break;
       case 1: this.setState({
@@ -103,10 +88,10 @@ export default class Community extends Component {
             this.loadData(0)
           }}>
             <View style={styles.menuImgWrap}>
-              <Image style={styles.menuImg} source={this.state.menuNum===0?require("../images/tangyidian-2.png"):require("../images/tangyidian-1.png")}></Image>
+              <Image style={styles.menuImg} source={this.state.menuNum===0?require("../images/niuxiangba-2.png"):require("../images/niuxiangba-1.png")}></Image>
             </View>
             <View style={styles.menuNameWrap}>
-              <Text style={this.state.menuNum===0?styles.menuName1:styles.menuName}>汤一点</Text>
+              <Text style={this.state.menuNum===0?styles.menuName1:styles.menuName}>牛享吧</Text>
             </View>
             <View style={this.state.menuNum===0?styles.line:styles.line1}></View>
           </TouchableOpacity>
