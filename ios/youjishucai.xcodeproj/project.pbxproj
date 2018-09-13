@@ -13,6 +13,7 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* youjishucaiTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* youjishucaiTests.m */; };
+		03FAE9E9EFE64BABBCD465C1 /* libAlipayModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0A29764E525444585456C42 /* libAlipayModule.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -47,6 +48,7 @@
 		9563998120BCFB9200285802 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9563998020BCFB9200285802 /* libsqlite3.0.tbd */; };
 		9563998320BCFBAD00285802 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9563998220BCFBAD00285802 /* libc++.tbd */; };
 		9563998520BCFBBA00285802 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9563998420BCFBBA00285802 /* libz.tbd */; };
+		959B1BAD21369CB300D22AFC /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 959B1BAC21369CB300D22AFC /* CoreMotion.framework */; };
 		95D4642C20F4F3450076E268 /* bundle in Resources */ = {isa = PBXBuildFile; fileRef = 95D4640220F4F3440076E268 /* bundle */; };
 		95DEF0B320F629C5000E62E6 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 95DEF0B220F6297C000E62E6 /* libRNFetchBlob.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -348,6 +350,13 @@
 			remoteGlobalIDString = 10D6D7A41F160C250066F0F3;
 			remoteInfo = RCTWeChatTests;
 		};
+		959B1BAA213699A400D22AFC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 279E6C9F95594D1DBDDF902B /* AlipayModule.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 64971CAA1CE1BB7300BCD91E;
+			remoteInfo = AlipayModule;
+		};
 		95D0453720EC6DAE00231C95 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 72032AA9D4EB477D8F6A4310 /* RNCookieManagerIOS.xcodeproj */;
@@ -393,6 +402,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = youjishucai/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = youjishucai/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		279E6C9F95594D1DBDDF902B /* AlipayModule.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AlipayModule.xcodeproj; path = "../node_modules/react-native-yunpeng-alipay/ios/AlipayModule.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* youjishucai-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "youjishucai-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* youjishucai-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "youjishucai-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -408,12 +418,14 @@
 		9563998020BCFB9200285802 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		9563998220BCFBAD00285802 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		9563998420BCFBBA00285802 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		959B1BAC21369CB300D22AFC /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		95D4640220F4F3440076E268 /* bundle */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bundle; sourceTree = "<group>"; };
 		95DEF0AD20F6297C000E62E6 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		A3597A7D196B4316989B4AFB /* RNCookieManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RNCookieManagerTests.xctest; sourceTree = "<group>"; };
 		A5B2F3211B6D46509EDABDE4 /* RCTWeChat.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWeChat.xcodeproj; path = "../node_modules/react-native-wechat/ios/RCTWeChat.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B961963A3929413DA0BA10D4 /* RNViewShot.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNViewShot.xcodeproj; path = "../node_modules/react-native-view-shot/ios/RNViewShot.xcodeproj"; sourceTree = "<group>"; };
+		D0A29764E525444585456C42 /* libAlipayModule.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAlipayModule.a; sourceTree = "<group>"; };
 		D1A50DAF9E974EBBB3C4BB1A /* libRNCookieManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCookieManager.a; sourceTree = "<group>"; };
 		E77D05C5C83F4F5987DD125E /* RCTWeChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RCTWeChatTests.xctest; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -431,6 +443,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				959B1BAD21369CB300D22AFC /* CoreMotion.framework in Frameworks */,
 				95DEF0B320F629C5000E62E6 /* libRNFetchBlob.a in Frameworks */,
 				9563998520BCFBBA00285802 /* libz.tbd in Frameworks */,
 				9563998320BCFBAD00285802 /* libc++.tbd in Frameworks */,
@@ -454,6 +467,7 @@
 				52C3FEC86C054C26B92D58CB /* libRCTWeChat.a in Frameworks */,
 				796B7CBC70F14DE09D1EAF3B /* libRNCookieManagerIOS.a in Frameworks */,
 				C0716E0C38584447810EF9AB /* libRNViewShot.a in Frameworks */,
+				03FAE9E9EFE64BABBCD465C1 /* libAlipayModule.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,6 +618,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				959B1BAC21369CB300D22AFC /* CoreMotion.framework */,
 				9563998420BCFBBA00285802 /* libz.tbd */,
 				9563998220BCFBAD00285802 /* libc++.tbd */,
 				9563998020BCFB9200285802 /* libsqlite3.0.tbd */,
@@ -652,6 +667,7 @@
 				A5B2F3211B6D46509EDABDE4 /* RCTWeChat.xcodeproj */,
 				72032AA9D4EB477D8F6A4310 /* RNCookieManagerIOS.xcodeproj */,
 				B961963A3929413DA0BA10D4 /* RNViewShot.xcodeproj */,
+				279E6C9F95594D1DBDDF902B /* AlipayModule.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -716,6 +732,7 @@
 				A3597A7D196B4316989B4AFB /* RNCookieManagerTests.xctest */,
 				0EDB98DC35714C8E93D807EB /* libRNCookieManagerIOS.a */,
 				0476E8C06B7F4AAFB28F1DE9 /* libRNViewShot.a */,
+				D0A29764E525444585456C42 /* libAlipayModule.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -725,6 +742,14 @@
 			children = (
 				9563997920BCFA2900285802 /* libRCTWeChat.a */,
 				9563997B20BCFA2900285802 /* RCTWeChatTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		959B1BA7213699A400D22AFC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				959B1BAB213699A400D22AFC /* libAlipayModule.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -845,7 +870,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = J45G98H729;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -870,6 +895,10 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 959B1BA7213699A400D22AFC /* Products */;
+					ProjectRef = 279E6C9F95594D1DBDDF902B /* AlipayModule.xcodeproj */;
+				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
@@ -1230,6 +1259,13 @@
 			remoteRef = 9563997A20BCFA2900285802 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		959B1BAB213699A400D22AFC /* libAlipayModule.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libAlipayModule.a;
+			remoteRef = 959B1BAA213699A400D22AFC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		95D0453820EC6DAE00231C95 /* libRNCookieManagerIOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1400,12 +1436,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = youjishucaiTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1435,12 +1473,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = youjishucaiTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1463,17 +1503,20 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Houlei Pu (J45G98H729)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = J45G98H729;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-wechat/ios",
-					"$(SRCROOT)..\node_modules\neact-native-cookieios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = youjishucai/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1484,8 +1527,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rhino.youjishucai;
 				PRODUCT_NAME = youjishucai;
-				PROVISIONING_PROFILE = "ff07079b-3606-4a3b-a031-9c36b87c4904";
-				PROVISIONING_PROFILE_SPECIFIER = "youjishucai-distribution";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1497,15 +1540,18 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Houlei Pu (J45G98H729)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J45G98H729;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-wechat/ios",
-					"$(SRCROOT)..\node_modules\neact-native-cookieios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = youjishucai/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1516,8 +1562,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rhino.youjishucai;
 				PRODUCT_NAME = youjishucai;
-				PROVISIONING_PROFILE = "ff07079b-3606-4a3b-a031-9c36b87c4904";
-				PROVISIONING_PROFILE_SPECIFIER = "youjishucai-distribution";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1540,11 +1586,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = "youjishucai-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1582,11 +1630,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = "youjishucai-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1623,11 +1673,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = "youjishucai-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1664,11 +1716,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-cookieios",
 					"$(SRCROOT)/../node_modules/react-native-cookies/ios/RNCookieManagerIOS",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
+					"$(SRCROOT)/../node_modules/react-native-yunpeng-alipay/ios/AlipayModule/**",
 				);
 				INFOPLIST_FILE = "youjishucai-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
