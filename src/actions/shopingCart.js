@@ -1,5 +1,5 @@
 export default {
   addShopingNum: { ADDNUM: "addNum" },
   reduceShopingNum: { REDUCENUM: "reduceNum" },
-  getShopingNum: { GETNUM: "getNum" }
+  setShopingNum: { SETNUM: "getNum" }
 }

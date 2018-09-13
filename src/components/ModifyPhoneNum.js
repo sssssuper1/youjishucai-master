@@ -5,35 +5,16 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import Fonter from './Fonter'
-import AwesomeAlert from 'react-native-awesome-alerts';
 import Toast from 'react-native-easy-toast';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
-  Alert,
-  Modal,
-  Button,
-  FlatList,
-  Picker
+  TextInput
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -133,7 +114,7 @@ export default class ModifyPhoneNum extends Component {
               onChangeText={(text) => this.setState({phone:text})}
             />
             <TouchableOpacity style={isInput?styles.getCode1:styles.getCode} onPress={this.getCode.bind(this)} disabled={isInput}>
-              <Text style={isInput?styles.getCodeText1:styles.getCodeText}>{codeText}</Text>
+              <Text allowFontScaling={false} style={isInput?styles.getCodeText1:styles.getCodeText}>{codeText}</Text>
             </TouchableOpacity>   
           </View>
           <View style={styles.passwordWrap}>

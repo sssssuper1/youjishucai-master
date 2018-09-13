@@ -14,6 +14,7 @@ import Name from './src/components/Name';
 import Index from './src/components/Index';
 import AccountSecurity from './src/components/AccountSecurity';
 import ModifyPassword from './src/components/ModifyPassword';
+import ModifyPayPassword from './src/components/ModifyPayPassword';
 import ModifyPhoneNum from './src/components/ModifyPhoneNum';
 import MessageDetail from './src/components/MessageDetail';
 import ServiceCenter from './src/components/ServiceCenter';
@@ -33,8 +34,17 @@ import UserAddress from './src/components/UserAddress';
 import EditAddress from './src/components/EditAddress';
 import VipRegister from './src/components/VipRegister';
 import IntegralRecord from './src/components/IntegralRecord';
+import IntegralRecharge from './src/components/IntegralRecharge';
+import Balance from './src/components/Balance';
+import Cash from './src/components/Cash';
+import TransferInput from './src/components/TransferInput';
+import TransferConfirm from './src/components/TransferConfirm';
 import ShopDetail from './src/components/ShopDetail';
+import ShopPay from './src/components/ShopPay';
 import Share from './src/components/Share';
+import BankCard from './src/components/BankCard';
+import Partner from './src/components/Partner';
+import CommunityOrders from './src/components/CommunityOrders';
 import { StackNavigator } from 'react-navigation';
 import store from './src/store/index';
 import { storage } from './src/js/StorageUtil';
@@ -91,6 +101,56 @@ class IntegralRecordScreen extends Component {
     );
   }
 }
+class IntegralRechargeScreen extends Component {
+  static navigationOptions = {
+    header: null
+  };
+  render() {
+    return (
+      <IntegralRecharge navigation={this.props.navigation} />
+    )
+  }
+}
+class BalanceScreen extends Component {
+  static navigationOptions = {
+    header: null
+  };
+  render() {
+    return (
+      <Balance navigation={this.props.navigation} />
+    )
+  }
+}
+class CashScreen extends Component {
+  static navigationOptions = {
+    header: null
+  };
+  render() {
+    return (
+      <Cash navigation={this.props.navigation} />
+    )
+  }
+}
+class TransferInputScreen extends Component {
+  static navigationOptions = {
+    header: null
+  };
+  render() {
+    return (
+      <TransferInput navigation={this.props.navigation} />
+    )
+  }
+}
+class TransferConfirmScreen extends Component {
+  static navigationOptions = {
+    header: null
+  };
+  render() {
+    return (
+      <TransferConfirm navigation={this.props.navigation} />
+    )
+  }
+}
 class ServiceCenterScreen extends Component { 
   static navigationOptions = {
     header:null
@@ -141,6 +201,16 @@ class ShopDetailScreen extends Component {
     );
   }
 }
+class ShopPayScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <ShopPay navigation={this.props.navigation} />
+    )
+  }
+}
 class ModifyPasswordScreen extends Component { 
   static navigationOptions = {
     header:null
@@ -148,6 +218,16 @@ class ModifyPasswordScreen extends Component {
   render() {
     return (
       <ModifyPassword navigation={this.props.navigation} />
+    );
+  }
+}
+class ModifyPayPasswordScreen extends Component { 
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <ModifyPayPassword navigation={this.props.navigation} />
     );
   }
 }
@@ -331,6 +411,36 @@ class ShareScreen extends Component {
     );
   }
 }
+class BankCardScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <BankCard navigation={this.props.navigation} />
+    )
+  }
+}
+class PartnerScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <Partner navigation={this.props.navigation} />
+    )
+  }
+}
+class CommunityOrderScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <CommunityOrders navigation={this.props.navigation} />
+    )
+  }
+}
 
 function configAppNavigator(isLoggeIn) {
   return StackNavigator({
@@ -377,6 +487,10 @@ function configAppNavigator(isLoggeIn) {
     // 修改密码
     ModifyPassword: {
       screen: ModifyPasswordScreen,
+    },
+    // 修改支付密码
+    ModifyPayPassword: {
+      screen: ModifyPayPasswordScreen,
     },
     // 修改手机
     ModifyPhoneNum: {
@@ -442,13 +556,49 @@ function configAppNavigator(isLoggeIn) {
     IntegralRecord: {
       screen: IntegralRecordScreen,
     },
+    // 积分充值
+    IntegralRecharge: {
+      screen: IntegralRechargeScreen
+    },
+    // 余额记录
+    Balance: {
+      screen: BalanceScreen
+    },
+    //余额提现
+    Cash: {
+      screen: CashScreen
+    },
+    // 余额转账输入账户
+    TransferInput: {
+      screen: TransferInputScreen
+    },
+    // 余额转账确认
+    TransferConfirm: {
+      screen: TransferConfirmScreen
+    },
     // 店铺详情
     ShopDetail: {
       screen: ShopDetailScreen,
     },
+    // 店铺实付
+    ShopPay: {
+      screen: ShopPayScreen
+    },
     // 分享
     Share: {
       screen: ShareScreen
+    },
+    // 银行卡信息
+    BankCard: {
+      screen: BankCardScreen
+    },
+    // 我的伙伴
+    Partner: {
+      screen: PartnerScreen
+    },
+    // 社群消费订单
+    CommunityOrders: {
+      screen: CommunityOrderScreen
     }
   }, {
     initialRouteName: isLoggeIn ? 'Home' : 'SignIn'

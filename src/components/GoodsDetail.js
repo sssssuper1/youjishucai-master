@@ -13,26 +13,14 @@ import Header1 from './Header1.js'
 import Toast, { DURATION } from 'react-native-easy-toast';
 import CookieManager from 'react-native-cookies';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  TextInput,
   ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
   Alert,
   Modal,
-  Button,
-  FlatList,
-  Picker,
   WebView
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
@@ -308,21 +296,21 @@ export default class GoodsDetail extends Component {
         <View style={styles.btns}>
           <TouchableOpacity style={styles.goGoods} onPress={()=>{navigate('Home', {selectedTab: 'home'})}}>
             <View style={styles.goodsImgContainer}><Image style={styles.goGoodsImg} source={require('../images/menu1-2.png')}></Image></View>
-            <View><Text style={styles.goGoodsText}>有机食材</Text></View>  
+            <View><Text allowFontScaling={false} style={styles.goGoodsText}>有机食材</Text></View>  
           </TouchableOpacity>
           <TouchableOpacity style={styles.customerService} onPress={()=>{navigate('ServiceCenter')}}> 
             <View style={styles.goodsImgContainer}><Image style={styles.customerServiceImg} source={require('../images/customerService2.png')}></Image></View>
-            <View><Text style={styles.customerServiceText}>客服</Text></View>    
+            <View><Text allowFontScaling={false} style={styles.customerServiceText}>客服</Text></View>    
           </TouchableOpacity>
           <TouchableOpacity style={styles.cart} onPress={()=>{navigate('Cart')}}> 
             <View style={styles.goodsImgContainer}><Image style={styles.cartImg} source={require('../images/searchCart.png')}></Image></View>
             <View style={[styles.cartNumWrap, store.getState().count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
-              <Text style={styles.cartNum}>{store.getState().count}</Text>
+              <Text allowFontScaling={false} style={styles.cartNum}>{store.getState().count}</Text>
             </View>
-            <View><Text style={styles.cartText}>购物车</Text></View>
+            <View><Text allowFontScaling={false} style={styles.cartText}>购物车</Text></View>
           </TouchableOpacity>
           <TouchableOpacity disabled={this.state.noStock} style={this.state.noStock?styles.noGoods:styles.addGoods} onPress={this.addToCart.bind(this)}>
-            <Text style={styles.addGoodsText}>{this.state.noStock ? '已售空' : '加入购物车'}</Text>
+            <Text allowFontScaling={false} style={styles.addGoodsText}>{this.state.noStock ? '已售空' : '加入购物车'}</Text>
           </TouchableOpacity>
         </View>
         <Modal

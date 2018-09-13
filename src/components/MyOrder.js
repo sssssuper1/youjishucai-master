@@ -9,25 +9,14 @@ import Fetch from '../js/fetch'
 import Header1 from './Header1.js'
 import PopupDialog from 'react-native-popup-dialog';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  TextInput,
   ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
   Alert,
-  Button,
-  FlatList,
-  Picker
+  FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import wxPay from '../js/wxPay';
@@ -231,16 +220,16 @@ export default class MyOrder extends Component {
           </View>
           <View style={styles.btns}>
             <TouchableOpacity style={state < 1 ? styles.cacelOrder : styles.hidden} onPress={()=>this.popupShow()}>
-              <Text>取消订单</Text>
+              <Text allowFontScaling={false}>取消订单</Text>
             </TouchableOpacity>
             <TouchableOpacity style={state===0?styles.goPay:styles.hidden} onPress={() => this.pay(order.orderNum)}>
-              <Text style={styles.goPayText}>去付款</Text>
+              <Text allowFontScaling={false} style={styles.goPayText}>去付款</Text>
             </TouchableOpacity>
             <TouchableOpacity style={state===2?styles.goPay:styles.hidden} onPress={() => this.confirmOrder()}>
-              <Text style={styles.goPayText}>确认收货</Text>
+              <Text allowFontScaling={false} style={styles.goPayText}>确认收货</Text>
             </TouchableOpacity>
             <TouchableOpacity style={state >= 1 ? styles.cacelOrder : styles.hidden} onPress={()=>navigate('ServiceCenter')}>
-              <Text>联系客服</Text>
+              <Text allowFontScaling={false}>联系客服</Text>
             </TouchableOpacity>      
           </View>
         </ScrollView>

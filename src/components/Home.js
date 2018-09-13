@@ -20,17 +20,14 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  ScrollView,
   ListView,
-  ScrollHeight,
   Dimensions,
-  PanResponder,
   Animated,
   Easing,
   ImageBackground,
   Alert,
-  Button,
   FlatList,
+  SectionList,
   ToastAndroid
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
@@ -51,7 +48,6 @@ export default class Home extends Component {
       showAlert: false,
       LeftdataSource: type1.cloneWithRows([]),
       RightdataSource: [],
-      selectName: '',
       right: new Animated.Value(10),
       top: new Animated.Value(10),
       fadeAnim: new Animated.Value(0),
@@ -61,7 +57,7 @@ export default class Home extends Component {
       refreshing: false
     }
 
-    this._refs = {}
+    this._refs = []
 
     //菜单获取
     Fetch(global.url + '/api/home/initSgHome', 'get', null, (responseData) => {
@@ -80,9 +76,8 @@ export default class Home extends Component {
 
         this.setState({
           banners: responseData.data.banners,
-          LeftdataSource: type1.cloneWithRows(LeftdataSource),
-          selectName: LeftdataSource[0].name,
-        })
+          LeftdataSource: type1.cloneWithRows(LeftdataSource)
+        });
 
         this.rightGoods = [];
         this.menuIndex = 0;
@@ -103,7 +98,7 @@ export default class Home extends Component {
     this.unsubscribe = store.subscribe(() => {
       this.setState({
         count: store.getState().count
-      })
+      });
     })
   }
 
@@ -125,18 +120,27 @@ export default class Home extends Component {
         refreshing: true
       })
     }
+
     if (this.rightGoods[index].length == 0 || isRresh) {
       let params = {
         categoryId: categoryId,
         pageIndex: 0,
         pageSize: 10000
       }
+
       Fetch(global.url + '/api/home/getGoodsList', 'post', params, (res) => {
         if (typeof res == 'object' && res.success) { 
           this.rightGoods[index] = res.data.goods.slice(0);
+          for (let i = 0; i < res.data.goods.length; i++) {
+            this.rightGoods[index][i].data = [res.data.goods[i].categoryId];
+            this.rightGoods[index][i].listSwitcher = true;
+            this.rightGoods[index][i].sortNumber = i;
+            this._refs.length === i && this._refs.push([]);
+          }
+
           this.setState({
             RightdataSource: this.rightGoods[index],
-          })
+          });
         } else { 
           Alert.alert('提示', res.errMsg);
         }
@@ -152,7 +156,7 @@ export default class Home extends Component {
     } else {
       this.setState({
         RightdataSource: this.rightGoods[index]
-      })
+      });
     }
   }
 
@@ -199,9 +203,9 @@ export default class Home extends Component {
     });
   }
 
-  getScreenXY(i, id) {
+  getScreenXY(j, i, id) {
     this.addToCart(id);
-    this._refs[i].measure((x, y, width, height, pageX, pageY) => {
+    this._refs[j][i].measure((x, y, width, height, pageX, pageY) => {
       this.setState({
         right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
         top: new Animated.Value(pageY - pxToDp(45 / 2))
@@ -266,30 +270,45 @@ export default class Home extends Component {
 
     let newTabs = JSON.parse(JSON.stringify(dataSource._dataBlob.s1));
     this.setState({
-      LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs),
-      selectName: name
+      LeftdataSource: this.state.LeftdataSource.cloneWithRows(newTabs)
     });
     this.menuIndex = rowID;
     this.menuType = dataSource._dataBlob.s1[rowID].id;
     this.getGoodsList(dataSource._dataBlob.s1[rowID].id, rowID);
   }
+
   //一级菜单的list渲染
   _renderRow1(rowData, sectionID, rowID) {
     return (
       <TouchableOpacity onPress={() => { this.goods1NameFn(this.state.LeftdataSource, rowID) }}>
         <View style={[styles.goods1Name, rowData.active && styles.goods1NameActive]}>
-          <Text style={rowData.active ?styles.goods1NameText1:styles.goods1NameText}>{rowData.name}</Text>
+          <Text allowFontScaling={false} style={rowData.active ? styles.goods1NameText1:styles.goods1NameText}>{rowData.name}</Text>
           <Text style={rowData.active ? styles.goods1NameTextLine : styles.goods1NameTextLine1}></Text>
         </View>
       </TouchableOpacity>
     );
   }
+
+  //flatList渲染
+  _renderFlatList(listIndex, listSwitcher, data) {
+    return (
+      <FlatList 
+        style={listSwitcher || styles.hidden}
+        horizontal={false}
+        numColumns={2}
+        data={data}
+        renderItem={({ item, index }) => this._renderRow2(listIndex, item, index)}
+      />
+    )
+  }
+
   //二级菜单的list渲染
-  _renderRow2(item, index) {
+  _renderRow2(listIndex, item, index) {
     const { navigate } = this.props.navigation;
     let hasStock = this.hasStock(item)
+
     return (
-      <View style={styles.rowGoods}>
+      <View style={styles.rowGoods} key={index}>
         <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
           <CachedImage style={styles.rowGoodsImg} source={{ uri: item.cover == null ? '' : item.cover}} />
           <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
@@ -304,14 +323,42 @@ export default class Home extends Component {
           </View>
           <TouchableOpacity
             disabled={!hasStock}
-            ref={(r) => this._refs[index] = r}
-            onPress={() => { this.getScreenXY(index, item.specs[0].id) }}
+            ref={(r) => {
+              try { this._refs[listIndex][index] = r }
+              catch (e) {
+                console.error(this.rightGoods[2])
+              }
+            }}
+            onPress={() => { this.getScreenXY(listIndex, index, item.specs[0].id) }}
             style={styles.rowGoodsAdd}>
             <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
           </TouchableOpacity>
         </View>
       </View>
     );
+  }
+
+  //二级菜单header渲染
+  _renderRowHeader(index, title, listSwitcher, goods) {
+    return (
+      <View style={[goods.length > 0 ? styles.goods2Header : styles.hidden, listSwitcher || styles.goods2HeaderBorder]}>
+        <Image style={styles.goods2HeaderImg1} source={require("../images/bubbleLeft.png")}></Image>
+        <Text style={styles.goods2HeaderText}>{title}</Text>
+        <Image style={styles.goods2HeaderImg2} source={require("../images/bubbleRight.png")}></Image>
+        <TouchableOpacity style={styles.listSwitch} onPress={() => this.switchList(index)}>
+          <Image style={styles.switchImage} source={listSwitcher ? require("../images/listOpen.png") : require("../images/listClose.png")} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  switchList(index) {
+    let tmp = this.state.RightdataSource;
+    tmp[index].listSwitcher = !tmp[index].listSwitcher;
+    this.setState({
+      RightdataSource : tmp
+    });
+    this.rightGoods[this.menuIndex][index].listSwitcher = tmp[index].listSwitcher;
   }
 
   render() {
@@ -348,7 +395,7 @@ export default class Home extends Component {
             <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}} >
               <Image style={styles.cartImg} source={require("../images/cart.png")}></Image>
               <View style={[styles.cartNumWrap, this.state.count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
-                <Text style={styles.cartNum}>{this.state.count}</Text>
+                <Text allowFontScaling={false} style={styles.cartNum}>{this.state.count}</Text>
               </View>
             </TouchableOpacity> 
           </View>
@@ -372,16 +419,15 @@ export default class Home extends Component {
             renderRow={this._renderRow1.bind(this)}
           />
           <View style={styles.goods2}>
-            <View style={styles.goods2Header}><Image style={styles.goods2HeaderImg1} source={require("../images/bubbleLeft.png")}></Image><Text style={styles.goods2HeaderText}>{this.state.selectName}</Text><Image style={styles.goods2HeaderImg2}  source={require("../images/bubbleRight.png")}></Image></View>  
-              <FlatList 
-              contentContainerStyle={styles.goods3}
-              horizontal={false}
-              numColumns={2}
-              data={this.state.RightdataSource}
-              renderItem={({ item, index }) => this._renderRow2(item, index)}
-              refreshing={this.state.refreshing}
+            <SectionList
+              sections={this.state.RightdataSource}
+              renderItem={({ section: {sortNumber, listSwitcher, goods } }) => this._renderFlatList(sortNumber, listSwitcher, goods)}
+              renderSectionHeader={({ section: { sortNumber, categoryName, listSwitcher, goods } }) => this._renderRowHeader(sortNumber, categoryName, listSwitcher, goods)}
               onRefresh={this.getGoodsList.bind(this, this.menuType, this.menuIndex, true)}
-              />
+              refreshing={this.state.refreshing}
+              keyExtractor={(item) => String(item)}
+              contentContainerStyle={styles.goods3}
+            />
           </View>  
         </View>
         <Animated.View                            // 可动画化的视图组件
@@ -588,10 +634,17 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   goods2Header: {
+    position: 'relative',
     height: pxToDp(98),
+    marginTop: pxToDp(12),
+    marginRight: pxToDp(12),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  goods2HeaderBorder: {
+    borderWidth: pxToDp(2),
+    borderColor: '#f4f4f4',
   },
   goods2HeaderText: {
     marginLeft: pxToDp(15),
@@ -605,6 +658,18 @@ const styles = StyleSheet.create({
     width: pxToDp(61),
     height: pxToDp(25)
   },
+  listSwitch: {
+    width: pxToDp(80),
+    height: pxToDp(90),
+    position: 'absolute',
+    right: pxToDp(0),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  switchImage: {
+    width: pxToDp(28),
+    height: pxToDp(28),
+  },
   goods2Bnner: {
     width: pxToDp(526),
     height: pxToDp(200),
@@ -615,6 +680,7 @@ const styles = StyleSheet.create({
   },
   rowGoods: {
     marginRight: pxToDp(8),
+    marginBottom: pxToDp(8),
     width: pxToDp(268),
     borderWidth: pxToDp(2),
     borderColor: '#f4f4f4',

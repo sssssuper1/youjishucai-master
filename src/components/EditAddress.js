@@ -5,13 +5,8 @@
  */
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import types from '../actions/shopingCart'
-import store from '../store/index'
 import Fetch from '../js/fetch'
 import Header1 from './Header1'
-import AwesomeAlert from 'react-native-awesome-alerts';
-import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
 import MyTextInput from './MyTextInput';
 import {
@@ -19,20 +14,9 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
-  TextInput,
   ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
-  ImageBackground,
   Alert,
-  Button,
-  FlatList,
   Picker,
   TouchableHighlight
 } from 'react-native';
@@ -368,7 +352,7 @@ export default class EditAddress extends Component {
           itemStyle={styles.itempicker}
           onValueChange={(lang) => this.setState({selectedArea: lang})}>
           {
-            this.state.area.map((item)=>  <Picker.Item label={item}   value={item} />)
+            this.state.area.map((item) => <Picker.Item label={item} value={item} />)
           }
         </Picker>
         <View style={styles.PickerWrap}>  

@@ -19,18 +19,11 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
   Dimensions,
-  PanResponder,
   Animated,
   Easing,
-  ImageBackground,
   Alert,
-  Button,
-  FlatList,
-  Picker
+  FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 const deviceHeightDp = Dimensions.get('window').height;
@@ -120,15 +113,10 @@ export default class SearchGoods extends Component {
 
   loadData(keyword) {
     this.isLoad = true;
-    Fetch(global.url + '/API/home/getGoodsList', 'post', {
-      addressLabel: '',
-      categoryId: 0,
-      keyword: keyword,
-      loadAll: true,
-      pageIndex: '0'
-    }, (responseData) => {
+    Fetch(global.url + '/api/home/search?pageIndex=0&pageSize=1000&keyword=' + keyword, 'get', null,
+      (responseData) => {
       this.isLoad = false;
-      if (responseData.success) {
+      if (responseData.result) {
         this.setState({
           dataSource: responseData.data.goods,
           keyword: keyword

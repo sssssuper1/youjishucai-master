@@ -8,9 +8,10 @@ function wxPay(params, navigation, uri, count) {
   WeChat.registerApp('wx4e425ddae999f00b');
 
   Fetch(global.url + uri, 'post', params, async (responseData) => {
-    if (!responseData.success) {
+    if (!responseData.success && !responseData.result) {
       return
     }
+
     if (responseData.data.wxAmount == 0) {
       navigation.replace('PaySuccess', {
         payAmount: 0
@@ -31,10 +32,10 @@ function wxPay(params, navigation, uri, count) {
     }).then((result)=>{
       navigation.replace('PaySuccess', {
         payAmount: responseData.data.wxAmount,
+        orderType: 0
       })
     }).catch((errCode) => {
       console.log(errCode)
-      Alert.alert('提示','支付失败')
       navigation.replace('PayFun', {
         payAmount: responseData.data.wxAmount,
         orderNo: responseData.data.orderNo,

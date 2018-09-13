@@ -5,8 +5,8 @@
  */
 
 import React, { Component } from 'react';
-import store from '../store/index'
-import Fetch from '../js/fetch'
+import store from '../store/index';
+import getVipPortrait from '../js/getVipPortrait';
 import {
   Platform,
   StyleSheet,
@@ -14,18 +14,8 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ListView,
-  ScrollHeight,
-  Dimensions,
-  PanResponder,
-  Animated,
-  Easing,
   ImageBackground,
-  Alert,
-  Button,
-  FlatList
+  ScrollView
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 
@@ -51,103 +41,125 @@ export default class My extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const { vip, name, integral, balance, agent, hasStore } = this.props.user;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
           <View style={styles.header}>
-            <View style={styles.headPointer}>
-              {this.props.user.vip > 0 ? <Image style={styles.headPointerImg} source={require('../images/vip1.png')}></Image> :
-              <Image style={styles.headPointerImg} source={require('../images/vip0.png')}></Image>  }  
-            </View>
+            <TouchableOpacity style={styles.headPointer} onPress={() => navigate('Partner')}>
+              <Image style={styles.headPointerImg} source={getVipPortrait(vip)}/>
+            </TouchableOpacity>
             <View style={styles.nameContainer}>
-              <Text style={styles.name}>{this.props.user.name}</Text>
+              <View style={styles.userInfo}>
+                <Text style={styles.name}>{name}</Text>
+                <View style={[hasStore ? styles.tag : styles.hidden, styles.redBg]}>
+                  <Text style={styles.tagInfo}>商户</Text>
+                </View>
+                <View style={[agent != '' ? styles.tag : styles.hidden, styles.orangeBg]}>
+                  <Text style={styles.tagInfo}>{agent}</Text>
+                </View>
+              </View>
               <Text style={styles.userId}>{this.state.userId == '' ? '' : `ID: ${this.state.userId}`}</Text>
-              <TouchableOpacity style={this.props.user.vip > 0 ? styles.pointContent : styles.hidden} onPress={()=>{navigate('IntegralRecord')}}>
-                <Text style={styles.point}>积分: {this.props.user.integral}</Text>
-              </TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.set} onPress={() => {navigate('Set')}}>
               <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
             </TouchableOpacity>  
           </View>
         </ImageBackground>
-        <View style={styles.cartInfo}>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}}>
-            <View style={[styles.cartImg,styles.cart1Img]}>
-              <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
-            </View>
-            <View style={[this.state.count > 0 ? styles.cart1NumWrap : styles.hidden, this.state.count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
-              <Text style={styles.cart1Num}>{this.state.count}</Text>
-            </View>
-            <View style={styles.cartNameWrap}>
-              <Text style={styles.cartName}>购物车</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 1})}}>
-            <View style={[styles.cartImg,styles.cart2Img]}>
-              <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
-            </View>
-            <View style={[this.props.stateNum.paymentDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.paymentDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
-              <Text style={styles.cart1Num}>{this.props.stateNum.paymentDt}</Text>
-            </View>
-            <View style={styles.cartNameWrap}>
-              <Text style={styles.cartName}>待付款</Text>
-            </View>
-          </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 2})}}>
-            <View style={[styles.cartImg,styles.cart3Img]}>
-              <Image style={styles.cart3Img} source={require('../images/sendGoods.png')}></Image>
-            </View>
-            <View style={[this.props.stateNum.shipmentDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.shipmentDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
-              <Text style={styles.cart1Num}>{this.props.stateNum.shipmentDt}</Text>
-            </View>
-            <View style={styles.cartNameWrap}>
-              <Text style={styles.cartName}>待发货</Text>
-            </View>
-          </TouchableOpacity>  
-          <TouchableOpacity style={styles.cartBtn}  onPress={() => {navigate('AllOrder', {state: 3})}}>
-            <View style={[styles.cartImg,styles.cart4Img]}>
-              <Image style={styles.cart4Img} source={require('../images/getGoods.png')}></Image>
-            </View>
-            <View style={[this.props.stateNum.goodsReceiptDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.goodsReceiptDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
-              <Text style={styles.cart1Num}>{this.props.stateNum.goodsReceiptDt}</Text>
-            </View>
-            <View style={styles.cartNameWrap}>
-              <Text style={styles.cartName}>待收货</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.detail}>
-          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('AllOrder')}}>
-            <Image style={styles.detailBtnImg} source={require('../images/order.png')}></Image>
-            <Text style={styles.detailBtnText}>全部订单</Text> 
-            <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('UserAddress')}}>
-            <Image style={styles.detailBtnImg}  source={require('../images/getAddress.png')}></Image>
-            <Text style={styles.detailBtnText}>收货地址</Text> 
-            <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('ServiceCenter')}}>
-            <Image style={styles.detailBtnImg}  source={require('../images/telephone.png')}></Image>
-            <Text style={styles.detailBtnText}>客服中心</Text> 
-            <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.detail}>
-          <View style={styles.qrCodeContainer}>
-            <Image style={styles.qrCode} source={{uri: global.url + '/api/user/GetMyRecommendQrCode'}}></Image>
-            <Text style={styles.qrCodeText}>我的二维码</Text>
+        <ScrollView>
+          <View style={styles.balanceCell}>
+            <TouchableOpacity style={styles.balanceBtn} onPress={()=>navigate('Balance')}>
+              <Text style={styles.balanceText}>{balance.toFixed(2)}</Text>
+              <Text style={styles.cartName}>余额</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.balanceBtn} onPress={()=>{navigate('IntegralRecord')}}>
+              <Text style={styles.balanceText}>{integral.toFixed(2)}</Text>
+              <Text style={styles.cartName}>积分</Text>
+            </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.hidden}>
-          <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('Message')}}>
-            <Image style={styles.detailBtnImg}  source={require('../images/message.png')}></Image>
-            <Text style={styles.detailBtnText}>系统信息</Text>
-            <View style={styles.detailBtnNew}><Text style={styles.detailBtnNewText}>NEW</Text></View>
-            <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
-          </TouchableOpacity>  
-        </View>  
+          <View style={styles.cartInfo}>
+            <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('Cart')}}>
+              <View style={[styles.cartImg,styles.cart1Img]}>
+                <Image style={styles.cart1Img} source={require('../images/myCart.png')}></Image>
+              </View>
+              <View style={[this.state.count > 0 ? styles.cart1NumWrap : styles.hidden, this.state.count > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+                <Text allowFontScaling={false} style={styles.cart1Num}>{this.state.count}</Text>
+              </View>
+              <View style={styles.cartNameWrap}>
+                <Text style={styles.cartName}>购物车</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 1})}}>
+              <View style={[styles.cartImg,styles.cart2Img]}>
+                <Image style={styles.cart2Img} source={require('../images/willPay.png')}></Image>
+              </View>
+              <View style={[this.props.stateNum.paymentDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.paymentDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+                <Text allowFontScaling={false} style={styles.cart1Num}>{this.props.stateNum.paymentDt}</Text>
+              </View>
+              <View style={styles.cartNameWrap}>
+                <Text style={styles.cartName}>待付款</Text>
+              </View>
+            </TouchableOpacity>  
+            <TouchableOpacity style={styles.cartBtn} onPress={() => {navigate('AllOrder', {state: 2})}}>
+              <View style={[styles.cartImg,styles.cart3Img]}>
+                <Image style={styles.cart3Img} source={require('../images/sendGoods.png')}></Image>
+              </View>
+              <View style={[this.props.stateNum.shipmentDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.shipmentDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+                <Text allowFontScaling={false} style={styles.cart1Num}>{this.props.stateNum.shipmentDt}</Text>
+              </View>
+              <View style={styles.cartNameWrap}>
+                <Text style={styles.cartName}>待发货</Text>
+              </View>
+            </TouchableOpacity>  
+            <TouchableOpacity style={styles.cartBtn}  onPress={() => {navigate('AllOrder', {state: 3})}}>
+              <View style={[styles.cartImg,styles.cart4Img]}>
+                <Image style={styles.cart4Img} source={require('../images/getGoods.png')}></Image>
+              </View>
+              <View style={[this.props.stateNum.goodsReceiptDt > 0 ? styles.cart1NumWrap : styles.hidden, this.props.stateNum.goodsReceiptDt > 9 ? styles.cartNumWrapLong : styles.cartNumWrapShort]}>
+                <Text allowFontScaling={false} style={styles.cart1Num}>{this.props.stateNum.goodsReceiptDt}</Text>
+              </View>
+              <View style={styles.cartNameWrap}>
+                <Text style={styles.cartName}>待收货</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.detail}>
+            <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('AllOrder')}}>
+              <Image style={styles.detailBtnImg} source={require('../images/order.png')}></Image>
+              <Text style={styles.detailBtnText}>商城订单</Text> 
+              <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('CommunityOrders')}}>
+              <Image style={styles.detailBtnImg} source={require('../images/communityIcon.png')}></Image>
+              <Text style={styles.detailBtnText}>社群消费</Text> 
+              <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('UserAddress')}}>
+              <Image style={styles.detailBtnImg}  source={require('../images/getAddress.png')}></Image>
+              <Text style={styles.detailBtnText}>收货地址</Text> 
+              <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('ServiceCenter')}}>
+              <Image style={styles.detailBtnImg}  source={require('../images/telephone.png')}></Image>
+              <Text style={styles.detailBtnText}>客服中心</Text> 
+              <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.detail}>
+            <View style={styles.qrCodeContainer}>
+              <Image style={styles.qrCode} source={{uri: global.url + '/api/user/GetMyRecommendQrCode'}}></Image>
+              <Text style={styles.qrCodeText}>我的二维码</Text>
+            </View>
+          </View>
+          <View style={styles.hidden}>
+            <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('Message')}}>
+              <Image style={styles.detailBtnImg}  source={require('../images/message.png')}></Image>
+              <Text style={styles.detailBtnText}>系统信息</Text>
+              <View style={styles.detailBtnNew}><Text style={styles.detailBtnNewText}>NEW</Text></View>
+              <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
+            </TouchableOpacity>  
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -196,13 +208,50 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: 'column'
   },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   name: {
     lineHeight: pxToDp(50),
     fontSize: pxToDp(36),
     color: 'white'
   },
-  pointContent: {
-
+  tag: {
+    marginLeft: pxToDp(15),
+    height: pxToDp(34),
+    paddingHorizontal: pxToDp(17),
+    borderRadius: pxToDp(17),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  redBg: {
+    backgroundColor: '#f8676a',
+  },
+  orangeBg: {
+    backgroundColor: '#ff9f19',
+  },
+  tagInfo: {
+    fontSize: pxToDp(22),
+    color: '#ffffff'
+  },
+  balanceCell: {
+    backgroundColor: '#ffffff',
+    flexDirection: 'row',
+    paddingTop: pxToDp(30),
+    paddingBottom: pxToDp(30)
+  },
+  balanceBtn: {
+    flex: 1,
+    alignItems: 'center',
+    borderRightWidth: pxToDp(2),
+    borderRightColor: '#f4f4f4'
+  },
+  balanceText: {
+    color: '#10b57b',
+    fontSize: pxToDp(30),
+    fontWeight: 'bold',
+    lineHeight: pxToDp(50)
   },
   point: {
     lineHeight: pxToDp(50),
@@ -226,6 +275,7 @@ const styles = StyleSheet.create({
   cartInfo: {
     flexDirection: 'row',
     paddingTop: pxToDp(30),
+    marginTop:pxToDp(12),
     backgroundColor: 'white'
   },
   cartBtn: {
