@@ -24,6 +24,8 @@ export default class Cash extends Component {
       sum: 0,
       balance: store.getState().balance
     }
+
+    this.loadData();
   }
 
   cashInput(text) {
@@ -35,6 +37,20 @@ export default class Cash extends Component {
       cash: cash,
       fee: fee,
       sum: cash + fee
+    });
+  }
+
+  loadData() {
+    Fetch(global.url + '/api/Balance/GetTotalBalance', 'get', null, (res) => {
+      if (res.result) {
+        this.setState({
+          balance: res.data.balance
+        })
+      } else {
+        Alert.alert('提示', res.errMsg);
+      }
+    }, (err) => {
+      Alert.alert('提示', err);
     });
   }
 

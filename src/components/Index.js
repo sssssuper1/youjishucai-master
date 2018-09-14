@@ -30,8 +30,8 @@ import CookieManager from 'react-native-cookies';
 import SplashScreen from 'react-native-splash-screen';
 import PopupDialog from 'react-native-popup-dialog';
 
-// global.url = "http://sxj.xcf178.com";
-global.url = "http://xsq.ngrok.sws168.com";
+global.url = "http://sxj.xcf178.com";
+// global.url = "http://xsq.ngrok.sws168.com";
 
 global.data = {
   user: {
@@ -105,7 +105,7 @@ export default class Index extends Component {
     },
     (err) => {
       SplashScreen.hide();
-      Alert.alert('提示',err);
+      // Alert.alert('提示',err);
     });
 
     Fetch(global.url + '/API/user/getStateNum', 'get', '', (responseData) => {
@@ -186,6 +186,7 @@ export default class Index extends Component {
         this.setState({
           selectedTab: 'my'
         });
+        this.loadData();
       } else {
         this.props.navigation.navigate('SignIn');
       }

@@ -236,7 +236,7 @@ export default class MyOrder extends Component {
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={this.state.integral < order.cashPayAmount ? styles.hidden : styles.payment} onPress={()=>this.changePaymentMethod(2)}>
+            <TouchableOpacity style={this.state.integral >= order.cashPayAmount ? styles.payment : styles.hidden} onPress={()=>this.changePaymentMethod(2)}>
               <Image style={styles.payment2Img} source={require('../images/integral.png')}></Image>
               <Text>积分支付</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 2 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>

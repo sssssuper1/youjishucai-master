@@ -25,7 +25,7 @@ export default class TransferConfirm extends Component {
       cash: 0,
       payPassword: '',
       isSubmitting: false,
-      balance: store.getState().balance
+      balance: props.navigation.state.params.userInfo.balance
     }
   }
 

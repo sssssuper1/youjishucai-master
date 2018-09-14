@@ -69,11 +69,11 @@ export default class My extends Component {
         <ScrollView>
           <View style={styles.balanceCell}>
             <TouchableOpacity style={styles.balanceBtn} onPress={()=>navigate('Balance')}>
-              <Text style={styles.balanceText}>{balance.toFixed(2)}</Text>
+              <Text style={styles.balanceText}>{balance ? balance.toFixed(2) : 0}</Text>
               <Text style={styles.cartName}>余额</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.balanceBtn} onPress={()=>{navigate('IntegralRecord')}}>
-              <Text style={styles.balanceText}>{integral.toFixed(2)}</Text>
+              <Text style={styles.balanceText}>{integral ? integral.toFixed(2) : 0}</Text>
               <Text style={styles.cartName}>积分</Text>
             </TouchableOpacity>
           </View>
@@ -147,7 +147,7 @@ export default class My extends Component {
           </View>
           <View style={styles.detail}>
             <View style={styles.qrCodeContainer}>
-              <Image style={styles.qrCode} source={{uri: global.url + '/api/user/GetMyRecommendQrCode'}}></Image>
+              <Image style={styles.qrCode} source={{uri: global.url + '/api/user/GetMyRecommendQrCode?time=' + Date().toString()}}></Image>
               <Text style={styles.qrCodeText}>我的二维码</Text>
             </View>
           </View>
