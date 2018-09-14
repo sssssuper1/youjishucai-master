@@ -60,7 +60,7 @@ export default class TransferConfirm extends Component {
       if (res.result) {
         this.refs.toast.show('转账成功!');
         setTimeout(() => {
-          this.props.navigation.navigate('Home', { selectedTab: 'My' });
+          this.props.navigation.navigate('Home', { selectedTab: 'my' });
         }, 1500);
       } else {
         Alert.alert('提示', res.errMsg);

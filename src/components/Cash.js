@@ -56,7 +56,7 @@ export default class Cash extends Component {
         this.refs.toast.show('提现申请已提交!');
 
         setTimeout(() => {
-          this.props.navigation.navigate('Home', { selectedTab: 'My' });
+          this.props.navigation.navigate('Home', { selectedTab: 'my' });
         }, 1500);
       } else {
         Alert.alert('提示', res.errMsg);

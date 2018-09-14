@@ -69,6 +69,7 @@ export default class Index extends Component {
     this._didFocusSubscription = props.navigation.addListener('didFocus', payload => {
       BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
       this.loadData();
+      this.setTab();
     });
 
   }
@@ -201,6 +202,15 @@ export default class Index extends Component {
         this.props.navigation.navigate('SignIn');
       }
     })
+  }
+
+  setTab() {
+    const { params } = this.props.navigation.state;
+    if (!!params && !!params.selectedTab && this.state.selectedTab !== params.selectedTab) {
+      this.setState({
+        selectedTab: params.selectedTab
+      })
+    }
   }
 
   render() {

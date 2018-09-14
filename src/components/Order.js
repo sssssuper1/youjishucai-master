@@ -8,6 +8,8 @@ import React, { Component, PureComponent } from 'react';
 import Fetch from '../js/fetch';
 import wxPay from '../js/wxPay';
 import alipay from '../js/aliPay';
+import store from '../store/index';
+import types from '../actions/shopingCart';
 import {
   StyleSheet,
   Text,
@@ -36,6 +38,7 @@ export default class Order extends Component {
       integralPayAmount: 0,
       payAmount: 0,
       count: 0,
+      integral: store.getState().integral,
       isSubmitting: false
     };
 
@@ -73,36 +76,40 @@ export default class Order extends Component {
       isSubmitting: true
     })
 
+    let params = {
+      isApp: true,
+      cartProducts: this.state.dataSource.shopCartListDt,
+      customerAddressId: 0,
+      customerCouponId: '',
+      defaultDeliveryType: 0,
+      enterpriseAccountPayment: this.state.enterpriseAccountPayment,
+      pickUpPerson: '',
+      pickUpPhone: '',
+      pickUpPointsId: '',
+      remark: this.state.remark
+    }
+
     if (this.state.payNum == 0) {
-      let params = {
-        isApp: true,
-        cartProducts: this.state.dataSource.shopCartListDt,
-        customerAddressId: 0,
-        customerCouponId: '',
-        defaultDeliveryType: 0,
-        enterpriseAccountPayment: this.state.enterpriseAccountPayment,
-        pickUpPerson: '',
-        pickUpPhone: '',
-        pickUpPointsId: '',
-        remark: this.state.remark,
-        payType: 'wx'
-      }
+      params.payType = 'wx';
       wxPay(params, this.props.navigation, '/API/Order/Add', this.state.count);
-    } else {
-      let params = {
-        isApp: true,
-        cartProducts: this.state.dataSource.shopCartListDt,
-        customerAddressId: 0,
-        customerCouponId: '',
-        defaultDeliveryType: 0,
-        enterpriseAccountPayment: this.state.enterpriseAccountPayment,
-        pickUpPerson: '',
-        pickUpPhone: '',
-        pickUpPointsId: '',
-        remark: this.state.remark,
-        payType: 'ali'
-      }
+    } else if (this.state.payNum == 1) {
+      params.payType = 'ali';
       alipay(params, this.props.navigation, '/API/Order/Add', this.state.count);
+    } else {
+      params.payType = 'integral';
+      Fetch(global.url + '/API/Order/Add', 'post', params, (res) => {
+        if (res.success) {
+          store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: this.state.count });
+          this.props.navigation.replace('PaySuccess', {
+            payAmount: res.totalAmount,
+            orderType: 0
+          })
+        } else {
+          Alert.alert('提示', '支付失败!');
+        }
+      }, (err) => {
+        Alert.alert('提示', err);
+      })
     }
   }
 
@@ -191,17 +198,22 @@ export default class Order extends Component {
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
+            <TouchableOpacity style={this.state.integral < this.state.payAmount ? styles.hidden : styles.payment} onPress={() => this.changePaymentMethod(2)} disabled={this.state.integral < this.state.payAmount}>
+              <Image style={styles.payment2Img} source={require('../images/integral.png')}></Image>
+              <Text>积分支付</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 2 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
           </View>
           <View style={styles.goods}>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品件数</Text><Text style={styles.totalNum}>共{this.state.count}件</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥{this.state.totalAmount}</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥{this.state.shippingFee}</Text></View>
-            <View style={global.data.user.vip>0?styles.goodsInfo:styles.hidden}><Text style={styles.goodsInfoTitle}>vip积分</Text><Text style={styles.price}>- ¥{this.state.integralPayAmount}</Text></View>
+            <View style={styles.hidden}><Text style={styles.goodsInfoTitle}>vip积分</Text><Text style={styles.price}>- ¥{this.state.integralPayAmount}</Text></View>
           </View>
         </ScrollView>  
         <View style={styles.result}>    
-          <Text style={styles.resultTitle}>实付金额：</Text>
-          <Text style={styles.resultPrice}>¥{this.state.payAmount - this.state.integralPayAmount}</Text>
+          <Text style={styles.resultTitle}>实付{this.state.payNum === 2 ? '积分' : '金额'}：</Text>
+          <Text style={styles.resultPrice}>¥{this.state.payAmount}</Text>
           <TouchableOpacity style={[styles.payBtn, this.state.isSubmitting ? styles.payDisable : styles.payEnable]} onPress={this.pay.bind(this)} disabled={this.state.isSubmitting}>
             <Text style={styles.payBtnText}>去结算</Text>
           </TouchableOpacity>

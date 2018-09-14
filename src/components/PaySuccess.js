@@ -34,7 +34,7 @@ export default class PaySuccess extends Component {
         break;
       case 1:
       case 2:
-        navigate('Home', { selectedTab: 'My' });
+        navigate('Home', { selectedTab: 'my' });
         break;
       default:
         navigate('Home');

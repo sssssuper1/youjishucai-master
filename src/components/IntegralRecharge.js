@@ -154,7 +154,7 @@ export default class IntegralRecharge extends Component {
           if (res.result) {
             // this.refs.toast.show('充值成功!');
             // setTimeout(() => {
-            //   this.props.navigation.navigate('Home', { selectedTab: 'My' });
+            //   this.props.navigation.navigate('Home', { selectedTab: 'my' });
             // }, 1500);
             this.props.navigation.navigate('PaySuccess', {
               payAmount: this.state.inputAmount,

@@ -55,10 +55,15 @@ export default class ShopPay extends Component {
       });
 
       if (res.result) {
-        this.refs.toast.show('付款成功!');
-        setTimeout(() => {
-          this.props.navigation.replace('CommunityOrders');
-        }, 1000);
+        // this.refs.toast.show('付款成功!');
+        // setTimeout(() => {
+        //   this.props.navigation.replace('CommunityOrders');
+        // }, 1000);
+
+        this.props.navigation.navigate('PaySuccess', {
+          payAmount: this.state.payIntegral,
+          orderType: 2
+        });
       } else {
         Alert.alert('提示', res.errMsg);
       }

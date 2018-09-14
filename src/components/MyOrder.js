@@ -5,9 +5,10 @@
  */
 
 import React, { Component } from 'react';
-import Fetch from '../js/fetch'
-import Header1 from './Header1.js'
+import Fetch from '../js/fetch';
+import Header1 from './Header1.js';
 import PopupDialog from 'react-native-popup-dialog';
+import store from '../store/index';
 import {
   StyleSheet,
   Text,
@@ -32,6 +33,7 @@ export default class MyOrder extends Component {
     this.state = {
       state: 0,
       payNum: 0,
+      integral: store.getState().integral,
       order: {
         details: [],
       },
@@ -104,12 +106,29 @@ export default class MyOrder extends Component {
         payType: 'wx'
       }
       wxPay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
-    } else {
+    } else if(this.state.payNum == 1) {
       let params = {
         orderNo: orderNo,
         payType: 'ali'
       }
       alipay(params, this.props.navigation, '/API/Order/GeneratePayParams', 0);
+    } else {
+      let params = {
+        orderNo: orderNo,
+        payType: 'integral'
+      }
+      Fetch(global.url + '/API/Order/GeneratePayParams', 'post', params, (res) => {
+        if (res.success) {
+          this.props.navigation.replace('PaySuccess', {
+            payAmount: res.data.totalAmount,
+            orderType: 0
+          })
+        } else {
+          Alert.alert('提示', '支付失败!');
+        }
+      }, (err) => {
+        Alert.alert('提示', err);
+      })
     }
   }
 
@@ -122,7 +141,7 @@ export default class MyOrder extends Component {
   //list渲染
   _renderRow1(item, index) {
     return (
-      <View style={styles.list}>
+      <View style={styles.list} key={index}>
         <View style={styles.good}>
           <Image style={styles.goodImg} source={{uri: item.goodImg}}></Image>
         </View>
@@ -202,8 +221,8 @@ export default class MyOrder extends Component {
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>商品金额</Text><Text style={styles.price}>¥{order.orderAmount}</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>配送费</Text><Text style={styles.price}>+ ¥{order.expressMoney}</Text></View>
             <View style={styles.goodsInfo1}><Text style={styles.goodsInfoTitle}>下单时间</Text><Text style={styles.price}>{order.orderDate}</Text></View>
-            <View style={global.data.user.vip>0?styles.goodsInfo:styles.hidden}><Text style={styles.goodsInfoTitle}>vip积分</Text><Text style={styles.price}>- ¥{order.integralPayAmount}</Text></View>
-            <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle}>在线支付</Text><Text style={styles.price}>{order.cashPayAmount}</Text></View>
+            <View style={styles.hidden}><Text style={styles.goodsInfoTitle}>vip积分</Text><Text style={styles.price}>- ¥{order.integralPayAmount}</Text></View>
+            <View style={styles.hidden}><Text style={styles.goodsInfoTitle}>在线支付</Text><Text style={styles.price}>{order.cashPayAmount}</Text></View>
             <View style={styles.goodsInfo}><Text style={styles.goodsInfoTitle2}>实付金额</Text><Text style={[styles.price,styles.price1]}>¥{order.cashPayAmount}</Text></View>
           </View>
           <View style={state === 0 ? styles.paymentMethod : styles.hidden}>
@@ -216,6 +235,11 @@ export default class MyOrder extends Component {
               <Image style={styles.payment2Img} source={require('../images/alipay.png')}></Image>
               <Text>支付宝</Text>
               <Image style={styles.isSelect} source={this.state.payNum === 1 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={this.state.integral < order.cashPayAmount ? styles.hidden : styles.payment} onPress={()=>this.changePaymentMethod(2)}>
+              <Image style={styles.payment2Img} source={require('../images/integral.png')}></Image>
+              <Text>积分支付</Text>
+              <Image style={styles.isSelect} source={this.state.payNum === 2 ? require('../images/select.png') : require('../images/unchecked.png')}></Image>
             </TouchableOpacity>
           </View>
           <View style={styles.btns}>
