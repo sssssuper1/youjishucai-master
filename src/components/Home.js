@@ -640,7 +640,8 @@ const styles = StyleSheet.create({
     marginRight: pxToDp(12),
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: '#ffffff'
   },
   goods2HeaderBorder: {
     borderWidth: pxToDp(2),

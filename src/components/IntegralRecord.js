@@ -45,7 +45,8 @@ export default class IntegralRecord extends Component {
         this.isLoad = false;
         if (responseData.result) {
           this.setState({
-            dataSource: responseData.data.list
+            dataSource: responseData.data.list,
+            integral: responseData.data.integral
           })
           this.hideAlert();
         }

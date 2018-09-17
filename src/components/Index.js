@@ -69,7 +69,7 @@ export default class Index extends Component {
     this._didFocusSubscription = props.navigation.addListener('didFocus', payload => {
       BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
       this.loadData();
-      this.setTab();
+      // this.setTab();
     });
 
   }
