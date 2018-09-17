@@ -35,7 +35,8 @@ export default class Balance extends Component {
         this.isLoad = false;
         if (responseData.result) {
           this.setState({
-            dataSource: responseData.data.list
+            dataSource: responseData.data.list,
+            balance: responseData.data.balance
           })
           this.hideAlert();
         }
