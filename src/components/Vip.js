@@ -35,7 +35,7 @@ export default class Vip extends Component {
               </View>
               <View style={styles.vipNameAndCard}>
                 <View style={styles.vipName}><Text allowFontScaling={false} style={styles.vipNameText1}>会员：</Text><Text allowFontScaling={false} style={styles.vipNameText1}>{this.props.user.name}</Text></View>
-                <View style={styles.vipCard}><Text allowFontScaling={false} style={styles.vipCardText1}>卡号：</Text><Text allowFontScaling={false} style={styles.vipCardText1}>{this.props.user.UID}</Text></View>
+                <View style={styles.vipCard}><Text allowFontScaling={false} style={styles.vipCardText1}>ID：</Text><Text allowFontScaling={false} style={styles.vipCardText1}>{this.props.user.UID}</Text></View>
               </View>
             </ImageBackground>
             <TouchableOpacity style={styles.vipRechargeBtn} onPress={() => {navigate('IntegralRecharge')}}>

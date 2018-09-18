@@ -32,8 +32,8 @@ import CookieManager from 'react-native-cookies';
 import SplashScreen from 'react-native-splash-screen';
 import PopupDialog from 'react-native-popup-dialog';
 
-// global.url = "http://sxj.xcf178.com";
-global.url = "http://xsq.ngrok.sws168.com";
+global.url = "http://sxj.xcf178.com";
+// global.url = "http://xsq.ngrok.sws168.com";
 
 global.data = {
   user: {
@@ -72,9 +72,16 @@ export default class Index extends Component {
 
     this._didFocusSubscription = props.navigation.addListener('didFocus', payload => {
       BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
-      if (NetInfo.isConnected) {
-        this.loadData();
-      }
+      NetInfo.isConnected.fetch().then((isConnected) => {
+        if (isConnected) {
+          this.loadData();
+        } else {
+          this.setState({
+            isConnected: false
+          })
+        }
+      })
+
       // this.setTab();
     });
 
@@ -83,21 +90,9 @@ export default class Index extends Component {
     header:null
   };
 
-  componentDidMount() {
-    if (Platform.OS == 'ios') {
-      NetInfo.getConnectionInfo().then((connectionInfo) => {
-        if (connectionInfo == 'none') {
-          this.setState({
-            isConnected: false
-          })
-        }
-      })
-    }
-  }
-
   loadData() {
     Fetch(global.url + '/api/home/GetInitData', 'get', '', (responseData) => {
-      SplashScreen.hide();
+      // SplashScreen.hide();
       global.data.user = responseData.user;
       if (responseData.goodCategorys[0]) {
         global.data.vipPrice = responseData.user.vipPrice;
@@ -123,7 +118,7 @@ export default class Index extends Component {
       });
     },
     (err) => {
-      SplashScreen.hide();
+      // SplashScreen.hide();
       // Alert.alert('提示',err);
     });
 
@@ -178,6 +173,7 @@ export default class Index extends Component {
   }
 
   componentDidMount() {
+    SplashScreen.hide();
     this._willBlurSubscription = this.props.navigation.addListener('willBlur', payload =>
       BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
     );

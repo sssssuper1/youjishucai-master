@@ -176,11 +176,11 @@ export default class IntegralRecharge extends Component {
     switch (this.state.payNum) {
       case 0:
         params.payType = 'wx';
-        wxPayVip(url, this.props.navigation, params, 2) === 1 && this.setState({isSubmitting: false})
+        wxPayVip(url, this.props.navigation, params, 2, () => this.setState({isSubmitting: false}));
         break;
       case 1:
         params.payType = 'ali';
-        aliPayVip(params, this.props.navigation, url, 2) === 1 && this.setState({isSubmitting: false})
+        aliPayVip(params, this.props.navigation, url, 2, () => this.setState({isSubmitting: false}));
         break;
       case 2:
         params.payType = 'balance';
@@ -240,7 +240,7 @@ export default class IntegralRecharge extends Component {
             underlineColorAndroid={'transparent'}
             returnKeyType={'done'}
             onChangeText={(text) => this.setState({rechargeID:text}) }
-            placeholder={'ID号'}
+            placeholder={'他人用户ID号'}
             placeholderTextColor={'#a6a6a6'}
           />
           <TextInput
@@ -250,7 +250,7 @@ export default class IntegralRecharge extends Component {
             underlineColorAndroid={'transparent'}
             returnKeyType={'done'}
             onChangeText={(text) => this.setState({rechargePhone:text}) }
-            placeholder={'手机号末4位'}
+            placeholder={'他人手机号末4位'}
             placeholderTextColor={'#a6a6a6'}
           />
         </View>

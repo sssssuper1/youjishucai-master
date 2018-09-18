@@ -52,7 +52,7 @@ export default class TransferInput extends Component {
           underlineColorAndroid={'transparent'}
           returnKeyType={'done'}
           onChangeText={(text) => this.setState({id:text}) }
-          placeholder={'ID号'}
+          placeholder={'用户ID号'}
           placeholderTextColor={'#a6a6a6'}
         />
         <TextInput

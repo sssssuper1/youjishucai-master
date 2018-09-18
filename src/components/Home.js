@@ -336,7 +336,7 @@ export default class Home extends Component {
   //二级菜单header渲染
   _renderRowHeader(index, title, listSwitcher, goods) {
     return (
-      <View style={[goods.length > 0 ? styles.goods2Header : styles.hidden, listSwitcher || styles.goods2HeaderBorder]}>
+      <View style={[styles.goods2Header, listSwitcher || styles.goods2HeaderBorder]}>
         <Image style={styles.goods2HeaderImg1} source={require("../images/bubbleLeft.png")}></Image>
         <Text style={styles.goods2HeaderText}>{title}</Text>
         <Image style={styles.goods2HeaderImg2} source={require("../images/bubbleRight.png")}></Image>
