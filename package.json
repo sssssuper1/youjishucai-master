@@ -9,6 +9,7 @@
     "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/"
   },
   "dependencies": {
+    "@types/js-md5": "^0.4.2",
     "@types/prop-types": "^15.5.2",
     "@types/react-native-popup-dialog": "^0.9.2",
     "@types/react-native-swiper": "^1.5.8",
@@ -17,6 +18,7 @@
     "@types/react-redux": "^5.0.16",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "^2.1.0",
+    "js-md5": "^0.7.3",
     "prop-types": "^15.6.1",
     "react": "16.3.1",
     "react-native": "0.55.2",

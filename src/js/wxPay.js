@@ -9,6 +9,7 @@ function wxPay(params, navigation, uri, count) {
 
   Fetch(global.url + uri, 'post', params, async (responseData) => {
     if (!responseData.success && !responseData.result) {
+      Alert.alert('提示', responseData.errMsg);
       return
     }
 

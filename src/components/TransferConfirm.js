@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Header1 from './Header1';
-import store from '../store/index';
+import PayPassword from './PayPassword';
 import Fetch from '../js/fetch';
 import getVipPortrait from '../js/getVipPortrait';
 import Toast from 'react-native-easy-toast';
@@ -23,23 +23,30 @@ export default class TransferConfirm extends Component {
 
     this.state = {
       cash: 0,
-      payPassword: '',
+      inputPassword: false,
       isSubmitting: false,
       balance: props.navigation.state.params.userInfo.balance
     }
   }
 
-  submit() {
+  openModal() {
     const cash = Number(this.state.cash);
     if (!cash || cash == NaN || cash <= 0) return;
 
+    this.setState({
+      inputPassword: true
+    })
+  }
+
+  closeModal() {
+    this.setState({
+      inputPassword: false
+    })
+  }
+
+  submit(payPwd) {
     if (this.state.cash > this.state.balance) {
       this.refs.toast.show('余额不足!');
-      return;
-    }
-
-    if (!this.state.payPassword) {
-      this.refs.toast.show('请输入支付密码!');
       return;
     }
 
@@ -49,7 +56,7 @@ export default class TransferConfirm extends Component {
 
     const params = {
       toCustomerId: this.props.navigation.state.params.userInfo.id,
-      payPwd: this.state.payPassword,
+      payPwd: payPwd,
       money: this.state.cash
     }
 
@@ -100,25 +107,16 @@ export default class TransferConfirm extends Component {
             <Text style={styles.textInfo}>当前账户余额</Text>
             <Text style={styles.textInfo}>{this.state.balance}</Text>
           </View>
-          <View style={styles.cell}>
-            <Text style={styles.payTitle}>支付密码</Text>
-            <TextInput
-              secureTextEntry={true}
-              underlineColorAndroid={'transparent'}
-              placeholder={'请输入支付密码'}
-              style={styles.payInputField}
-              onChangeText={(text) => this.setState({payPassword: text})}
-            />
-          </View>
           <View style={styles.cellContainer}>
             <TouchableOpacity
               style={[styles.btn, this.state.isSubmitting ? styles.btnDisabled : styles.btnEnabled]}
-              onPress={this.submit.bind(this)}
+              onPress={this.openModal.bind(this)}
               disabled={this.state.isSubmitting}>
               <Text style={styles.btnText}>{this.state.isSubmitting ? '转账中' : '确认转账'}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
+        <PayPassword visible={this.state.inputPassword} close={this.closeModal.bind(this)} submit={this.submit.bind(this)} />
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     )

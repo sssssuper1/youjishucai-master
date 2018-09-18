@@ -314,7 +314,7 @@ export default class GoodsDetail extends Component {
           </TouchableOpacity>
         </View>
         <Modal
-          animationType={"slide"}
+          animationType={"fade"}
           transparent={true}
           visible={this.state.selectionModelVisible}
           >
@@ -356,7 +356,7 @@ export default class GoodsDetail extends Component {
           </View>
         </Modal>      
         <Modal
-          animationType={"slide"}
+          animationType={"fade"}
           transparent={true}
           visible={this.state.detailModelVisible}
           >

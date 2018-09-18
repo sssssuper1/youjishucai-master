@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header1 from './Header1';
+import PayPassword from './PayPassword';
 import store from '../store/index';
 import Toast from 'react-native-easy-toast';
 import Fetch from '../js/fetch';
@@ -22,6 +23,7 @@ export default class Cash extends Component {
       cash: 0,
       fee: 0,
       sum: 0,
+      inputPassword: false,
       balance: store.getState().balance
     }
 
@@ -54,9 +56,23 @@ export default class Cash extends Component {
     });
   }
 
-  submit() {
+  openModal() {
     const cash = Number(this.state.cash);
     if (!cash || cash == NaN || cash <= 0) return;
+
+    this.setState({
+      inputPassword: true
+    })
+  }
+
+  closeModal() {
+    this.setState({
+      inputPassword: false
+    })
+  }
+
+  submit(payPwd) {
+    const cash = Number(this.state.cash);
 
     if (this.state.cash > this.state.balance) {
       this.refs.toast.show('余额不足!');
@@ -64,7 +80,8 @@ export default class Cash extends Component {
     }
 
     const params = {
-      money: cash
+      money: cash,
+      payPwd: payPwd
     }
 
     Fetch(global.url + '/api/Balance/TransferToBank', 'post', params, (res) => {
@@ -111,10 +128,11 @@ export default class Cash extends Component {
           <Text style={[styles.amount, styles.textGreen]}>{this.state.sum}</Text>
         </View>
         <View style={styles.cellContainer}>
-          <TouchableOpacity style={styles.btn} onPress={this.submit.bind(this)}>
+          <TouchableOpacity style={styles.btn} onPress={this.openModal.bind(this)}>
             <Text style={styles.btnText}>确认提现</Text>
           </TouchableOpacity>
         </View>
+        <PayPassword visible={this.state.inputPassword} close={this.closeModal.bind(this)} submit={this.submit.bind(this)} />
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     )

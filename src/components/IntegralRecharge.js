@@ -4,6 +4,7 @@ import wxPayVip from '../js/wxPayVip';
 import aliPayVip from '../js/aliPayVip';
 import Header1 from './Header1.js';
 import store from '../store/index';
+import PayPassword from './PayPassword';
 import PopupDialog from 'react-native-popup-dialog';
 import Toast from 'react-native-easy-toast';
 import {
@@ -22,21 +23,39 @@ export default class IntegralRecharge extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      rechargeObject: 0,
       payNum: 0,
       inputAmount: '',
       isEnough: true,
       isConfirm: false,
       isSubmitting: false,
+      inputPassword: false,
       balance: store.getState().balance,
+      rechargeID: '',
+      rechargePhone: '',
       uid: '',
       name: '',
       phone: ''
     }
+
+    this.params = {};
   }
 
   changePaymentMethod(type) {
     this.setState({
       payNum: type
+    })
+  }
+
+  openModal() {
+    this.setState({
+      inputPassword: true
+    })
+  }
+
+  closeModal() {
+    this.setState({
+      inputPassword: false
     })
   }
 
@@ -67,7 +86,7 @@ export default class IntegralRecharge extends Component {
   pay() {
     if (this.state.inputAmount < 1) return;
 
-    if (this.state.inputAmount >= 5000) {
+    if (this.state.rechargeObject === 0 && this.state.inputAmount >= 5000) {
       this.popupShow();
     } else {
       this.recharge(false);
@@ -119,10 +138,6 @@ export default class IntegralRecharge extends Component {
   }
 
   recharge(hasExtend) {
-    this.setState({
-      isSubmitting: true
-    });
-
     const url = '/api/Integral/pay';
     let params = {};
 
@@ -139,49 +154,106 @@ export default class IntegralRecharge extends Component {
       }
     }
 
+    if (this.state.rechargeObject === 1) {
+      if (!this.state.rechargeID) {
+        this.refs.toast.show('请输入用户ID!');
+        return;
+      } 
+
+      if (!this.state.rechargePhone) {
+        this.refs.toast.show('请输入用户手机号末4位!');
+        return;
+      } 
+
+      params.uid = this.state.rechargeID;
+      params.mobile = this.state.rechargePhone;
+    }
+
+    this.setState({
+      isSubmitting: true
+    });
+
     switch (this.state.payNum) {
       case 0:
         params.payType = 'wx';
-        wxPayVip(url, this.props.navigation, params, 2);
+        wxPayVip(url, this.props.navigation, params, 2) === 1 && this.setState({isSubmitting: false})
         break;
       case 1:
         params.payType = 'ali';
-        aliPayVip(params, this.props.navigation, url, 2);
+        aliPayVip(params, this.props.navigation, url, 2) === 1 && this.setState({isSubmitting: false})
         break;
       case 2:
         params.payType = 'balance';
-        Fetch(global.url + url, 'post', params, (res) => {
-          if (res.result) {
-            // this.refs.toast.show('充值成功!');
-            // setTimeout(() => {
-            //   this.props.navigation.navigate('Home', { selectedTab: 'my' });
-            // }, 1500);
-            this.props.navigation.navigate('PaySuccess', {
-              payAmount: this.state.inputAmount,
-              orderType: 2
-            });
-          } else {
-            Alert.alert('提示', res.errMsg);
-          }
-          this.setState({
-            isSubmitting: false
-          });
-        }, (err) => {
-          Alert.alert('提示', err);
-          this.setState({
-            isSubmitting: false
-          });
-        })
+        this.params = params;
+        this.openModal();
         break;
       default:
         break;
     }
   }
 
+  balanceRecharge(payPwd) {
+    let params = this.params;
+    params.payPwd = payPwd;
+    Fetch(global.url + '/api/Integral/pay', 'post', params, (res) => {
+      if (res.result) {
+        // this.refs.toast.show('充值成功!');
+        // setTimeout(() => {
+        //   this.props.navigation.navigate('Home', { selectedTab: 'my' });
+        // }, 1500);
+        this.props.navigation.navigate('PaySuccess', {
+          payAmount: this.state.inputAmount,
+          orderType: 2
+        });
+      } else {
+        Alert.alert('提示', res.errMsg);
+      }
+      this.setState({
+        isSubmitting: false
+      });
+    }, (err) => {
+      Alert.alert('提示', err);
+      this.setState({
+        isSubmitting: false
+      });
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Header1 navigation={this.props.navigation} name="充值" />
+        <View style={styles.rechargeTypeSelectArea}>
+          <View style={styles.rechargeTypeSelect}>
+            <TouchableOpacity style={styles.typeSelect} onPress={() => this.setState({rechargeObject: 0})}>
+              <Text style={styles.textBlack}>为自己充值</Text>
+              <Image style={styles.obSelect} source={this.state.rechargeObject === 0 ? require('../images/select.png') : require('../images/unchecked.png')} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.typeSelect} onPress={() => this.setState({rechargeObject: 1})}>
+              <Text style={styles.textBlack}>帮他人充值</Text>
+              <Image style={styles.obSelect} source={this.state.rechargeObject === 1 ? require('../images/select.png') : require('../images/unchecked.png')} />
+            </TouchableOpacity>
+          </View>
+          <TextInput
+            style={this.state.rechargeObject === 1 ? styles.phoneNumber : styles.hidden}
+            keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
+            underlineColorAndroid={'transparent'}
+            returnKeyType={'done'}
+            onChangeText={(text) => this.setState({rechargeID:text}) }
+            placeholder={'ID号'}
+            placeholderTextColor={'#a6a6a6'}
+          />
+          <TextInput
+            maxLength={4}
+            style={this.state.rechargeObject === 1 ? styles.phoneNumber : styles.hidden}
+            keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
+            underlineColorAndroid={'transparent'}
+            returnKeyType={'done'}
+            onChangeText={(text) => this.setState({rechargePhone:text}) }
+            placeholder={'手机号末4位'}
+            placeholderTextColor={'#a6a6a6'}
+          />
+        </View>
         <View style={[styles.tableContainer, styles.tableFill]}>
           <View style={styles.amountTitle}>
             <Text style={styles.textBlack}>充值金额</Text>
@@ -283,6 +355,7 @@ export default class IntegralRecharge extends Component {
             </View>
           </View>
         </PopupDialog>
+        <PayPassword visible={this.state.inputPassword} close={this.closeModal.bind(this)} submit={this.balanceRecharge.bind(this)} />
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     )
@@ -296,6 +369,38 @@ const styles = StyleSheet.create({
   },
   hidden: {
     display: 'none'
+  },
+  rechargeTypeSelectArea: {
+    marginTop: pxToDp(15),
+    backgroundColor: '#ffffff',
+  },
+  rechargeTypeSelect: {
+    paddingHorizontal: pxToDp(34),
+    flexDirection: 'row',
+    borderBottomWidth: pxToDp(2),
+    borderBottomColor: '#eeeeee'
+  },
+  typeSelect: {
+    flex: 1,
+    height: pxToDp(112),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRightWidth: pxToDp(1),
+    borderRightColor: '#eeeeee'
+  },
+  obSelect: {
+    width: pxToDp(40),
+    height: pxToDp(40),
+    marginLeft: pxToDp(30)
+  },
+  phoneNumber:{
+    height: pxToDp(106),
+    backgroundColor:'white',
+    paddingLeft: pxToDp(34),
+    fontSize: pxToDp(32),
+    borderBottomWidth: pxToDp(2),
+    borderBottomColor: '#eeeeee'
   },
   tableContainer: {
     marginTop: pxToDp(15),

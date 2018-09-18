@@ -22,7 +22,8 @@ export default class TransferInput extends Component {
   constructor(props) {
     super(props);
 
-    this.state={
+    this.state = {
+      id: '',
       phone: ''
     }
   }
@@ -30,7 +31,7 @@ export default class TransferInput extends Component {
   submit() {
     if (!this.state.phone) return;
 
-    Fetch(global.url + '/api/Balance/GetUserInfo?phone=' + this.state.phone, 'get', null, (res) => {
+    Fetch(`${global.url}/api/Balance/GetUserInfo?phone=${this.state.phone}&uid=${this.state.id}`, 'get', null, (res) => {
       if (res.result) {
         this.props.navigation.navigate('TransferConfirm', { userInfo: res.data });
       } else {
@@ -46,13 +47,22 @@ export default class TransferInput extends Component {
       <View style={styles.contenier} >
         <Header1 navigation={this.props.navigation} name={'余额转账'}></Header1>
         <TextInput
-          maxLength={11}
+          style={[styles.phoneNumber, styles.tabSplit]}
+          keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
+          underlineColorAndroid={'transparent'}
+          returnKeyType={'done'}
+          onChangeText={(text) => this.setState({id:text}) }
+          placeholder={'ID号'}
+          placeholderTextColor={'#a6a6a6'}
+        />
+        <TextInput
+          maxLength={4}
           style={styles.phoneNumber}
           keyboardType={Platform.OS == 'ios' ? 'numbers-and-punctuation' : 'numeric'}
           underlineColorAndroid={'transparent'}
           returnKeyType={'done'}
           onChangeText={(text) => this.setState({phone:text}) }
-          placeholder={'请输入ID/手机号'}
+          placeholder={'手机号末4位'}
           placeholderTextColor={'#a6a6a6'}
         />
         <View style={styles.fonter}>
@@ -69,12 +79,16 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
-  phoneNumber:{
+  tabSplit: {
     marginTop: pxToDp(15),
+  },
+  phoneNumber:{
     height: pxToDp(106),
     backgroundColor:'white',
     paddingLeft: pxToDp(34),
-    fontSize: pxToDp(32)
+    fontSize: pxToDp(32),
+    borderBottomWidth: pxToDp(1),
+    borderBottomColor: '#eeeeee'
   },
   fonter: {
     paddingLeft: pxToDp(34),

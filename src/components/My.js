@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import store from '../store/index';
 import getVipPortrait from '../js/getVipPortrait';
@@ -22,11 +16,9 @@ import pxToDp from '../js/pxToDp';
 export default class My extends Component {
   constructor(props) {
     super(props);
-    let userId = props.user.id == '' ? props.user.id : '6' + ('000000' + props.user.id).slice(-6);
 
     this.state = {
       count: store.getState().count,
-      userId: userId
     }
     this.unsubscribe = store.subscribe(() => {
       this.setState({
@@ -41,12 +33,12 @@ export default class My extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const { vip, name, integral, balance, agent, hasStore } = this.props.user;
+    const { vip, name, integral, balance, agent, hasStore, UID } = this.props.user;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.headPointer} onPress={() => navigate('Partner')}>
+            <TouchableOpacity style={styles.headPointer}>
               <Image style={styles.headPointerImg} source={getVipPortrait(vip)}/>
             </TouchableOpacity>
             <View style={styles.nameContainer}>
@@ -59,7 +51,7 @@ export default class My extends Component {
                   <Text style={styles.tagInfo}>{agent}</Text>
                 </View>
               </View>
-              <Text style={styles.userId}>{this.state.userId == '' ? '' : `ID: ${this.state.userId}`}</Text>
+              <Text style={styles.userId}>{UID == '' ? '' : `ID: ${UID}`}</Text>
             </View>
             <TouchableOpacity style={styles.set} onPress={() => {navigate('Set')}}>
               <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
@@ -137,6 +129,11 @@ export default class My extends Component {
             <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('UserAddress')}}>
               <Image style={styles.detailBtnImg}  source={require('../images/getAddress.png')}></Image>
               <Text style={styles.detailBtnText}>收货地址</Text> 
+              <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('Partner')}}>
+              <Image style={styles.detailBtnImg}  source={require('../images/myPartner.png')}></Image>
+              <Text style={styles.detailBtnText}>我的分享</Text> 
               <Image style={styles.detailDir} source={require('../images/rightDir.png')}></Image>
             </TouchableOpacity>
             <TouchableOpacity style={styles.detailBtn} onPress={() => {navigate('ServiceCenter')}}>

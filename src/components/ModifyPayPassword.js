@@ -14,6 +14,7 @@ import {
   View,
   TextInput
 } from 'react-native';
+import md5 from 'js-md5';
 import pxToDp from '../js/pxToDp';
 
 export default class ModifyPayPassword extends Component {
@@ -38,16 +39,15 @@ export default class ModifyPayPassword extends Component {
       return;
     }
 
-    if (this.state.newPassword.length < 6) {
-      this.refs.toast.show('请确认密码长度在6位及以上!');
+    if (this.state.newPassword.length !== 6) {
+      this.refs.toast.show('请确认密码为6位数字!');
       return;
     }
 
     let digit = /^[0-9]{1,20}$/;
-    let alpha = /^[a-zA-Z]{1,20}$/;
 
-    if (digit.exec(this.state.newPassword) || alpha.exec(this.state.newPassword)) {
-      this.refs.toast.show('请确认密码包含字母和数字!');
+    if (!digit.exec(this.state.newPassword)) {
+      this.refs.toast.show('请确认密码为6位数字!');
       return;
     }
     
@@ -58,8 +58,8 @@ export default class ModifyPayPassword extends Component {
     }
 
     let params = {
-      oldPassword: this.state.nowPassword,
-      newPassword: this.state.confirmPassword
+      oldPassword: md5(this.state.nowPassword),
+      newPassword: md5(this.state.confirmPassword)
     }
 
     Fetch(global.url + '/api/user/ResetPayPwd', 'post', params, (res) => {
@@ -98,8 +98,8 @@ export default class ModifyPayPassword extends Component {
               onChangeText={(text) => this.setState({ newPassword: text })}
               value={this.state.newPassword}
               secureTextEntry={true}
-              maxLength={20}
-              placeholder={'新密码（6-20字符，包含字母、数字）'}
+              maxLength={6}
+              placeholder={'新密码（6位数字）'}
               placeholderTextColor={'#a6a6a6'}
             />
           </View> 

@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import Fetch from '../js/fetch';
 import Header1 from './Header1.js';
 import store from '../store/index';
+import CookieManager from 'react-native-cookies';
 import {
   StyleSheet,
   Text,
@@ -52,6 +53,7 @@ export default class ShopDetail extends Component {
       image: '',
       desc: '',
       WebViewHeight: 0,
+      isLogin: false,
       integral: store.getState().integral
     }
     this.loadData();
@@ -61,6 +63,16 @@ export default class ShopDetail extends Component {
         integral: store.getState().integral
       });
     });
+  }
+
+  componentDidMount() {
+    CookieManager.get(global.url).then(cookie => {
+      if (!!cookie.userId) {
+        this.setState({
+          isLogin: true
+        });
+      }
+    })
   }
 
   loadData() {
@@ -158,7 +170,7 @@ export default class ShopDetail extends Component {
                 <Text style={styles.integral}>可用积分: {this.state.integral}</Text>
               </View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.payButton} onPress={() => navigate('ShopPay', {id: state.params.id})}>
+                <TouchableOpacity style={this.state.isLogin ? styles.payButton : styles.hidden} onPress={() => navigate('ShopPay', {id: state.params.id})}>
                   <Text style={styles.payText}>买单</Text>
                 </TouchableOpacity>
               </View>
@@ -203,6 +215,9 @@ const styles = StyleSheet.create({
   contenier: {
     width: '100%',
     height: '100%',
+  },
+  hidden: {
+    display: 'none'
   },
   shopImgContainer: {
     width: '100%',

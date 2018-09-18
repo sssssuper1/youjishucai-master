@@ -7,6 +7,7 @@ import Alipay from "react-native-yunpeng-alipay";
 export default function aliPay(params, navigation, url, count) {
   Fetch(global.url + url, 'post', params, (responseData) => {
     if (!responseData.success) {
+      Alert.alert('提示', responseData.errMsg);
       return
     }
 

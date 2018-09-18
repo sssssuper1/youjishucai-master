@@ -323,12 +323,7 @@ export default class Home extends Component {
           </View>
           <TouchableOpacity
             disabled={!hasStock}
-            ref={(r) => {
-              try { this._refs[listIndex][index] = r }
-              catch (e) {
-                console.error(this.rightGoods[2])
-              }
-            }}
+            ref={(r) => { this._refs[listIndex][index] = r }}
             onPress={() => { this.getScreenXY(listIndex, index, item.specs[0].id) }}
             style={styles.rowGoodsAdd}>
             <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
@@ -636,7 +631,7 @@ const styles = StyleSheet.create({
   goods2Header: {
     position: 'relative',
     height: pxToDp(98),
-    marginTop: pxToDp(12),
+    paddingTop: pxToDp(12),
     marginRight: pxToDp(12),
     flexDirection: 'row',
     alignItems: 'center',
@@ -644,8 +639,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff'
   },
   goods2HeaderBorder: {
-    borderWidth: pxToDp(2),
-    borderColor: '#f4f4f4',
+    borderBottomWidth: pxToDp(2),
+    borderBottomColor: '#f4f4f4',
   },
   goods2HeaderText: {
     marginLeft: pxToDp(15),

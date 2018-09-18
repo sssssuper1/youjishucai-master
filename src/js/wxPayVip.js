@@ -7,7 +7,8 @@ function wxPayVip(uri, navigation, params, orderType = 1) {
 
   Fetch(global.url + uri, 'post', params, async (responseData) => {
     if (!responseData.result) {
-      return
+      Alert.alert('提示', responseData.errMsg);
+      return 1
     }
 
     WeChat.pay({

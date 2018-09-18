@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header1 from './Header1';
+import PayPassword from './PayPassword';
 import store from '../store/index';
 import Fetch from '../js/fetch';
 import Toast from 'react-native-easy-toast';
@@ -21,8 +22,24 @@ export default class ShopPay extends Component {
     this.state = {
       payIntegral: 0,
       sumIntegral: store.getState().integral,
-      isSubmitting: false
+      isSubmitting: false,
+      inputPassword: false
     }
+  }
+
+  openModal() {
+    const integral = Number(this.state.payIntegral);
+    if (integral == NaN || integral <= 0) return;
+
+    this.setState({
+      inputPassword: true
+    })
+  }
+
+  closeModal() {
+    this.setState({
+      inputPassword: false
+    })
   }
 
   payInput(text) {
@@ -31,9 +48,8 @@ export default class ShopPay extends Component {
     });
   }
 
-  submit() {
+  submit(password) {
     const integral = Number(this.state.payIntegral);
-    if (integral == NaN || integral <= 0) return;
 
     if (integral > this.state.sumIntegral) {
       this.refs.toast.show('积分不足!');
@@ -46,7 +62,8 @@ export default class ShopPay extends Component {
 
     let params = {
       storeId: this.props.navigation.state.params.id,
-      integral: this.state.payIntegral
+      integral: this.state.payIntegral,
+      payPwd: password
     }
 
     Fetch(global.url + '/api/store/AddRecord', 'post', params, (res) => {
@@ -103,10 +120,11 @@ export default class ShopPay extends Component {
         <View style={styles.cellContainer}>
           <TouchableOpacity
             style={[styles.btn, this.state.isSubmitting ? styles.btnDisabled : styles.btnEnabled]}
-            onPress={this.submit.bind(this)} disabled={this.state.isSubmitting}>
+            onPress={this.openModal.bind(this)} disabled={this.state.isSubmitting}>
             <Text style={styles.btnText}>{this.state.isSubmitting ? '支付中' : '确认买单'}</Text>
           </TouchableOpacity>
         </View>
+        <PayPassword visible={this.state.inputPassword} close={this.closeModal.bind(this)} submit={this.submit.bind(this)} />
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>
     )
