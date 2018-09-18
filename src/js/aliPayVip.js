@@ -2,11 +2,12 @@ import { Alert } from "react-native";
 import Fetch from "./fetch";
 import Alipay from "react-native-yunpeng-alipay";
 
-export default function aliPayVip(params, navigation, url, orderType = 1) {
+export default function aliPayVip(params, navigation, url, orderType = 1, errorBack = () => { }) {
   Fetch(global.url + url, 'post', params, (responseData) => {
     if (!responseData.success) {
       Alert.alert('提示', responseData.errMsg);
-      return 1
+      errorBack();
+      return
     }
 
     if (responseData.data.totalAmount == 0) {

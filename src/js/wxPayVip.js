@@ -2,13 +2,14 @@ import {Alert} from 'react-native';
 import Fetch from './fetch';
 import * as WeChat from 'react-native-wechat';
 
-function wxPayVip(uri, navigation, params, orderType = 1) {
+function wxPayVip(uri, navigation, params, orderType = 1, errorback = () => {}) {
   WeChat.registerApp('wx4e425ddae999f00b');
 
   Fetch(global.url + uri, 'post', params, async (responseData) => {
     if (!responseData.result) {
       Alert.alert('提示', responseData.errMsg);
-      return 1
+      errorback();
+      return
     }
 
     WeChat.pay({
