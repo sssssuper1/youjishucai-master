@@ -72,15 +72,28 @@ export default class Index extends Component {
 
     this._didFocusSubscription = props.navigation.addListener('didFocus', payload => {
       BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid);
-      NetInfo.isConnected.fetch().then((isConnected) => {
-        if (isConnected) {
-          this.loadData();
-        } else {
-          this.setState({
-            isConnected: false
-          })
-        }
-      })
+      if (Platform.OS == 'android') {
+        NetInfo.isConnected.fetch().then((isConnected) => {
+          if (isConnected) {
+            this.loadData();
+          } else {
+            this.setState({
+              isConnected: false
+            })
+          }
+        })
+      } else {
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+          if (connectionInfo.type == 'none') {
+            this.setState({
+              isConnected: false
+            })
+          } else {
+            this.loadData();
+          }
+        })
+      }
+      
 
       // this.setTab();
     });

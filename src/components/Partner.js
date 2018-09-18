@@ -45,7 +45,8 @@ export default class Partner extends Component {
           <Image style={styles.headPortrait} source={getVipPortrait(item.level)} />
         </View>
         <View style={styles.partnerInfo}>
-          <Text style={[styles.font26, styles.textBlack]}>{item.name}</Text>
+          <Text style={[styles.font26, styles.textBlack]}>昵称: {item.name}</Text>
+          <Text style={[styles.font26, styles.textBlack]}>ID: {item.UID}</Text>
           <Text style={[styles.font24, styles.textGrey]}>联系方式: {item.phone}</Text>
           <Text style={[styles.font24, styles.textGrey]}>VIP等级: {item.levelName}</Text>
           <Text style={[item.upgradeLevelTime ? styles.font24 : styles.hidden, styles.textGrey]}>成为VIP时间: {item.upgradeLevelTime}</Text>
@@ -91,7 +92,8 @@ const styles = StyleSheet.create({
     paddingLeft: pxToDp(26)
   },
   font26: {
-    fontSize: pxToDp(26)
+    fontSize: pxToDp(26),
+    lineHeight: pxToDp(38)
   },
   font24: {
     fontSize: pxToDp(24),

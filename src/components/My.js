@@ -38,7 +38,7 @@ export default class My extends Component {
       <View style={styles.contenier}>  
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.headPointer}>
+            <TouchableOpacity style={styles.headPointer} onPress={() => {navigate('Partner')}}>
               <Image style={styles.headPointerImg} source={getVipPortrait(vip)}/>
             </TouchableOpacity>
             <View style={styles.nameContainer}>

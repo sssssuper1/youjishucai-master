@@ -211,7 +211,7 @@ export default class Register1 extends Component {
             style={styles.detailAddress}
             maxLength={6}
             secureTextEntry={true}
-            placeholder={'输入支付密码'}
+            placeholder={'输入支付密码（6位数字）'}
             onChangeText={(text) => this.setState({payPassword:text})}
             value={this.state.payPassword}
           />
