@@ -55,7 +55,8 @@ export default class IntegralRecharge extends Component {
 
   closeModal() {
     this.setState({
-      inputPassword: false
+      inputPassword: false,
+      isSubmitting: false
     })
   }
 
@@ -86,7 +87,19 @@ export default class IntegralRecharge extends Component {
   pay() {
     if (this.state.inputAmount < 1) return;
 
-    if (this.state.rechargeObject === 0 && this.state.inputAmount >= 5000) {
+    if (this.state.rechargeObject === 1) {
+      if (!this.state.rechargeID) {
+        this.refs.toast.show('请输入用户ID!');
+        return;
+      } 
+
+      if (!this.state.rechargePhone) {
+        this.refs.toast.show('请输入用户手机号末4位!');
+        return;
+      } 
+    }
+
+    if (this.state.inputAmount >= 5000) {
       this.popupShow();
     } else {
       this.recharge(false);
@@ -155,16 +168,6 @@ export default class IntegralRecharge extends Component {
     }
 
     if (this.state.rechargeObject === 1) {
-      if (!this.state.rechargeID) {
-        this.refs.toast.show('请输入用户ID!');
-        return;
-      } 
-
-      if (!this.state.rechargePhone) {
-        this.refs.toast.show('请输入用户手机号末4位!');
-        return;
-      } 
-
       params.uid = this.state.rechargeID;
       params.mobile = this.state.rechargePhone;
     }

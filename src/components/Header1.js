@@ -98,11 +98,12 @@ const styles = StyleSheet.create({
   },
   headerGoBack: {
     position: 'absolute',
-    left: pxToDp(16),
-    width: pxToDp(50),
+    left: pxToDp(29),
+    width: pxToDp(100),
     height: '100%',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    // justifyContent: 'center'
   },
   headerShare: {
     position: 'absolute',
