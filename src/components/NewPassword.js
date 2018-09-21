@@ -24,7 +24,7 @@ export default class NewPassword extends Component {
     super(props);
     const { params } = this.props.navigation.state;
 
-    this.state={
+    this.state = {
       modelVistibal: true,
       code: '',
       password: '',
@@ -35,25 +35,28 @@ export default class NewPassword extends Component {
     }
     
   }
+  setIntervalCode() {
+    let num = 60;
+    this.setState({ isInput: true });
+    this.state.timer = setInterval(() => {
+      num--;
+      let codeText = `重新获取(${num})`
+      this.setState({ codeText: codeText })
+      if (num <= 0) {
+        clearInterval(this.state.timer)
+        this.setState({ isInput: false, codeText: '获取验证码' })
+      }
+    }, 1000);
+  }
   getCode() {
     clearInterval(this.state.timer)
-    let num=60
     let params = {
       mobileNo: this.state.phoneNumber,
       type: '忘记密码'
     };
     Fetch(global.url + '/api/User/GetSMScode', 'post', params, (res) => {
       if (res.result) {
-        this.setState({ isInput: true });
-        this.state.timer=setInterval(()=>{
-          num--;
-          let codeText=`重新获取(${num})`
-          this.setState({codeText:codeText})
-          if(num<=0){
-            clearInterval(this.state.timer)
-            this.setState({isInput:false,codeText: '获取验证码'})
-          }
-        },1000)
+        this.setIntervalCode();
       } else {
         this.refs.toast.show(res.errMsg);
       }
@@ -62,7 +65,7 @@ export default class NewPassword extends Component {
     })
   }
   componentWillMount() {
-    this.getCode();
+    this.setIntervalCode();
   }
   submit() {
     if (this.state.code == '') {
