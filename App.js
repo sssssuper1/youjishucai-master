@@ -45,6 +45,9 @@ import Share from './src/components/Share';
 import BankCard from './src/components/BankCard';
 import Partner from './src/components/Partner';
 import CommunityOrders from './src/components/CommunityOrders';
+import Comment from './src/components/Comment';
+import AllComments from './src/components/AllComments';
+import Artical from './src/components/Artical';
 import { StackNavigator } from 'react-navigation';
 import store from './src/store/index';
 import { storage } from './src/js/StorageUtil';
@@ -441,6 +444,37 @@ class CommunityOrderScreen extends Component {
     )
   }
 }
+class ArticalScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <Artical navigation={this.props.navigation} />
+    )
+  }
+}
+class CommentScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <Comment navigation={this.props.navigation} />
+    )
+  }
+}
+class AllCommentScreen extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  render() {
+    return (
+      <AllComments navigation={this.props.navigation} />
+    )
+  }
+}
+
 
 function configAppNavigator(isLoggeIn) {
   return StackNavigator({
@@ -599,6 +633,18 @@ function configAppNavigator(isLoggeIn) {
     // 社群消费订单
     CommunityOrders: {
       screen: CommunityOrderScreen
+    },
+    // 文章
+    Artical: {
+      screen: ArticalScreen
+    },
+    // 评论
+    Comment: {
+      screen: CommentScreen
+    },
+    // 全部评论
+    AllComments: {
+      screen: AllCommentScreen
     }
   }, {
     initialRouteName: isLoggeIn ? 'Home' : 'SignIn'

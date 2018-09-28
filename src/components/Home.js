@@ -28,7 +28,8 @@ import {
   Alert,
   FlatList,
   SectionList,
-  ToastAndroid
+  ToastAndroid,
+  Modal
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
 import hasFringe from '../js/hasFringe';
@@ -54,9 +55,18 @@ export default class Home extends Component {
       fadeAnim: new Animated.Value(0),
       message: '网络错误!',
       count: 0,
+      selectedName: '',
+      selectedPrice: 0,
+      selectedStock: 0,
+      specId: 0,
+      specs: [],
       banners: [],
-      refreshing: false
+      refreshing: false,
+      selectionModelVisible: false
     }
+
+    this.refsj = 0
+    this.refsi = 0
 
     this._refs = []
 
@@ -192,28 +202,34 @@ export default class Home extends Component {
     })
   }
 
-  showAlert = () => {
-    this.setState({
-      showAlert: true
-    });
-  }
-
-  hideAlert = () => {
-    this.setState({
-      showAlert: false
-    });
-  }
-
   getScreenXY(j, i, id) {
     this.addToCart(id);
     this._refs[j][i].measure((x, y, width, height, pageX, pageY) => {
       this.setState({
+        selectionModelVisible: false,
         right: new Animated.Value(deviceWidthDp - pageX - pxToDp(45 / 2)),
         top: new Animated.Value(pageY - pxToDp(45 / 2))
       }, () => { 
         this.animate();
       })
     })
+  }
+
+  choseSpec(j, i, specs, name) {
+    if (specs.length > 1) {
+      this.refsj = j;
+      this.refsi = i;
+      this.setState({
+        selectionModelVisible: true,
+        specs: specs,
+        selectedName: name,
+        selectedPrice: specs[0].price,
+        specId: specs[0].id,
+        selectedStock: specs[0].stock
+      })
+    } else {
+      this.getScreenXY(j, i, specs[0].id)
+    }
   }
 
   componentWillUnmount() {
@@ -257,6 +273,19 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     navigate('SearchGoods', { keyword: this.state.searchText });
   }
+
+  goDetail(url) {
+    const { navigate } = this.props.navigation;
+    let urlRegular = /^http/
+    let goodDetailRegular = /goodId=/i
+
+    if (urlRegular.test(url)) {
+      navigate('Artical', { url: url });
+    } else if (goodDetailRegular.test(url)) {
+      navigate('GoodsDetail', { id: url.replace(goodDetailRegular, '') });
+    }
+  }
+
   //点击1级菜单
   goods1NameFn(dataSource, rowID) {
     let name=""
@@ -312,8 +341,8 @@ export default class Home extends Component {
       <View style={styles.rowGoods} key={index}>
         <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
           <CachedImage style={styles.rowGoodsImg} source={{ uri: item.cover == null ? '' : item.cover}} />
-          <View style={hasStock? styles.hidden : styles.rowGoodsNoStock}>
-            <Text style={styles.rowGoodsNoStockText}>售空</Text>
+          <View style={!hasStock || item.purchaseLimit > 0 ? styles.rowGoodsRemark : styles.hidden}>
+            <Text style={styles.rowGoodsRemarkText}>{hasStock ? `限购${item.purchaseLimit}件` : '售空'}</Text>
           </View>
         </TouchableOpacity>
         <View><Text numberOfLines={1} style={styles.rowGoodsName}>{item.goodName}</Text></View>
@@ -325,7 +354,7 @@ export default class Home extends Component {
           <TouchableOpacity
             disabled={!hasStock}
             ref={(r) => { this._refs[listIndex][index] = r }}
-            onPress={() => { this.getScreenXY(listIndex, index, item.specs[0].id) }}
+            onPress={() => this.choseSpec(listIndex, index, item.specs, item.goodName)}
             style={styles.rowGoodsAdd}>
             <Image style={styles.rowGoodsAddImg} source={hasStock ? require('../images/addGood.png') : require('../images/addGood2.png')}/>
           </TouchableOpacity>
@@ -363,9 +392,12 @@ export default class Home extends Component {
 
     let swiper = (this.state.banners.map((item, index)=> {
       return (
-        <View key={item.imgUrl} style={{ flex: 1, justifyContent: 'center'}}>
+        <TouchableOpacity
+          key={item.imgUrl}
+          onPress={() => this.goDetail(item.href)}
+          style={{ flex: 1, justifyContent: 'center' }}>
           <Image style={styles.banner} source={{ uri: item.imgUrl }}></Image>
-        </View>
+        </TouchableOpacity>
       )
     }));
 
@@ -454,6 +486,45 @@ export default class Home extends Component {
             this.hideAlert();
           }}
         />
+        <Modal
+          animationType={"fade"}
+          transparent={true}
+          visible={this.state.selectionModelVisible}
+          onRequestClose={() => this.setState({selectionModelVisible: false})}>
+          <TouchableOpacity
+            style={styles.specSelectModal}
+            onPress={() => this.setState({ selectionModelVisible: false })}>
+            <View style={styles.specModalContainer}>
+              <View style={styles.specModalTitle}>
+                <Text style={styles.specModalName}>{this.state.selectedName}</Text>
+              </View>
+              <View style={styles.specModalSelectTitle}>
+                <Text style={styles.specModalSelectText}>规格:</Text>
+              </View>
+              <View style={styles.specModalSelector}>
+                {this.state.specs.map((item, index) => 
+                  <TouchableOpacity
+                    style={[styles.specBtn, this.state.specId == item.id ? styles.specBtnSelected : styles.specBtnUnselected]}
+                    onPress={() => this.setState({
+                      specId: item.id,
+                      selectedPrice: item.price,
+                      selectedStock: item.stock
+                    })}>
+                    <Text style={this.state.specId == item.id ? styles.specTextSelected : styles.specTextUnselected}>{item.spec}</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+              <View style={styles.specModalSummary}>
+                <Text style={styles.rowGoodsSymbol}>￥{this.state.selectedPrice}</Text>
+                <TouchableOpacity
+                  style={[styles.specModalBtn, this.state.selectedStock > 0 ? styles.specModalBtnEnable : styles.specModalBtnDisable]}
+                  onPress={() => this.getScreenXY(this.refsj, this.refsi, this.state.specId)}>
+                  <Text style={this.state.selectedStock > 0 ? styles.specModalBtnTextEnable : styles.specModalBtnTextDisable}>{this.state.selectedStock > 0 ? '加入购物车' : '售空'}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
         <Toast ref={toast => {this.toast = toast;}} style={styles.toast} position="top" positionValue={410}/>
       </View>
     );
@@ -691,15 +762,18 @@ const styles = StyleSheet.create({
     height: pxToDp(236),
     marginBottom: pxToDp(18)
   },
-  rowGoodsNoStock: {
+  rowGoodsRemark: {
     position: 'absolute',
-    padding: pxToDp(10),
+    paddingHorizontal: pxToDp(10),
+    marginTop: pxToDp(10),
+    marginRight: pxToDp(10),
     right: 0,
     top: 0,
+    backgroundColor: '#ffae00'
   },
-  rowGoodsNoStockText: {
+  rowGoodsRemarkText: {
     fontSize: pxToDp(20),
-    color: '#ffae00'
+    color: '#ffffff'
   },
   rowGoodsName: {
     marginTop: pxToDp(10),
@@ -752,6 +826,92 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white"
+  },
+  specSelectModal: {
+    backgroundColor: "rgba(0,0,0,0.3)",
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  specModalContainer: {
+    backgroundColor: '#ffffff',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    padding: pxToDp(30),
+    width: pxToDp(600),
+    borderRadius: pxToDp(20)
+  },
+  specModalTitle: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  specModalName: {
+    fontSize: pxToDp(34),
+    color: '#000000'
+  },
+  specModalSelectTitle: {
+    marginTop: pxToDp(40)
+  },
+  specModalSelector: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingVertical: pxToDp(20)
+  },
+  specBtn: {
+    paddingLeft: pxToDp(20),
+    paddingRight: pxToDp(20),
+    marginRight: pxToDp(30),
+    marginBottom: pxToDp(20),
+    height: pxToDp(64),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: pxToDp(30)
+  },
+  specBtnSelected: {
+    backgroundColor: '#2abd89'
+  },
+  specBtnUnselected: {
+    backgroundColor: '#f4f4f4'
+  },
+  specModalSummary: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: pxToDp(20),
+    paddingTop: pxToDp(20),
+    borderTopWidth: pxToDp(1),
+    borderTopColor: '#eeeeee'
+  },
+  specModalBtn: {
+    paddingLeft: pxToDp(20),
+    paddingRight: pxToDp(20),
+    height: pxToDp(64),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: pxToDp(30),
+    borderWidth: pxToDp(2)
+  },
+  specModalBtnEnable: {
+    borderColor: '#2abd89'
+  },
+  specModalBtnDisable: {
+    borderColor: '#d0d0d0'
+  },
+  specModalBtnTextEnable: {
+    fontSize: pxToDp(28),
+    color: '#2abd89'
+  },
+  specModalBtnTextDisable: {
+    fontSize: pxToDp(28),
+    color: '#d0d0d0'
+  },
+  specTextSelected: {
+    fontSize: pxToDp(28),
+    color: '#ffffff'
+  },
+  specTextUnselected: {
+    fontSize: pxToDp(28),
+    color: '#000000'
   },
   toast:{
     backgroundColor: '#626262'

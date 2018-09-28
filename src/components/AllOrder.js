@@ -151,6 +151,16 @@ export default class AllOrder extends Component {
       this.setState({
         dataSource: data
       })
+    } else if (num === 4) {
+      let data = [];
+      this.data.forEach((item) => {
+        if (item.state == this.states[num] || item.state == '待评价') {
+          data.push(item);
+        }
+      });
+      this.setState({
+        dataSource: data
+      })
     } else {
       let data = [];
       this.data.forEach((item) => {
@@ -203,6 +213,11 @@ export default class AllOrder extends Component {
               this.confirmOrder(item.id)
             }}>
               <Text allowFontScaling={false} style={styles.buttonTextWhite}>确认收货</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={item.orderState===3?styles.orderButtonGreen:styles.hidden} onPress={() => {
+              navigate('Comment', {orderId: item.id, orderDetails: item.details})
+            }}>
+              <Text allowFontScaling={false} style={styles.buttonTextWhite}>发表评价</Text>
             </TouchableOpacity>
           </View>
         </View> 

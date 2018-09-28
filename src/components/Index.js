@@ -32,8 +32,8 @@ import CookieManager from 'react-native-cookies';
 import SplashScreen from 'react-native-splash-screen';
 import PopupDialog from 'react-native-popup-dialog';
 
-global.url = "http://sxj.xcf178.com";
-// global.url = "http://xsq.ngrok.sws168.com";
+// global.url = "http://sxj.xcf178.com";
+global.url = "http://xsq.ngrok.sws168.com";
 
 global.data = {
   user: {
@@ -59,6 +59,7 @@ export default class Index extends Component {
         balance: 0,
         vip: 0,
         agent: '',
+        levelName: '',
         UID: '',
         hasStore: false
       },
@@ -146,7 +147,7 @@ export default class Index extends Component {
 
   getNotify() {
     Fetch(global.url + '/api/Home/GetNotify', 'get', null, (res) => {
-      if (typeof res == 'object' && res.result) {
+      if (res.result) {
         global.storage.load({
           key: 'notify'
         }).then(ret => {
@@ -303,7 +304,7 @@ export default class Index extends Component {
         {this.state.isConnected ? tabNav : noSignal}
         <PopupDialog
           width={pxToDp(600)} 
-          height={pxToDp(570)} 
+          height={pxToDp(620)} 
           containerStyle={{zIndex: 1000}}
           ref={(popupDialog) => { this.popupDialog = popupDialog; }}
           >
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
     height:pxToDp(48)
   },
   bullet: {
-    height: pxToDp(570),
+    height: pxToDp(620),
     alignItems: 'center'
   },
   bulletImage: {
@@ -370,7 +371,8 @@ const styles = StyleSheet.create({
     width: pxToDp(500)
   },
   bulletContentText: {
-    fontSize: pxToDp(32),
+    fontSize: pxToDp(30),
+    lineHeight: pxToDp(50),
     color: '#99979a'
   },
   button: {

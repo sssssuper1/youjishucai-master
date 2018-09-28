@@ -21,9 +21,11 @@ import {
   ScrollView,
   Alert,
   Modal,
-  WebView
+  WebView,
+  FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import { renderEvaluationList } from './Evaluate';
 
 const renderPagination = (index, total, context) => {
   return (
@@ -42,6 +44,7 @@ export default class GoodsDetail extends Component {
 
     this.index = 0;
     this.desc = '';
+    this.id = params.id;
 
     this.state={
       selectionModelVisible: false,
@@ -55,7 +58,10 @@ export default class GoodsDetail extends Component {
       noStock: true,
       WebViewHeight: 0,
       desc: '',
-      isLogin: false
+      isLogin: false,
+      commentCount: 0,
+      averageStar: 0,
+      comments: []
     }
 
     CookieManager.get(global.url).then(cookie => {
@@ -125,6 +131,20 @@ export default class GoodsDetail extends Component {
     (err) => {
       Alert.alert('提示',err);
     });
+    
+    Fetch(global.url + '/API/ProductDetail/GetComments?pageIndex=0&pageSize=2&goodId=' + id, 'get', '', (res) => {
+      if (res.result) {
+        this.setState({
+          comments: res.data.comments,
+          commentCount: res.data.total,
+          averageStar: res.data.averageStar
+        })
+      } else {
+        this.refs.toast.show(res.errMsg);
+      }
+    }, (err) => {
+      Alert.alert('提示', err);
+    })
   }
 
   changeSpec(index) {
@@ -192,6 +212,12 @@ export default class GoodsDetail extends Component {
     this.setState({
       detailModelVisible: false
     });
+  }
+
+  seeAllComments() {
+    if (this.state.commentCount > 0) {
+      this.props.navigation.navigate('AllComments', {id: this.id})
+    }
   }
 
   webViewLoaded = () => {
@@ -282,6 +308,22 @@ export default class GoodsDetail extends Component {
               <Text style={styles.title}>产品参数</Text><Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
             </TouchableOpacity>
           </View>
+          <View style={styles.goodsDetail}>
+            <TouchableOpacity style={styles.goodsInfo} onPress={this.seeAllComments.bind(this)}>
+              <Text style={styles.title}>用户评价 ({this.state.commentCount})</Text>
+              <Text style={this.state.averageStar > 0 ? styles.titleInfo : styles.hidden}>{this.state.averageStar * 20}% 好评</Text>
+              <Image style={styles.dir} source={require("../images/rightDir.png")}></Image>
+            </TouchableOpacity>
+            <FlatList
+              data={this.state.comments}
+              renderItem={({item, index}) => renderEvaluationList(item, index)}
+            />
+            <View style={this.state.commentCount > 0 ? styles.toAll : styles.hidden}>
+              <TouchableOpacity style={styles.toAllBtn} onPress={this.seeAllComments.bind(this)}>
+                <Text style={styles.toAllText}>查看全部评价</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <WebView
             ref={'webview'}
             source={{html: this.state.desc, baseUrl: ''}}
@@ -328,8 +370,10 @@ export default class GoodsDetail extends Component {
                 <View style={styles.modalGoodsPriceNum}><Text style={styles.modalOricalPrice}>￥{specDt[specIndex].preSellPrice}</Text></View>
                 <View style={styles.modalGoodsPriceNum}><Text style={styles.modalNum}>库存：{specDt[specIndex].stock}</Text></View>
                 <View style={styles.modalGoodsSpecWrap}>
-                  <View style={styles.modalGoodsSpec}>
+                  <View style={styles.modalGoodsSpecWrapTitle}>
                     <Text>规格</Text>
+                  </View>
+                  <View style={styles.modalGoodsSpec}>
                     {this._renderSpecifications(specDt)}
                   </View>
                   <View style={styles.modalGoodsNum}>
@@ -432,6 +476,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
+  hidden: {
+    display: 'none'
+  },
   wrapperWrap: {
     position: 'relative',
     paddingTop: pxToDp(28),
@@ -513,6 +560,12 @@ const styles = StyleSheet.create({
     marginLeft: pxToDp(26),
     fontSize: pxToDp(28),
     color: '#2b2b2b'
+  },
+  titleInfo: {
+    position: 'absolute',
+    right: pxToDp(54),
+    fontSize: pxToDp(28),
+    color: '#a7a7a7'
   },
   dir:{
     position: 'absolute',
@@ -623,7 +676,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingTop: pxToDp(35),
     width: '100%',
-    height: pxToDp(650),
+    // height: pxToDp(650),
   },
   modal:{
     paddingTop: pxToDp(40),
@@ -672,8 +725,9 @@ const styles = StyleSheet.create({
   },
   modalGoodsSpec:{
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginLeft: pxToDp(34),
-    height: pxToDp(117),
+    paddingBottom: pxToDp(10),
     alignItems: 'center',
     borderBottomWidth: pxToDp(1),
     borderBottomColor: '#eeeeee'
@@ -682,8 +736,13 @@ const styles = StyleSheet.create({
     marginTop: pxToDp(66),
     backgroundColor: 'white'
   },
-  modalGoodsSpecContent:{
-    marginLeft: pxToDp(35),
+  modalGoodsSpecWrapTitle: {
+    marginLeft: pxToDp(34),
+    marginTop: pxToDp(30)
+  },
+  modalGoodsSpecContent: {
+    marginBottom: pxToDp(30),
+    marginRight: pxToDp(35),
     paddingLeft: pxToDp(20),
     paddingRight: pxToDp(20),
     height: pxToDp(64),
@@ -692,8 +751,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#2abd89',
     borderRadius: pxToDp(30)
   },
-  modalGoodsSpecContent1:{
-    marginLeft: pxToDp(35),
+  modalGoodsSpecContent1: {
+    marginBottom: pxToDp(30),
+    marginRight: pxToDp(35),
     paddingLeft: pxToDp(20),
     paddingRight: pxToDp(20),
     height: pxToDp(64),
@@ -769,8 +829,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius:2,
   },
   save:{
-    position: "absolute",
-    bottom: 0,
+    // position: "absolute",
+    // bottom: 0,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -778,8 +838,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2abd89'
   },
   cannotSave: {
-    position: "absolute",
-    bottom: 0,
+    // position: "absolute",
+    // bottom: 0,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -816,6 +876,24 @@ const styles = StyleSheet.create({
   },
   detailListInfo: {
     fontSize: pxToDp(28),
+  },
+  toAll: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: pxToDp(26)
+  },
+  toAllBtn: {
+    height: pxToDp(63),
+    width: pxToDp(230),
+    borderWidth: pxToDp(3),
+    borderColor: '#d8d8d8',
+    borderRadius: pxToDp(31),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  toAllText: {
+    fontSize: pxToDp(28),
+    color: '#2b2b2b'
   },
   toast:{
     backgroundColor: '#626262'
