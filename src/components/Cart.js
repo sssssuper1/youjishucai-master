@@ -22,6 +22,7 @@ import {
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import hasFringe from '../js/hasFringe';
 
 export default class Cart extends Component {
   constructor(props) {
@@ -368,11 +369,10 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'relative',
-    height: pxToDp(96),
     ...Platform.select({
       ios: {
-        height: pxToDp(124),
-        paddingTop: pxToDp(28)
+        height: pxToDp(hasFringe() ? 146 : 124),
+        paddingTop: pxToDp(hasFringe() ? 50 : 28)
       },
       android: {
         height: pxToDp(96),

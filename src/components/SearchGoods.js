@@ -26,6 +26,7 @@ import {
   FlatList
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import hasFringe from '../js/hasFringe';
 const deviceHeightDp = Dimensions.get('window').height;
 const deviceWidthDp = Dimensions.get('window').width;
 function scrrollHeight(uiElementHeight) {
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
     height: pxToDp(96),
     ...Platform.select({
       ios: {
-        marginTop: pxToDp(28)
+        marginTop: pxToDp(hasFringe() ? 50 : 28)
       },
       android: {}
     })

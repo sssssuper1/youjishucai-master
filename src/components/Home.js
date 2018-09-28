@@ -31,6 +31,7 @@ import {
   ToastAndroid
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import hasFringe from '../js/hasFringe';
 import { CachedImage } from 'react-native-img-cache';
 const deviceHeightDp = Dimensions.get('window').height;
 const deviceWidthDp = Dimensions.get('window').width;
@@ -490,8 +491,8 @@ const styles = StyleSheet.create({
   headerBackground: {
     ...Platform.select({
       ios: {
-        height: pxToDp(124),
-        paddingTop: pxToDp(28)
+        height: pxToDp(hasFringe() ? 146 : 124),
+        paddingTop: pxToDp(hasFringe() ? 50 : 28)
       },
       android: {
         height: pxToDp(96),

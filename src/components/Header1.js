@@ -15,6 +15,7 @@ import {
   BackHandler
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import hasFringe from '../js/hasFringe';
 
 export default class Header1 extends Component {
   constructor(props) {
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     height: pxToDp(96),
     ...Platform.select({
       ios: {
-        marginTop: pxToDp(28)
+        marginTop: pxToDp(hasFringe() ? 50 : 28)
       },
       android: {}
     })

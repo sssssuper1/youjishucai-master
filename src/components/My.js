@@ -12,6 +12,7 @@ import {
   ScrollView
 } from 'react-native';
 import pxToDp from '../js/pxToDp';
+import hasFringe from '../js/hasFringe';
 
 export default class My extends Component {
   constructor(props) {
@@ -169,11 +170,10 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'relative',
-    height: pxToDp(270),
     ...Platform.select({
       ios: {
-        height: pxToDp(298),
-        paddingTop: pxToDp(28)
+        height: pxToDp(hasFringe() ? 320 : 298),
+        paddingTop: pxToDp(hasFringe() ? 50 : 28)
       },
       android: {
         height: pxToDp(270),

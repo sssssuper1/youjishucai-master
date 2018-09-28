@@ -81,7 +81,7 @@ export default class TransferConfirm extends Component {
   }
 
   render() {
-    const { phone, name, level } = this.props.navigation.state.params.userInfo;
+    const { name, level, UID } = this.props.navigation.state.params.userInfo;
     return (
       <View style={styles.container}>
         <Header1 navigation={this.props.navigation} name="余额转账" />
@@ -89,7 +89,7 @@ export default class TransferConfirm extends Component {
           <View style={styles.payeeInfo}>
             <Image style={styles.headPortrait} source={getVipPortrait(level)} />
             <Text style={styles.payeeName}>{name}</Text>
-            <Text style={styles.payeeID}>ID: {phone}</Text>
+            <Text style={styles.payeeID}>ID: {UID}</Text>
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.amountTitle}>
