@@ -33,7 +33,7 @@ export default class My extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const { vip, name, integral, balance, agent, hasStore, UID } = this.props.user;
+    const { vip, name, integral, balance, agent, hasStore, UID, levelName } = this.props.user;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
@@ -42,16 +42,19 @@ export default class My extends Component {
               <Image style={styles.headPointerImg} source={getVipPortrait(vip)}/>
             </TouchableOpacity>
             <View style={styles.nameContainer}>
-              <View style={styles.userInfo}>
-                <Text style={styles.name}>{name}</Text>
-                <View style={[hasStore ? styles.tag : styles.hidden, styles.redBg]}>
-                  <Text style={styles.tagInfo}>商户</Text>
-                </View>
-                <View style={[agent != '' ? styles.tag : styles.hidden, styles.orangeBg]}>
-                  <Text style={styles.tagInfo}>{agent}</Text>
-                </View>
-              </View>
+              <Text style={styles.name}>{name}</Text>
               <Text style={styles.userId}>{UID == '' ? '' : `ID: ${UID}`}</Text>
+            </View>
+            <View style={styles.peerages}>
+              <View style={[hasStore ? styles.tag : styles.hidden, styles.darkOrangeBg]}>
+                <Text style={styles.tagInfo}>商户</Text>
+              </View>
+              <View style={[agent != '' ? styles.tag : styles.hidden, styles.orangeBg]}>
+                <Text style={styles.tagInfo}>{agent}</Text>
+              </View>
+              <View style={[levelName != '' ? styles.tag : styles.hidden, styles.orangeRedBg]}>
+                <Text style={styles.tagInfo}>{levelName}</Text>
+              </View>
             </View>
             <TouchableOpacity style={styles.set} onPress={() => {navigate('Set')}}>
               <Image style={styles.setImg} source={require('../images/set.png')}></Image>  
@@ -205,6 +208,13 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: 'column'
   },
+  peerages: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+    width: pxToDp(250),
+    height: pxToDp(80)
+  },
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center'
@@ -216,17 +226,21 @@ const styles = StyleSheet.create({
   },
   tag: {
     marginLeft: pxToDp(15),
+    marginBottom: pxToDp(14),
     height: pxToDp(34),
     paddingHorizontal: pxToDp(17),
     borderRadius: pxToDp(17),
     alignItems: 'center',
     justifyContent: 'center'
   },
-  redBg: {
-    backgroundColor: '#f8676a',
+  darkOrangeBg: {
+    backgroundColor: '#ff711c',
   },
   orangeBg: {
-    backgroundColor: '#ff9f19',
+    backgroundColor: '#ff9d00',
+  },
+  orangeRedBg: {
+    backgroundColor: '#ff4545'
   },
   tagInfo: {
     fontSize: pxToDp(22),

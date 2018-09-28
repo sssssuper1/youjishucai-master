@@ -63,7 +63,7 @@ export default class Order extends Component {
           count: count
         });
       } else {
-        Alert.alert('提示',responseData.message);
+        Alert.alert('提示',responseData.errMsg);
       }
     },
     (err) => {
