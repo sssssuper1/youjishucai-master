@@ -136,6 +136,8 @@ export default class Cart extends Component {
         this.setState({ dataSource: newData });
         this.changeTotal();
         store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 });
+      } else {
+        this.refs.toast.show(responseData.errMsg);
       }
     },
     (err) => {

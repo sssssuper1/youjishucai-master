@@ -72,8 +72,8 @@ export default class AllComments extends Component {
         <FlatList
           data={this.state.comments}
           renderItem={({ item, index }) => renderEvaluationList(item, index)}
-          onEndReachedThreshold={this.loadMore.bind(this)}
-          onEndReached={0.25}
+          onEndReachedThreshold={0.25}
+          onEndReached={this.loadMore.bind(this)}
         />
         <Toast ref="toast" style={styles.toast} position="top" positionValue={pxToDp(400)} />
       </View>

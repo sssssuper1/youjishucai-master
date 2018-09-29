@@ -328,6 +328,7 @@ export default class Home extends Component {
         numColumns={2}
         data={data}
         renderItem={({ item, index }) => this._renderRow2(listIndex, item, index)}
+        getItemLayout={(data, index) => ({length: pxToDp(360), offset: pxToDp(360) * index, index})}
       />
     )
   }
@@ -750,6 +751,7 @@ const styles = StyleSheet.create({
     marginRight: pxToDp(8),
     marginBottom: pxToDp(8),
     width: pxToDp(268),
+    height: pxToDp(360),
     borderWidth: pxToDp(2),
     borderColor: '#f4f4f4',
   },
