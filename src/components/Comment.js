@@ -53,24 +53,28 @@ export default class Comment extends Component {
   }
 
   submit() {
-    let params = [];
-    this.state.orderDetails.forEach((item) => {
-      if (!item.comment) {
+    let list = [];
+    for (let i = 0; i < this.state.orderDetails.length; i++) {
+      if (this.state.orderDetails[i].comment == '') {
         this.refs.toast.show('请填写评价!');
-
-        return
+        return;
       }
 
       let param = {
-        OrderDetailId: item.id,
-        rating: item.star,
-        content: item.comment,
-        goodSpecId: item.goodSpecId,
-        goodId: item.goodId
+        OrderDetailId: this.state.orderDetails[i].id,
+        rating: this.state.orderDetails[i].star,
+        content: this.state.orderDetails[i].comment,
+        goodSpecId: this.state.orderDetails[i].goodSpecId,
+        goodId: this.state.orderDetails[i].goodId
       };
 
-      params.push(param);
-    })
+      list.push(param);
+    }
+
+    const params = {
+      list: list,
+      orderId: this.props.navigation.state.params.orderId
+    }
 
     Fetch(global.url + '/api/Order/addEvaluate', 'post', params, (res) => {
       if (res.success) {
