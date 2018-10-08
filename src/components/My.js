@@ -34,7 +34,7 @@ export default class My extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const { vip, name, integral, balance, agent, hasStore, UID, levelName } = this.props.user;
+    const { vip, name, integral, balance, agent, hasStore, UID, productAgentLevelName } = this.props.user;
     return (
       <View style={styles.contenier}>  
         <ImageBackground style={styles.headerContainer} source={require('../images/myBackground.png')} resizeMode='cover'>
@@ -53,8 +53,8 @@ export default class My extends Component {
               <View style={[agent != '' ? styles.tag : styles.hidden, styles.orangeBg]}>
                 <Text style={styles.tagInfo}>{agent}</Text>
               </View>
-              <View style={[levelName != '' ? styles.tag : styles.hidden, styles.orangeRedBg]}>
-                <Text style={styles.tagInfo}>{levelName}</Text>
+              <View style={[productAgentLevelName != '' ? styles.tag : styles.hidden, styles.orangeRedBg]}>
+                <Text style={styles.tagInfo}>{productAgentLevelName}</Text>
               </View>
             </View>
             <TouchableOpacity style={styles.set} onPress={() => {navigate('Set')}}>
