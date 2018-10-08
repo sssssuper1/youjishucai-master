@@ -276,10 +276,17 @@ export default class Home extends Component {
   goDetail(url) {
     const { navigate } = this.props.navigation;
     let urlRegular = /^http/
+    let titleRegular = /title=([^&]*)(&|$)/
     let goodDetailRegular = /goodId=/i
 
     if (urlRegular.test(url)) {
-      navigate('Artical', { url: url });
+      let regularResult = titleRegular.exec(url)
+      if (regularResult.length > 0) {
+        let title = unescape(regularResult[0].replace('title=', '').replace('&', ''));
+        navigate('Artical', { url: url, title: title });
+      } else {
+        navigate('Artical', { url: url });
+      }
     } else if (goodDetailRegular.test(url)) {
       navigate('GoodsDetail', { id: url.replace(goodDetailRegular, '') });
     }
@@ -338,7 +345,7 @@ export default class Home extends Component {
     let hasStock = this.hasStock(item)
 
     return (
-      <View style={styles.rowGoods} key={index}>
+      <View style={styles.rowGoods} key={item.id}>
         <TouchableOpacity style={styles.rowGoodsImgContainer} onPress={() => {navigate('GoodsDetail', {id: item.id})}}>
           <CachedImage style={styles.rowGoodsImg} source={{ uri: item.cover == null ? '' : item.cover}} />
           <View style={!hasStock || item.purchaseLimit > 0 ? styles.rowGoodsRemark : styles.hidden}>

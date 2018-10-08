@@ -32,8 +32,8 @@ import CookieManager from 'react-native-cookies';
 import SplashScreen from 'react-native-splash-screen';
 import PopupDialog from 'react-native-popup-dialog';
 
-// global.url = "http://sxj.xcf178.com";
-global.url = "http://xsq.ngrok.sws168.com";
+global.url = "http://sxj.xcf178.com";
+// global.url = "http://xsq.ngrok.sws168.com";
 
 global.data = {
   user: {
@@ -59,7 +59,7 @@ export default class Index extends Component {
         balance: 0,
         vip: 0,
         agent: '',
-        levelName: '',
+        productAgentLevelName: '',
         UID: '',
         hasStore: false
       },

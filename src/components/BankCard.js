@@ -22,6 +22,10 @@ export default class BankCard extends Component {
       bankCardID: '',
       bankName: '',
       userName: '',
+      defaultUserName: '',
+      bankOfDeposit: '',
+      defaultBankOfDeposit: '',
+
       bankList: [],
       IOSPickerShow: false
     }
@@ -32,6 +36,11 @@ export default class BankCard extends Component {
   submit() {
     if (this.state.bankCardID == '') {
       this.refs.toast.show('请输入银行卡号!');
+      return;
+    }
+
+    if (this.state.bankOfDeposit == '') {
+      this.refs.toast.show('请输入开户行!');
       return;
     }
 
@@ -52,7 +61,8 @@ export default class BankCard extends Component {
     const params = {
       bankNo: this.state.bankCardID,
       bankTrueName: this.state.userName,
-      bank: this.state.bankName
+      bank: this.state.bankName,
+      bankOfDeposit: this.state.bankOfDeposit
     }
 
     Fetch(global.url + '/api/user/SaveBankInfo', 'post', params, (res) => {
@@ -73,7 +83,10 @@ export default class BankCard extends Component {
           bankCardID: res.data.bankNo,
           bankName: res.data.bank == '' ? res.data.banks[0] : res.data.bank,
           bankList: res.data.banks,
-          userName: res.data.bankTrueName
+          userName: res.data.bankTrueName,
+          defaultUserName: res.data.bankTrueName,
+          bankOfDeposit: res.data.bankOfDeposit,
+          defaultBankOfDeposit: res.data.bankOfDeposit
         });
       } else {
         Alert.alert('提示', res.errMsg);
@@ -138,8 +151,18 @@ export default class BankCard extends Component {
             <TextInput
               style={styles.textWrap}
               underlineColorAndroid={'transparent'}
+              onChangeText={(text) => this.setState({ bankOfDeposit: text })}
+              defaultValue={this.state.defaultBankOfDeposit}
+              placeholder={'请输入开户行 (可电话联系当地银行查询)'}
+              placeholderTextColor={'#a6a6a6'}
+            />
+          </View> 
+          <View style={styles.passwordWrap}>
+            <TextInput
+              style={styles.textWrap}
+              underlineColorAndroid={'transparent'}
               onChangeText={(text) => this.setState({ userName: text })}
-              value={this.state.userName}
+              defaultValue={this.state.defaultUserName}
               placeholder={'请输入收款人姓名'}
               placeholderTextColor={'#a6a6a6'}
             />
