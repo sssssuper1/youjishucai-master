@@ -1,12 +1,8 @@
-module.exports=(url,method,params1,callback,err=(err)=>{})=>{
-    // let oCookie
-    // if(cookie.userId){
-    //   cookieStr={
-    //     userId: cookie.userId
-    //   }
-    // }
+import { Platform } from 'react-native';
+
+module.exports = (url, method, params1, callback, err = (err) => { }) => {
     var myHeaders = new Headers({
-      'User-Agent': 'SXJAPP',
+      'User-Agent': `SXJAPP ${Platform.OS} 1.6`,
       'Accept': 'application/json',
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*"

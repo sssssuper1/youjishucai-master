@@ -108,16 +108,18 @@ export default class Cart extends Component {
     if (this.state.dataSource[index].count===1) { 
       return
     }
-    this.state.dataSource[index].count--
-    let newData = JSON.parse(JSON.stringify(this.state.dataSource));
 
     Fetch(global.url + '/API/MyCart/reduce', 'post', {
       id: this.state.dataSource[index].id
     }, (responseData) => {
       if (responseData.success) {
+        this.state.dataSource[index].count--
+        let newData = JSON.parse(JSON.stringify(this.state.dataSource));
         this.setState({ dataSource: newData });
         this.changeTotal();
         store.dispatch({ type: types.reduceShopingNum.REDUCENUM, num: 1 });
+      } else {
+        this.refs.toast.show(responseData.errMsg);
       }
     },
     (err) => {
@@ -126,13 +128,12 @@ export default class Cart extends Component {
   }
   // 增加件数
   addGoodsNum(index) { 
-    this.state.dataSource[index].count++
-    let newData = JSON.parse(JSON.stringify(this.state.dataSource));
-
     Fetch(global.url + '/API/MyCart/plus', 'post', {
       id: this.state.dataSource[index].id
     }, (responseData) => {
       if (responseData.success) {
+        this.state.dataSource[index].count++
+        let newData = JSON.parse(JSON.stringify(this.state.dataSource));
         this.setState({ dataSource: newData });
         this.changeTotal();
         store.dispatch({ type: types.addShopingNum.ADDNUM, num: 1 });

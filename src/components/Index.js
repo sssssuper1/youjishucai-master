@@ -14,6 +14,7 @@ import {
   BackHandler,
   ToastAndroid,
   Alert,
+  Linking,
   NetInfo,
   TouchableOpacity
 } from 'react-native';
@@ -68,6 +69,8 @@ export default class Index extends Component {
       stateNum: {}
     }
 
+    this.goToDownload = '';
+
     // 获取通知
     this.getNotify();
 
@@ -98,7 +101,6 @@ export default class Index extends Component {
 
       // this.setTab();
     });
-
   }
   static navigationOptions = {
     header:null
@@ -106,14 +108,22 @@ export default class Index extends Component {
 
   loadData() {
     Fetch(global.url + '/api/home/GetInitData', 'get', '', (responseData) => {
-      // SplashScreen.hide();
+      if (responseData.user == null) {
+        this.setState({
+          isConnected: true
+        });
+        return
+      }
+
       global.data.user = responseData.user;
+
       if (responseData.goodCategorys[0]) {
         global.data.vipPrice = responseData.user.vipPrice;
       }
       if (global.data.user.name == '' && global.data.user.name.trim() == '') {
         global.data.user.name = global.data.user.phone;
       }
+
       this.setState({
         user: global.data.user,
         isConnected: true
@@ -148,10 +158,31 @@ export default class Index extends Component {
   getNotify() {
     Fetch(global.url + '/api/Home/GetNotify', 'get', null, (res) => {
       if (res.result) {
-        global.storage.load({
-          key: 'notify'
-        }).then(ret => {
-          if (!ret || !ret.text || ret.text != res.data.notify.text) {
+        if (res.data.notify.force) {
+          this.setState({
+            announce: res.data.notify.text
+          }, () => {
+            this.goToDownload = res.data.notify.url;
+            this.popupDialog.show();
+          });
+        } else {
+          global.storage.load({
+            key: 'notify'
+          }).then(ret => {
+            if (!ret || !ret.text || ret.text != res.data.notify.text) {
+              this.setState({
+                announce: res.data.notify.text
+              }, () => {
+                this.popupDialog.show();
+                global.storage.save({
+                  key: 'notify',
+                  data: {
+                    text: res.data.notify.text
+                  }
+                });
+              });
+            }
+          }).catch(err => {
             this.setState({
               announce: res.data.notify.text
             }, () => {
@@ -163,20 +194,8 @@ export default class Index extends Component {
                 }
               });
             });
-          }
-        }).catch(err => {
-          this.setState({
-            announce: res.data.notify.text
-          }, () => {
-            this.popupDialog.show();
-            global.storage.save({
-              key: 'notify',
-              data: {
-                text: res.data.notify.text
-              }
-            });
           });
-        });
+        }
       }
     }, (err) => { 
     })
@@ -184,6 +203,10 @@ export default class Index extends Component {
 
   onButtonPress() {
     this.popupDialog.dismiss();
+
+    if (this.goToDownload != undefined && this.goToDownload != '') {
+      Linking.openURL(this.goToDownload).catch(err => Alert.alert('提示', err));
+    }
   }
 
   componentDidMount() {
