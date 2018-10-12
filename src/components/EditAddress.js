@@ -312,12 +312,18 @@ export default class EditAddress extends Component {
           style={this.state.pickerNum===1?styles.Picker2:styles.hidden}
           itemStyle={styles.itempicker} 
           selectedValue={this.state.selectedProvinces}
-          onValueChange={(lang) => this.setState({
-            selectedProvinces: lang,
-            selectedCitys: '',
-            citys:this.citys(citysWrap,lang),
-            selectedArea: '',
-            area:this.area(citysWrap,lang,this.citys(citysWrap,lang)[0])})}>
+          onValueChange={(lang) => {
+            const citys = this.citys(citysWrap,lang);
+            const area = this.area(citysWrap,lang,citys[0])
+
+            this.setState({
+              selectedProvinces: lang,
+              selectedCitys: citys[0],
+              citys: citys,
+              selectedArea: area[0],
+              area: area
+            })
+          }}>
           {
             this.state.provinces.map((item) =>  <Picker.Item label={item} value={item} />)
           }
@@ -332,10 +338,15 @@ export default class EditAddress extends Component {
           style={this.state.pickerNum===2?styles.Picker2:styles.hidden}
           selectedValue={this.state.selectedCitys}
           itemStyle={styles.itempicker} 
-          onValueChange={(lang) => this.setState({
-            selectedCitys: lang,
-            selectedArea: '',
-            area:this.area(citysWrap,this.state.selectedProvinces,lang)})}>
+          onValueChange={(lang) => {
+            const area = this.area(citysWrap,this.state.selectedProvinces,lang);
+
+            this.setState({
+              selectedCitys: lang,
+              selectedArea: area[0],
+              area: area
+            })
+          }}>
           {
             this.state.citys.map((item)=>  <Picker.Item label={item} value={item} />)
           }
